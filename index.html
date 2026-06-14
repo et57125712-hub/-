@@ -3,235 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#090014">
-<title>IMMUNE//RUNNER 50</title>
+<meta name="theme-color" content="#05000a">
+<title>IMMUNE//RUNNER 2.0</title>
 <style>
-:root{
-  --bg:#07000f;--panel:#12021f;--panel2:#19032a;--cyan:#35f2ff;--pink:#ff3bd4;
-  --lime:#9cff57;--text:#f5f7ff;--muted:#a7a0bd;--danger:#ff486a;--gold:#ffd84d;
-}
+:root{--bg:#05000a;--panel:#12021f;--cyan:#35f2ff;--pink:#ff3bd4;--lime:#9cff57;--text:#f6f7ff;--muted:#aaa0bd;--danger:#ff486a;--gold:#ffd84d}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{
-  margin:0;min-height:100vh;color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Microsoft JhengHei","Noto Sans TC",sans-serif;
-  background:
-    radial-gradient(circle at 15% 10%,rgba(255,59,212,.18),transparent 25%),
-    radial-gradient(circle at 85% 20%,rgba(53,242,255,.16),transparent 26%),
-    linear-gradient(180deg,#07000f,#0d0118 45%,#05000b);
-  overflow-x:hidden;
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
-  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.04) 4px);
-  mix-blend-mode:screen;z-index:20;
-}
-header{
-  position:sticky;top:0;z-index:15;padding:16px 14px 12px;
-  background:rgba(7,0,15,.88);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(53,242,255,.38);
-  box-shadow:0 0 25px rgba(53,242,255,.15);
-}
-.brand{font-size:1.25rem;font-weight:1000;letter-spacing:.08em;text-shadow:0 0 12px var(--cyan),2px 0 var(--pink)}
-.sub{font-size:.8rem;color:var(--muted);margin-top:4px}
-main{max-width:760px;margin:auto;padding:12px 12px 108px}
-.card{
-  background:linear-gradient(180deg,rgba(25,3,42,.94),rgba(13,1,24,.96));
-  border:1px solid rgba(53,242,255,.28);border-radius:20px;padding:15px;margin:12px 0;
-  box-shadow:0 0 0 1px rgba(255,59,212,.08) inset,0 12px 35px rgba(0,0,0,.45);
-}
-.glow-title{font-weight:950;color:var(--cyan);text-shadow:0 0 12px rgba(53,242,255,.75);letter-spacing:.06em}
+body{margin:0;min-height:100vh;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Microsoft JhengHei","Noto Sans TC",sans-serif;background:radial-gradient(circle at 10% 10%,rgba(255,59,212,.2),transparent 24%),radial-gradient(circle at 90% 12%,rgba(53,242,255,.18),transparent 25%),linear-gradient(180deg,#05000a,#0d0118 55%,#030006)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.04) 4px)}
+header{position:sticky;top:0;z-index:20;padding:14px 14px 12px;background:rgba(5,0,10,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(53,242,255,.35)}
+.brand{font-size:1.25rem;font-weight:1000;letter-spacing:.08em;text-shadow:0 0 14px var(--cyan),2px 0 var(--pink)}
+.sub{font-size:.78rem;color:var(--muted);margin-top:4px}
+main{max-width:760px;margin:auto;padding:12px 12px 118px}
+.card{background:linear-gradient(180deg,rgba(24,3,41,.95),rgba(12,1,22,.97));border:1px solid rgba(53,242,255,.25);border-radius:20px;padding:15px;margin:12px 0;box-shadow:0 14px 35px rgba(0,0,0,.42)}
+.title{font-weight:950;color:var(--cyan);text-shadow:0 0 12px rgba(53,242,255,.7);letter-spacing:.06em}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-button,select{
-  width:100%;border-radius:13px;padding:12px 10px;font-size:1rem;font-weight:900;
-}
-select{background:#13051e;color:#fff;border:1px solid rgba(53,242,255,.35)}
-button{
-  border:1px solid var(--cyan);color:#001116;background:linear-gradient(90deg,var(--cyan),#aefcff);
-  box-shadow:0 0 14px rgba(53,242,255,.25);cursor:pointer;touch-action:manipulation;
-}
+button,select{width:100%;border-radius:13px;padding:12px 10px;font-size:1rem;font-weight:900;touch-action:manipulation}
+select{background:#13051e;color:#fff;border:1px solid rgba(53,242,255,.34)}
+button{border:1px solid var(--cyan);color:#001116;background:linear-gradient(90deg,var(--cyan),#aefcff);box-shadow:0 0 14px rgba(53,242,255,.2)}
 button.alt{background:linear-gradient(90deg,var(--pink),#ff9deb);border-color:var(--pink);color:#220018}
 button.dark{background:#160724;color:#fff;border-color:#6f4c8d;box-shadow:none}
 button.gold{background:linear-gradient(90deg,var(--gold),#fff0a6);border-color:var(--gold);color:#251800}
+button:disabled{opacity:.45}
+.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.hud div{background:#0d0316;border:1px solid rgba(255,59,212,.28);border-radius:12px;padding:9px;text-align:center}
+.hud b{display:block;color:var(--cyan);font-size:1.1rem}
 .meta{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-weight:800;font-size:.86rem}
 .pill{border:1px solid rgba(255,59,212,.45);background:rgba(255,59,212,.08);padding:5px 9px;border-radius:999px;color:#ff9fea;white-space:nowrap}
-.progress{height:9px;background:#1a0a25;border-radius:999px;overflow:hidden;margin-top:10px;border:1px solid rgba(53,242,255,.12)}
+.progress{height:9px;background:#1a0a25;border-radius:999px;overflow:hidden;margin-top:10px}
 .progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan));box-shadow:0 0 12px var(--cyan)}
-.question{
-  margin-top:12px;padding:18px 16px;min-height:145px;border-radius:16px;
-  background:linear-gradient(135deg,rgba(53,242,255,.07),rgba(255,59,212,.08));
-  border-left:5px solid var(--cyan);font-size:1.22rem;line-height:1.55;font-weight:950;
-  text-shadow:0 0 8px rgba(255,255,255,.08);
-}
+.question{margin-top:12px;padding:18px 16px;min-height:145px;border-radius:16px;background:linear-gradient(135deg,rgba(53,242,255,.07),rgba(255,59,212,.08));border-left:5px solid var(--cyan);font-size:1.22rem;line-height:1.55;font-weight:950}
 .options{display:grid;gap:10px;margin-top:12px}
-.option{
-  border:1px solid rgba(53,242,255,.34);border-radius:15px;padding:14px 13px;
-  background:#10041b;color:#fff;font-weight:850;line-height:1.4;
-  box-shadow:0 0 12px rgba(53,242,255,.06);touch-action:manipulation;
-}
-.option:active{transform:scale(.985)}
-.option.correct{border-color:var(--lime);background:rgba(156,255,87,.14);box-shadow:0 0 16px rgba(156,255,87,.35)}
-.option.wrong{border-color:var(--danger);background:rgba(255,72,106,.14);box-shadow:0 0 16px rgba(255,72,106,.28)}
+.option{border:1px solid rgba(53,242,255,.34);border-radius:15px;padding:14px 13px;background:#10041b;color:#fff;font-weight:850;line-height:1.4}
+.option.correct{border-color:var(--lime);background:rgba(156,255,87,.14)}
+.option.wrong{border-color:var(--danger);background:rgba(255,72,106,.14)}
 .answer{display:none;margin-top:12px;padding:14px;border-radius:15px;background:rgba(255,216,77,.08);border:1px solid rgba(255,216,77,.4);line-height:1.65}
 .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .team{padding:12px;border-radius:15px;background:#0f0418;border:1px solid rgba(255,59,212,.3);text-align:center}
-.score{font-size:1.85rem;font-weight:1000;color:var(--cyan);text-shadow:0 0 10px rgba(53,242,255,.6)}
+.score{font-size:1.85rem;font-weight:1000;color:var(--cyan)}
 .team-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .team-btns button{padding:9px 4px;font-size:.84rem}
-.bottom{
-  position:fixed;left:0;right:0;bottom:0;z-index:16;padding:9px 10px calc(9px + env(safe-area-inset-bottom));
-  background:rgba(7,0,15,.92);backdrop-filter:blur(12px);border-top:1px solid rgba(255,59,212,.35);
-}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:rgba(5,0,10,.93);backdrop-filter:blur(12px);border-top:1px solid rgba(255,59,212,.35)}
 .bottom .bar{max-width:760px;margin:auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-.hidden{display:none}
-.status{margin-top:8px;color:var(--lime);font-weight:900;min-height:1.3em}
+.status{margin-top:8px;color:var(--lime);font-weight:900;min-height:1.3em}.hidden{display:none}
+.boss{display:none;margin-top:10px;padding:10px;border:1px solid rgba(255,72,106,.45);border-radius:13px;background:rgba(255,72,106,.08);color:#ff9aad;font-weight:900;text-align:center}
 @media(min-width:700px){.grid2{grid-template-columns:1fr 1fr 1fr 1fr}.brand{font-size:1.5rem}.question{font-size:1.35rem}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">IMMUNE//RUNNER 50</div>
-  <div class="sub">CYBER NURSING REVIEW SYSTEM · 期末考前概念闖關</div>
-</header>
-
+<header><div class="brand">IMMUNE//RUNNER 2.0</div><div class="sub">CYBER NURSING REVIEW SYSTEM · 50 題免疫闖關</div></header>
 <main>
 <section class="card">
-  <div class="glow-title">MISSION SETUP</div>
-  <div class="grid2" style="margin-top:10px">
-    <select id="mode">
-      <option value="choice">單人闖關</option>
-      <option value="open">小組搶答</option>
-    </select>
-    <select id="category"><option value="全部">全域任務 50 題</option></select>
-    <button id="startBtn">啟動任務</button>
-    <button id="resetBtn" class="dark">系統重置</button>
-  </div>
-  <div class="progress"><span id="bar"></span></div>
-  <div id="status" class="status"></div>
-</section>
-
-<section class="card">
-  <div class="meta">
-    <span id="progress">尚未啟動</span>
-    <span id="catLabel" class="pill">全域任務</span>
-  </div>
-  <div id="question" class="question">點擊「啟動任務」，進入免疫系統防禦網。</div>
-  <div id="options" class="options"></div>
-  <div id="answer" class="answer"></div>
-</section>
-
-<section class="card" id="scoreCard">
-  <div class="glow-title">SQUAD SCORE</div>
-  <div class="score-grid" id="scorebox" style="margin-top:10px"></div>
-</section>
-
-<section class="card">
-  <div class="glow-title">RULES</div>
-  <p style="color:var(--muted);line-height:1.7;margin-bottom:0">
-    單人闖關可直接點選答案；小組搶答則由老師揭曉答案。答對 +10，能說明原因再 +5。
-  </p>
-</section>
-</main>
-
-<div class="bottom">
-  <div class="bar">
-    <button id="answerBtn" class="gold">解鎖答案</button>
-    <button id="nextBtn">下一關</button>
-    <button id="scoreBtn" class="alt">隊伍計分</button>
-  </div>
+<div class="title">MISSION SETUP</div>
+<div class="grid2" style="margin-top:10px">
+<select id="mode"><option value="choice">單人闖關</option><option value="open">小組搶答</option></select>
+<select id="category"><option value="全部">全域任務 50 題</option></select>
+<button id="startBtn">啟動任務</button><button id="resetBtn" class="dark">系統重置</button>
 </div>
-
+<div class="hud"><div>生命值<b id="hp">3</b></div><div>連勝<b id="streak">0</b></div><div>總分<b id="personalScore">0</b></div></div>
+<div class="progress"><span id="bar"></span></div><div id="status" class="status"></div><div id="boss" class="boss">BOSS WAVE · 臨床情境題加倍計分</div>
+</section>
+<section class="card"><div class="meta"><span id="progress">尚未啟動</span><span id="catLabel" class="pill">全域任務</span></div><div id="question" class="question">點擊「啟動任務」，進入免疫系統防禦網。</div><div id="options" class="options"></div><div id="answer" class="answer"></div></section>
+<section class="card" id="scoreCard"><div class="title">SQUAD SCORE</div><div class="score-grid" id="scorebox" style="margin-top:10px"></div></section>
+<section class="card"><div class="title">RULES</div><p style="color:var(--muted);line-height:1.7;margin-bottom:0">單人闖關：答對 +10，連勝 3 題以上每題 +5；答錯扣 1 生命。每第 10 題進入 BOSS WAVE，答對分數加倍。小組模式可由老師手動計分。</p></section>
+</main>
+<div class="bottom"><div class="bar"><button id="answerBtn" class="gold">解鎖答案</button><button id="nextBtn">下一關</button><button id="scoreBtn" class="alt">隊伍計分</button></div></div>
 <script>
-const questions = [{"cat": "免疫基礎", "q": "皮膚、黏膜與正常菌叢主要屬於哪一類防禦？", "options": ["先天性免疫第一道防線", "後天性體液免疫", "細胞性免疫記憶", "人工被動免疫"], "ans": "先天性免疫第一道防線", "exp": "皮膚、黏膜與正常菌叢是身體最前線的非專一性防禦。"}, {"cat": "免疫基礎", "q": "與初次免疫反應相比，二次免疫反應通常有何特色？", "options": ["反應較快且抗體親和力較高", "遲滯期較長", "主要只有IgM", "不會產生記憶細胞"], "ans": "反應較快且抗體親和力較高", "exp": "二次免疫反應因記憶細胞存在，反應更快、更強。"}, {"cat": "免疫基礎", "q": "接種疫苗後由人體自行產生免疫反應與記憶細胞，稱為？", "options": ["人工主動免疫", "天然被動免疫", "人工被動免疫", "先天性免疫"], "ans": "人工主動免疫", "exp": "疫苗是人工給予抗原，讓身體主動產生免疫。"}, {"cat": "免疫基礎", "q": "胎兒經由胎盤獲得母體IgG，屬於？", "options": ["天然被動免疫", "人工主動免疫", "天然主動免疫", "人工被動免疫"], "ans": "天然被動免疫", "exp": "母體抗體自然傳給胎兒，胎兒本身未主動製造。"}, {"cat": "免疫基礎", "q": "下列何者屬於專一性免疫反應？", "options": ["抗原特異性抗體產生", "皮膚屏障", "發燒反應", "非專一性吞噬"], "ans": "抗原特異性抗體產生", "exp": "抗體具有抗原專一性，屬於後天免疫。"}, {"cat": "免疫細胞", "q": "下列何者均屬主要抗原呈現細胞？", "options": ["樹突細胞、巨噬細胞、B細胞", "T細胞、NK細胞、嗜中性球", "紅血球、血小板、肥大細胞", "嗜酸性球、紅血球、T細胞"], "ans": "樹突細胞、巨噬細胞、B細胞", "exp": "三大抗原呈現細胞：樹突細胞、巨噬細胞、B細胞。"}, {"cat": "免疫細胞", "q": "感染初期最常快速到達感染部位並吞噬細菌的是？", "options": ["嗜中性球", "漿細胞", "記憶B細胞", "調節型T細胞"], "ans": "嗜中性球", "exp": "嗜中性球是急性發炎早期重要吞噬細胞。"}, {"cat": "免疫細胞", "q": "活化的B細胞分化成何種細胞後，可大量分泌抗體？", "options": ["漿細胞", "自然殺手細胞", "樹突細胞", "嗜中性球"], "ans": "漿細胞", "exp": "漿細胞是大量製造抗體的工廠。"}, {"cat": "免疫細胞", "q": "自然殺手細胞最容易攻擊哪類細胞？", "options": ["MHC I表現降低的腫瘤或病毒感染細胞", "正常成熟紅血球", "表現大量MHC II的B細胞", "分泌IgA的漿細胞"], "ans": "MHC I表現降低的腫瘤或病毒感染細胞", "exp": "NK細胞會注意MHC I下降的異常細胞。"}, {"cat": "免疫細胞", "q": "何種T細胞可抑制過度免疫反應並維持自體耐受？", "options": ["調節型T細胞", "TH1細胞", "TH2細胞", "毒殺型T細胞"], "ans": "調節型T細胞", "exp": "調節型T細胞可避免免疫反應過度或攻擊自己。"}, {"cat": "T細胞與MHC", "q": "CD4+輔助型T細胞主要辨識由哪一類分子呈現的抗原胜肽？", "options": ["MHC class II", "MHC class I", "IgM", "補體C3"], "ans": "MHC class II", "exp": "CD4+ T細胞主要辨識MHC II呈現的抗原。"}, {"cat": "T細胞與MHC", "q": "CD8+毒殺型T細胞辨識病毒感染細胞時，主要受到哪類分子限制？", "options": ["MHC class I", "MHC class II", "CD19", "IgA"], "ans": "MHC class I", "exp": "CD8+ T細胞主要辨識MHC I呈現的抗原。"}, {"cat": "T細胞與MHC", "q": "初級體液性免疫反應中，較合理的順序為？", "options": ["抗原呈現→輔助T細胞活化→B細胞活化→漿細胞分化→分泌抗體", "B細胞活化→分泌抗體→抗原呈現→T細胞活化", "漿細胞分化→抗原呈現→記憶細胞消失", "補體活化→紅血球製造→抗體消失"], "ans": "抗原呈現→輔助T細胞活化→B細胞活化→漿細胞分化→分泌抗體", "exp": "先呈現抗原並活化輔助T細胞，再協助B細胞產生抗體。"}, {"cat": "T細胞與MHC", "q": "B細胞與T細胞主要成熟的器官分別為何？", "options": ["骨髓、胸腺", "胸腺、骨髓", "脾臟、淋巴結", "肝臟、脾臟"], "ans": "骨髓、胸腺", "exp": "B細胞在骨髓成熟；T細胞在胸腺成熟。"}, {"cat": "T細胞與MHC", "q": "記憶B細胞與記憶T細胞最主要功能為何？", "options": ["再次遇到相同抗原時快速產生較強反應", "直接形成皮膚屏障", "永久抑制所有免疫反應", "取代所有先天免疫細胞"], "ans": "再次遇到相同抗原時快速產生較強反應", "exp": "記憶細胞是二次免疫反應快速且強烈的關鍵。"}, {"cat": "抗原抗體", "q": "下列何者最符合抗原的定義？", "options": ["能被免疫系統辨識並引發免疫反應的物質", "只存在紅血球上的物質", "負責運送氧氣的蛋白質", "促進血液凝固的細胞"], "ans": "能被免疫系統辨識並引發免疫反應的物質", "exp": "抗原是免疫系統辨識的目標。"}, {"cat": "抗原抗體", "q": "下列何者通常具有較強抗原性？", "options": ["分子量大且結構複雜的蛋白質", "水", "無機鹽", "小分子簡單脂質"], "ans": "分子量大且結構複雜的蛋白質", "exp": "分子越大、結構越複雜，通常抗原性越強。"}, {"cat": "抗原抗體", "q": "ABO血型檢驗出現肉眼可見顆粒，屬於何種反應？", "options": ["凝集反應", "中和反應", "沉澱反應", "溶解反應"], "ans": "凝集反應", "exp": "抗原抗體結合造成細胞顆粒狀聚集，稱凝集。"}, {"cat": "抗原抗體", "q": "一個典型單體抗體分子具有幾個抗原結合部位？", "options": ["2個", "1個", "3個", "4個"], "ans": "2個", "exp": "典型單體抗體有兩個抗原結合部位。"}, {"cat": "抗原抗體", "q": "抗體對抗原的專一性主要由何處決定？", "options": ["重鏈與輕鏈可變區共同形成的抗原結合部位", "Fc區固定部位", "重鏈固定區單獨決定", "輕鏈固定區單獨決定"], "ans": "重鏈與輕鏈可變區共同形成的抗原結合部位", "exp": "抗原結合部位決定抗體專一性。"}, {"cat": "免疫球蛋白", "q": "新生兒可由母乳初乳獲得較多哪一種免疫球蛋白以保護腸道黏膜？", "options": ["分泌型IgA", "IgE", "IgM", "IgD"], "ans": "分泌型IgA", "exp": "分泌型IgA主要保護黏膜表面。"}, {"cat": "免疫球蛋白", "q": "初次體液性免疫反應最早大量出現的抗體通常是？", "options": ["IgM", "IgA", "IgE", "IgD"], "ans": "IgM", "exp": "IgM是初次免疫反應早期常見抗體。"}, {"cat": "免疫球蛋白", "q": "可通過胎盤，提供胎兒被動免疫的免疫球蛋白是？", "options": ["IgG", "IgM", "IgA", "IgE"], "ans": "IgG", "exp": "IgG是唯一能有效通過胎盤的抗體。"}, {"cat": "免疫球蛋白", "q": "即發型過敏反應主要與哪一類抗體有關？", "options": ["IgE", "IgG", "IgM", "IgD"], "ans": "IgE", "exp": "第一型過敏反應主要由IgE與肥大細胞參與。"}, {"cat": "免疫球蛋白", "q": "抗體又稱免疫球蛋白，其主要本質屬於哪一類物質？", "options": ["蛋白質", "脂質", "核酸", "無機鹽"], "ans": "蛋白質", "exp": "免疫球蛋白本質為蛋白質。"}, {"cat": "補體與發炎", "q": "補體傳統、凝集素與替代途徑最後皆可形成何種構造？", "options": ["攻膜複合物", "抗原受體", "免疫複合物", "溶酶體"], "ans": "攻膜複合物", "exp": "三條補體途徑最後可形成MAC攻擊目標細胞膜。"}, {"cat": "補體與發炎", "q": "細胞受到病毒感染後，常釋放何種物質使鄰近細胞進入抗病毒狀態？", "options": ["IFN-α與IFN-β", "IgE與IgD", "IL-4與IL-5", "C3與C5"], "ans": "IFN-α與IFN-β", "exp": "第一型干擾素可誘導抗病毒狀態。"}, {"cat": "補體與發炎", "q": "下列何者是發炎反應常見的局部表現？", "options": ["紅、腫、熱、痛", "紅、白、冷、麻", "蒼白、冰冷、無痛、乾燥", "咳嗽、流鼻水、腹瀉、嘔吐"], "ans": "紅、腫、熱、痛", "exp": "發炎典型局部表現為紅、腫、熱、痛。"}, {"cat": "補體與發炎", "q": "典型內生性致熱細胞激素，可作用於下視丘使體溫升高的是？", "options": ["IL-1", "IL-4", "IL-10", "IL-13"], "ans": "IL-1", "exp": "IL-1是重要內生性致熱原之一。"}, {"cat": "補體與發炎", "q": "有關補體的敘述，下列何者正確？", "options": ["補體為血清中的熱不穩定蛋白質，可經56°C、30分鐘處理而失活", "補體就是抗體", "補體只存在感染者血清中", "補體只有一條活化途徑"], "ans": "補體為血清中的熱不穩定蛋白質，可經56°C、30分鐘處理而失活", "exp": "補體是血清蛋白系統，具有多條活化途徑。"}, {"cat": "血型與輸血", "q": "僅就紅血球輸注而言，哪一血型最接近萬用紅血球供者？", "options": ["O型", "AB型", "A型", "B型"], "ans": "O型", "exp": "O型紅血球沒有A、B抗原，較不易被抗A或抗B攻擊。"}, {"cat": "血型與輸血", "q": "何種情況最可能發生Rh血型不合所致的新生兒溶血性疾病？", "options": ["母親Rh陰性、胎兒Rh陽性，且母親已被致敏", "母親Rh陽性、胎兒Rh陰性", "母親與胎兒皆Rh陽性", "母親與胎兒皆Rh陰性"], "ans": "母親Rh陰性、胎兒Rh陽性，且母親已被致敏", "exp": "Rh陰性母親若已致敏，抗體可能攻擊Rh陽性胎兒紅血球。"}, {"cat": "血型與輸血", "q": "ABO血型不合造成急性溶血性輸血反應，主要屬於哪一型過敏反應？", "options": ["第二型", "第一型", "第三型", "第四型"], "ans": "第二型", "exp": "第二型過敏反應常涉及抗體攻擊細胞表面抗原。"}, {"cat": "血型與輸血", "q": "輸血反應與血型判讀最重要的核心觀念是？", "options": ["抗原與抗體是否相遇並結合", "血液顏色深淺", "白血球數量一定越多越好", "血小板負責血型分類"], "ans": "抗原與抗體是否相遇並結合", "exp": "輸血安全重點在避免受血者抗體攻擊輸入紅血球抗原。"}, {"cat": "血型與輸血", "q": "AB型紅血球表面具有哪種抗原？", "options": ["A抗原與B抗原", "只有A抗原", "只有B抗原", "沒有A與B抗原"], "ans": "A抗原與B抗原", "exp": "AB型紅血球表面同時具有A與B抗原。"}, {"cat": "過敏反應", "q": "花粉引起過敏性鼻炎或氣喘，主要屬於哪一型過敏反應？", "options": ["第一型", "第二型", "第三型", "第四型"], "ans": "第一型", "exp": "花粉過敏常屬IgE媒介的立即型過敏反應。"}, {"cat": "過敏反應", "q": "SLE常因免疫複合物沉積造成組織傷害，主要屬於哪一型過敏反應？", "options": ["第三型", "第一型", "第二型", "第四型"], "ans": "第三型", "exp": "第三型過敏反應以免疫複合物沉積為特色。"}, {"cat": "過敏反應", "q": "接觸性皮膚炎主要由致敏T細胞引起，屬於哪一型過敏反應？", "options": ["第四型", "第一型", "第二型", "第三型"], "ans": "第四型", "exp": "第四型為T細胞媒介的延遲型過敏。"}, {"cat": "過敏反應", "q": "病人接觸過敏原後數分鐘內出現呼吸困難、血壓下降與全身蕁麻疹，最應優先使用何種藥物？", "options": ["腎上腺素", "口服抗生素", "胰島素", "抗凝血劑"], "ans": "腎上腺素", "exp": "過敏性休克為急症，腎上腺素是重要處置。"}, {"cat": "過敏反應", "q": "即發型過敏反應時，肥大細胞常釋放何種物質引起血管擴張與搔癢？", "options": ["組織胺", "胰島素", "膽汁", "血紅素"], "ans": "組織胺", "exp": "組織胺會造成血管擴張、通透性增加與搔癢。"}, {"cat": "過敏反應", "q": "減敏治療希望促進產生可阻斷過敏原與IgE結合的抗體，主要為？", "options": ["IgG", "IgD", "IgM", "IgE"], "ans": "IgG", "exp": "減敏治療常希望誘導阻斷性IgG，減少過敏原與IgE作用。"}, {"cat": "過敏反應", "q": "下列哪一組配對最合理？", "options": ["接觸性皮膚炎—第四型", "花粉過敏—第二型", "SLE—第一型", "輸血反應—第四型"], "ans": "接觸性皮膚炎—第四型", "exp": "接觸性皮膚炎是T細胞媒介的第四型過敏。"}, {"cat": "過敏反應", "q": "第一型過敏反應最核心的組合是？", "options": ["IgE、肥大細胞、組織胺", "IgM、紅血球、血紅素", "T細胞、延遲反應、接觸性皮膚炎", "免疫複合物、腎臟沉積、SLE"], "ans": "IgE、肥大細胞、組織胺", "exp": "第一型立即過敏反應常由IgE結合肥大細胞，引發組織胺釋放。"}, {"cat": "自體免疫", "q": "格雷夫氏病的主要致病機轉為何？", "options": ["自體抗體刺激甲狀腺刺激素受體", "抗體破壞甲狀腺刺激素", "T細胞完全抑制甲狀腺", "免疫複合物阻塞甲狀腺血管"], "ans": "自體抗體刺激甲狀腺刺激素受體", "exp": "Graves病中自體抗體刺激TSH受體，使甲狀腺功能亢進。"}, {"cat": "自體免疫", "q": "人體產生對抗乙醯膽鹼受體的自體抗體時，最可能造成？", "options": ["重症肌無力", "全身性紅斑狼瘡", "第一型糖尿病", "惡性貧血"], "ans": "重症肌無力", "exp": "重症肌無力與抗乙醯膽鹼受體抗體相關。"}, {"cat": "自體免疫", "q": "自體免疫疾病的核心問題是？", "options": ["免疫系統攻擊自身組織", "紅血球完全消失", "所有抗體都不會作用", "所有T細胞都變成紅血球"], "ans": "免疫系統攻擊自身組織", "exp": "自體免疫是免疫耐受失衡，導致攻擊自己。"}, {"cat": "移植腫瘤免疫", "q": "HIV感染最主要破壞哪一類細胞，進而造成後天免疫缺乏？", "options": ["CD4+T細胞", "CD8+T細胞", "B細胞", "嗜中性球"], "ans": "CD4+T細胞", "exp": "HIV主要感染並破壞CD4+T細胞。"}, {"cat": "移植腫瘤免疫", "q": "器官移植後急性排斥反應中，最主要參與的免疫細胞為？", "options": ["T細胞", "紅血球", "肥大細胞", "血小板"], "ans": "T細胞", "exp": "T細胞在移植排斥反應中扮演重要角色。"}, {"cat": "移植腫瘤免疫", "q": "器官移植時，受贈者免疫系統主要因辨識移植物細胞表面哪一類分子不同而排斥？", "options": ["MHC", "IgA", "IL-1", "CD19"], "ans": "MHC", "exp": "MHC差異是移植排斥的重要原因。"}, {"cat": "移植腫瘤免疫", "q": "腫瘤免疫監視中，可直接毒殺腫瘤細胞的主要細胞包括？", "options": ["毒殺型T細胞與自然殺手細胞", "紅血球與血小板", "嗜鹼性球與肥大細胞", "漿細胞與B細胞"], "ans": "毒殺型T細胞與自然殺手細胞", "exp": "CTL與NK細胞都能參與腫瘤細胞清除。"}, {"cat": "移植腫瘤免疫", "q": "下列何者是腫瘤細胞逃避免疫監視的可能方式？", "options": ["降低腫瘤抗原或MHC表現", "增加腫瘤抗原表現", "增加MHC I到極高程度", "主動製造大量正常抗體"], "ans": "降低腫瘤抗原或MHC表現", "exp": "降低抗原或MHC表現可讓腫瘤較不易被免疫系統辨識。"}];
-let pool=[], index=0, current=null, teams=[0,0,0,0];
-
-function setupCategories(){
-  const cats=[...new Set(questions.map(q=>q.cat))];
-  const sel=document.getElementById("category");
-  cats.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;sel.appendChild(o);});
-}
-function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
-function setStatus(msg){document.getElementById("status").textContent=msg;}
-function startGame(){
-  const cat=document.getElementById("category").value;
-  pool=questions.filter(x=>cat==="全部"||x.cat===cat);
-  shuffle(pool);index=0;
-  document.getElementById("catLabel").textContent=cat==="全部"?"全域任務":cat;
-  setStatus("ACCESS GRANTED · 題庫已載入");
-  nextQuestion();
-}
-function nextQuestion(){
-  if(!pool.length){startGame();return;}
-  if(index>=pool.length){
-    document.getElementById("question").textContent="MISSION COMPLETE // 全部任務完成";
-    document.getElementById("options").innerHTML="";
-    document.getElementById("answer").style.display="none";
-    document.getElementById("progress").textContent="完成";
-    document.getElementById("bar").style.width="100%";
-    setStatus("SYSTEM CLEAR · 防禦網建立完成");
-    return;
-  }
-  current=pool[index++];
-  document.getElementById("progress").textContent=`第 ${index} 關 / 共 ${pool.length} 關`;
-  document.getElementById("bar").style.width=(index/pool.length*100)+"%";
-  document.getElementById("question").textContent=current.q;
-  document.getElementById("answer").style.display="none";
-  document.getElementById("answer").innerHTML=`<b>正確答案：</b>${current.ans}<br><b>系統解析：</b>${current.exp}`;
-  const box=document.getElementById("options");box.innerHTML="";
-  if(document.getElementById("mode").value==="open"){
-    box.innerHTML='<div style="color:var(--muted)">小組搶答模式：討論後舉牌，再按「解鎖答案」。</div>';
-  }else{
-    shuffle([...current.options]).forEach(opt=>{
-      const el=document.createElement("button");
-      el.type="button";el.className="option";el.textContent=opt;
-      el.addEventListener("click",()=>choose(el,opt),{once:true});
-      box.appendChild(el);
-    });
-  }
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function choose(el,opt){
-  document.querySelectorAll(".option").forEach(o=>o.disabled=true);
-  if(opt===current.ans){el.classList.add("correct");setStatus("TARGET VERIFIED · 回答正確");}
-  else{
-    el.classList.add("wrong");setStatus("SYSTEM ALERT · 請查看解析");
-    document.querySelectorAll(".option").forEach(o=>{if(o.textContent===current.ans)o.classList.add("correct");});
-  }
-  showAnswer();
-}
-function showAnswer(){if(current)document.getElementById("answer").style.display="block";}
-function renderScores(){
-  const box=document.getElementById("scorebox");box.innerHTML="";
-  teams.forEach((s,i)=>{
-    const d=document.createElement("div");d.className="team";
-    d.innerHTML=`<b>SQUAD ${i+1}</b><div class="score">${s}</div>
-      <div class="team-btns">
-        <button type="button" data-i="${i}" data-d="10">+10</button>
-        <button type="button" class="dark" data-i="${i}" data-d="5">+5</button>
-        <button type="button" class="alt" data-i="${i}" data-d="-5">-5</button>
-        <button type="button" class="dark" data-i="${i}" data-d="-10">-10</button>
-      </div>`;
-    box.appendChild(d);
-  });
-  box.querySelectorAll("button[data-i]").forEach(b=>b.addEventListener("click",()=>{teams[+b.dataset.i]+=+b.dataset.d;renderScores();}));
-}
-function resetGame(){
-  teams=[0,0,0,0];pool=[];index=0;current=null;
-  document.getElementById("question").textContent="點擊「啟動任務」，進入免疫系統防禦網。";
-  document.getElementById("options").innerHTML="";
-  document.getElementById("answer").style.display="none";
-  document.getElementById("progress").textContent="尚未啟動";
-  document.getElementById("catLabel").textContent="全域任務";
-  document.getElementById("bar").style.width="0%";
-  setStatus("SYSTEM RESET");
-  renderScores();
-}
-document.getElementById("startBtn").addEventListener("click",startGame);
-document.getElementById("resetBtn").addEventListener("click",resetGame);
-document.getElementById("answerBtn").addEventListener("click",showAnswer);
-document.getElementById("nextBtn").addEventListener("click",nextQuestion);
-document.getElementById("scoreBtn").addEventListener("click",()=>document.getElementById("scoreCard").classList.toggle("hidden"));
-setupCategories();renderScores();
+const questions = [{"cat":"免疫基礎","q":"皮膚、黏膜與正常菌叢主要屬於哪一類防禦？","options":["先天性免疫第一道防線","後天性體液免疫","細胞性免疫記憶","人工被動免疫"],"ans":"先天性免疫第一道防線","exp":"皮膚、黏膜與正常菌叢是身體最前線的非專一性防禦。"},{"cat":"免疫基礎","q":"與初次免疫反應相比，二次免疫反應通常有何特色？","options":["反應較快且抗體親和力較高","遲滯期較長","主要只有IgM","不會產生記憶細胞"],"ans":"反應較快且抗體親和力較高","exp":"二次免疫反應因記憶細胞存在，反應更快、更強。"},{"cat":"免疫基礎","q":"接種疫苗後由人體自行產生免疫反應與記憶細胞，稱為？","options":["人工主動免疫","天然被動免疫","人工被動免疫","先天性免疫"],"ans":"人工主動免疫","exp":"疫苗是人工給予抗原，讓身體主動產生免疫。"},{"cat":"免疫基礎","q":"胎兒經由胎盤獲得母體IgG，屬於？","options":["天然被動免疫","人工主動免疫","天然主動免疫","人工被動免疫"],"ans":"天然被動免疫","exp":"母體抗體自然傳給胎兒，胎兒本身未主動製造。"},{"cat":"免疫基礎","q":"下列何者屬於專一性免疫反應？","options":["抗原特異性抗體產生","皮膚屏障","發燒反應","非專一性吞噬"],"ans":"抗原特異性抗體產生","exp":"抗體具有抗原專一性，屬於後天免疫。"},{"cat":"免疫細胞","q":"下列何者均屬主要抗原呈現細胞？","options":["樹突細胞、巨噬細胞、B細胞","T細胞、NK細胞、嗜中性球","紅血球、血小板、肥大細胞","嗜酸性球、紅血球、T細胞"],"ans":"樹突細胞、巨噬細胞、B細胞","exp":"三大抗原呈現細胞：樹突細胞、巨噬細胞、B細胞。"},{"cat":"免疫細胞","q":"感染初期最常快速到達感染部位並吞噬細菌的是？","options":["嗜中性球","漿細胞","記憶B細胞","調節型T細胞"],"ans":"嗜中性球","exp":"嗜中性球是急性發炎早期重要吞噬細胞。"},{"cat":"免疫細胞","q":"活化的B細胞分化成何種細胞後，可大量分泌抗體？","options":["漿細胞","自然殺手細胞","樹突細胞","嗜中性球"],"ans":"漿細胞","exp":"漿細胞是大量製造抗體的工廠。"},{"cat":"免疫細胞","q":"自然殺手細胞最容易攻擊哪類細胞？","options":["MHC I表現降低的腫瘤或病毒感染細胞","正常成熟紅血球","表現大量MHC II的B細胞","分泌IgA的漿細胞"],"ans":"MHC I表現降低的腫瘤或病毒感染細胞","exp":"NK細胞會注意MHC I下降的異常細胞。"},{"cat":"免疫細胞","q":"何種T細胞可抑制過度免疫反應並維持自體耐受？","options":["調節型T細胞","TH1細胞","TH2細胞","毒殺型T細胞"],"ans":"調節型T細胞","exp":"調節型T細胞可避免免疫反應過度或攻擊自己。"},{"cat":"T細胞與MHC","q":"CD4+輔助型T細胞主要辨識由哪一類分子呈現的抗原胜肽？","options":["MHC class II","MHC class I","IgM","補體C3"],"ans":"MHC class II","exp":"CD4+ T細胞主要辨識MHC II呈現的抗原。"},{"cat":"T細胞與MHC","q":"CD8+毒殺型T細胞辨識病毒感染細胞時，主要受到哪類分子限制？","options":["MHC class I","MHC class II","CD19","IgA"],"ans":"MHC class I","exp":"CD8+ T細胞主要辨識MHC I呈現的抗原。"},{"cat":"T細胞與MHC","q":"初級體液性免疫反應中，較合理的順序為？","options":["抗原呈現→輔助T細胞活化→B細胞活化→漿細胞分化→分泌抗體","B細胞活化→分泌抗體→抗原呈現→T細胞活化","漿細胞分化→抗原呈現→記憶細胞消失","補體活化→紅血球製造→抗體消失"],"ans":"抗原呈現→輔助T細胞活化→B細胞活化→漿細胞分化→分泌抗體","exp":"先呈現抗原並活化輔助T細胞，再協助B細胞產生抗體。"},{"cat":"T細胞與MHC","q":"B細胞與T細胞主要成熟的器官分別為何？","options":["骨髓、胸腺","胸腺、骨髓","脾臟、淋巴結","肝臟、脾臟"],"ans":"骨髓、胸腺","exp":"B細胞在骨髓成熟；T細胞在胸腺成熟。"},{"cat":"T細胞與MHC","q":"記憶B細胞與記憶T細胞最主要功能為何？","options":["再次遇到相同抗原時快速產生較強反應","直接形成皮膚屏障","永久抑制所有免疫反應","取代所有先天免疫細胞"],"ans":"再次遇到相同抗原時快速產生較強反應","exp":"記憶細胞是二次免疫反應快速且強烈的關鍵。"},{"cat":"抗原抗體","q":"下列何者最符合抗原的定義？","options":["能被免疫系統辨識並引發免疫反應的物質","只存在紅血球上的物質","負責運送氧氣的蛋白質","促進血液凝固的細胞"],"ans":"能被免疫系統辨識並引發免疫反應的物質","exp":"抗原是免疫系統辨識的目標。"},{"cat":"抗原抗體","q":"下列何者通常具有較強抗原性？","options":["分子量大且結構複雜的蛋白質","水","無機鹽","小分子簡單脂質"],"ans":"分子量大且結構複雜的蛋白質","exp":"分子越大、結構越複雜，通常抗原性越強。"},{"cat":"抗原抗體","q":"ABO血型檢驗出現肉眼可見顆粒，屬於何種反應？","options":["凝集反應","中和反應","沉澱反應","溶解反應"],"ans":"凝集反應","exp":"抗原抗體結合造成細胞顆粒狀聚集，稱凝集。"},{"cat":"抗原抗體","q":"一個典型單體抗體分子具有幾個抗原結合部位？","options":["2個","1個","3個","4個"],"ans":"2個","exp":"典型單體抗體有兩個抗原結合部位。"},{"cat":"抗原抗體","q":"抗體對抗原的專一性主要由何處決定？","options":["重鏈與輕鏈可變區共同形成的抗原結合部位","Fc區固定部位","重鏈固定區單獨決定","輕鏈固定區單獨決定"],"ans":"重鏈與輕鏈可變區共同形成的抗原結合部位","exp":"抗原結合部位決定抗體專一性。"},{"cat":"免疫球蛋白","q":"新生兒可由母乳初乳獲得較多哪一種免疫球蛋白以保護腸道黏膜？","options":["分泌型IgA","IgE","IgM","IgD"],"ans":"分泌型IgA","exp":"分泌型IgA主要保護黏膜表面。"},{"cat":"免疫球蛋白","q":"初次體液性免疫反應最早大量出現的抗體通常是？","options":["IgM","IgA","IgE","IgD"],"ans":"IgM","exp":"IgM是初次免疫反應早期常見抗體。"},{"cat":"免疫球蛋白","q":"可通過胎盤，提供胎兒被動免疫的免疫球蛋白是？","options":["IgG","IgM","IgA","IgE"],"ans":"IgG","exp":"IgG是唯一能有效通過胎盤的抗體。"},{"cat":"免疫球蛋白","q":"即發型過敏反應主要與哪一類抗體有關？","options":["IgE","IgG","IgM","IgD"],"ans":"IgE","exp":"第一型過敏反應主要由IgE與肥大細胞參與。"},{"cat":"免疫球蛋白","q":"抗體又稱免疫球蛋白，其主要本質屬於哪一類物質？","options":["蛋白質","脂質","核酸","無機鹽"],"ans":"蛋白質","exp":"免疫球蛋白本質為蛋白質。"},{"cat":"補體與發炎","q":"補體傳統、凝集素與替代途徑最後皆可形成何種構造？","options":["攻膜複合物","抗原受體","免疫複合物","溶酶體"],"ans":"攻膜複合物","exp":"三條補體途徑最後可形成MAC攻擊目標細胞膜。"},{"cat":"補體與發炎","q":"細胞受到病毒感染後，常釋放何種物質使鄰近細胞進入抗病毒狀態？","options":["IFN-α與IFN-β","IgE與IgD","IL-4與IL-5","C3與C5"],"ans":"IFN-α與IFN-β","exp":"第一型干擾素可誘導抗病毒狀態。"},{"cat":"補體與發炎","q":"下列何者是發炎反應常見的局部表現？","options":["紅、腫、熱、痛","紅、白、冷、麻","蒼白、冰冷、無痛、乾燥","咳嗽、流鼻水、腹瀉、嘔吐"],"ans":"紅、腫、熱、痛","exp":"發炎典型局部表現為紅、腫、熱、痛。"},{"cat":"補體與發炎","q":"典型內生性致熱細胞激素，可作用於下視丘使體溫升高的是？","options":["IL-1","IL-4","IL-10","IL-13"],"ans":"IL-1","exp":"IL-1是重要內生性致熱原之一。"},{"cat":"補體與發炎","q":"有關補體的敘述，下列何者正確？","options":["補體為血清中的熱不穩定蛋白質，可經56°C、30分鐘處理而失活","補體就是抗體","補體只存在感染者血清中","補體只有一條活化途徑"],"ans":"補體為血清中的熱不穩定蛋白質，可經56°C、30分鐘處理而失活","exp":"補體是血清蛋白系統，具有多條活化途徑。"},{"cat":"血型與輸血","q":"僅就紅血球輸注而言，哪一血型最接近萬用紅血球供者？","options":["O型","AB型","A型","B型"],"ans":"O型","exp":"O型紅血球沒有A、B抗原，較不易被抗A或抗B攻擊。"},{"cat":"血型與輸血","q":"何種情況最可能發生Rh血型不合所致的新生兒溶血性疾病？","options":["母親Rh陰性、胎兒Rh陽性，且母親已被致敏","母親Rh陽性、胎兒Rh陰性","母親與胎兒皆Rh陽性","母親與胎兒皆Rh陰性"],"ans":"母親Rh陰性、胎兒Rh陽性，且母親已被致敏","exp":"Rh陰性母親若已致敏，抗體可能攻擊Rh陽性胎兒紅血球。"},{"cat":"血型與輸血","q":"ABO血型不合造成急性溶血性輸血反應，主要屬於哪一型過敏反應？","options":["第二型","第一型","第三型","第四型"],"ans":"第二型","exp":"第二型過敏反應常涉及抗體攻擊細胞表面抗原。"},{"cat":"血型與輸血","q":"輸血反應與血型判讀最重要的核心觀念是？","options":["抗原與抗體是否相遇並結合","血液顏色深淺","白血球數量一定越多越好","血小板負責血型分類"],"ans":"抗原與抗體是否相遇並結合","exp":"輸血安全重點在避免受血者抗體攻擊輸入紅血球抗原。"},{"cat":"血型與輸血","q":"AB型紅血球表面具有哪種抗原？","options":["A抗原與B抗原","只有A抗原","只有B抗原","沒有A與B抗原"],"ans":"A抗原與B抗原","exp":"AB型紅血球表面同時具有A與B抗原。"},{"cat":"過敏反應","q":"花粉引起過敏性鼻炎或氣喘，主要屬於哪一型過敏反應？","options":["第一型","第二型","第三型","第四型"],"ans":"第一型","exp":"花粉過敏常屬IgE媒介的立即型過敏反應。"},{"cat":"過敏反應","q":"SLE常因免疫複合物沉積造成組織傷害，主要屬於哪一型過敏反應？","options":["第三型","第一型","第二型","第四型"],"ans":"第三型","exp":"第三型過敏反應以免疫複合物沉積為特色。"},{"cat":"過敏反應","q":"接觸性皮膚炎主要由致敏T細胞引起，屬於哪一型過敏反應？","options":["第四型","第一型","第二型","第三型"],"ans":"第四型","exp":"第四型為T細胞媒介的延遲型過敏。"},{"cat":"過敏反應","q":"病人接觸過敏原後數分鐘內出現呼吸困難、血壓下降與全身蕁麻疹，最應優先使用何種藥物？","options":["腎上腺素","口服抗生素","胰島素","抗凝血劑"],"ans":"腎上腺素","exp":"過敏性休克為急症，腎上腺素是重要處置。"},{"cat":"過敏反應","q":"即發型過敏反應時，肥大細胞常釋放何種物質引起血管擴張與搔癢？","options":["組織胺","胰島素","膽汁","血紅素"],"ans":"組織胺","exp":"組織胺會造成血管擴張、通透性增加與搔癢。"},{"cat":"過敏反應","q":"減敏治療希望促進產生可阻斷過敏原與IgE結合的抗體，主要為？","options":["IgG","IgD","IgM","IgE"],"ans":"IgG","exp":"減敏治療常希望誘導阻斷性IgG，減少過敏原與IgE作用。"},{"cat":"過敏反應","q":"下列哪一組配對最合理？","options":["接觸性皮膚炎—第四型","花粉過敏—第二型","SLE—第一型","輸血反應—第四型"],"ans":"接觸性皮膚炎—第四型","exp":"接觸性皮膚炎是T細胞媒介的第四型過敏。"},{"cat":"過敏反應","q":"第一型過敏反應最核心的組合是？","options":["IgE、肥大細胞、組織胺","IgM、紅血球、血紅素","T細胞、延遲反應、接觸性皮膚炎","免疫複合物、腎臟沉積、SLE"],"ans":"IgE、肥大細胞、組織胺","exp":"第一型立即過敏反應常由IgE結合肥大細胞，引發組織胺釋放。"},{"cat":"自體免疫","q":"格雷夫氏病的主要致病機轉為何？","options":["自體抗體刺激甲狀腺刺激素受體","抗體破壞甲狀腺刺激素","T細胞完全抑制甲狀腺","免疫複合物阻塞甲狀腺血管"],"ans":"自體抗體刺激甲狀腺刺激素受體","exp":"Graves病中自體抗體刺激TSH受體，使甲狀腺功能亢進。"},{"cat":"自體免疫","q":"人體產生對抗乙醯膽鹼受體的自體抗體時，最可能造成？","options":["重症肌無力","全身性紅斑狼瘡","第一型糖尿病","惡性貧血"],"ans":"重症肌無力","exp":"重症肌無力與抗乙醯膽鹼受體抗體相關。"},{"cat":"自體免疫","q":"自體免疫疾病的核心問題是？","options":["免疫系統攻擊自身組織","紅血球完全消失","所有抗體都不會作用","所有T細胞都變成紅血球"],"ans":"免疫系統攻擊自身組織","exp":"自體免疫是免疫耐受失衡，導致攻擊自己。"},{"cat":"移植腫瘤免疫","q":"HIV感染最主要破壞哪一類細胞，進而造成後天免疫缺乏？","options":["CD4+T細胞","CD8+T細胞","B細胞","嗜中性球"],"ans":"CD4+T細胞","exp":"HIV主要感染並破壞CD4+T細胞。"},{"cat":"移植腫瘤免疫","q":"器官移植後急性排斥反應中，最主要參與的免疫細胞為？","options":["T細胞","紅血球","肥大細胞","血小板"],"ans":"T細胞","exp":"T細胞在移植排斥反應中扮演重要角色。"},{"cat":"移植腫瘤免疫","q":"器官移植時，受贈者免疫系統主要因辨識移植物細胞表面哪一類分子不同而排斥？","options":["MHC","IgA","IL-1","CD19"],"ans":"MHC","exp":"MHC差異是移植排斥的重要原因。"},{"cat":"移植腫瘤免疫","q":"腫瘤免疫監視中，可直接毒殺腫瘤細胞的主要細胞包括？","options":["毒殺型T細胞與自然殺手細胞","紅血球與血小板","嗜鹼性球與肥大細胞","漿細胞與B細胞"],"ans":"毒殺型T細胞與自然殺手細胞","exp":"CTL與NK細胞都能參與腫瘤細胞清除。"},{"cat":"移植腫瘤免疫","q":"下列何者是腫瘤細胞逃避免疫監視的可能方式？","options":["降低腫瘤抗原或MHC表現","增加腫瘤抗原表現","增加MHC I到極高程度","主動製造大量正常抗體"],"ans":"降低腫瘤抗原或MHC表現","exp":"降低抗原或MHC表現可讓腫瘤較不易被免疫系統辨識。"}];
+let pool=[],index=0,current=null,teams=[0,0,0,0],hp=3,streak=0,personalScore=0,boss=false;
+function setupCategories(){const cats=[...new Set(questions.map(q=>q.cat))];const sel=document.getElementById('category');cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function updateHud(){hp=Math.max(0,hp);document.getElementById('hp').textContent=hp;document.getElementById('streak').textContent=streak;document.getElementById('personalScore').textContent=personalScore;}
+function setStatus(t){document.getElementById('status').textContent=t;}
+function startGame(){const cat=document.getElementById('category').value;pool=questions.filter(x=>cat==='全部'||x.cat===cat);shuffle(pool);index=0;hp=3;streak=0;personalScore=0;updateHud();document.getElementById('catLabel').textContent=cat==='全部'?'全域任務':cat;setStatus('ACCESS GRANTED · 題庫已載入');nextQuestion();}
+function nextQuestion(){if(!pool.length){startGame();return;}if(index>=pool.length||hp<=0){document.getElementById('question').textContent=hp<=0?'SYSTEM FAILURE // 生命值歸零':'MISSION COMPLETE // 全部任務完成';document.getElementById('options').innerHTML='';document.getElementById('answer').style.display='none';document.getElementById('progress').textContent='完成';document.getElementById('bar').style.width='100%';setStatus(hp<=0?'請重新啟動任務':'SYSTEM CLEAR · 防禦網建立完成');return;}current=pool[index++];boss=index%10===0;document.getElementById('boss').style.display=boss?'block':'none';document.getElementById('progress').textContent=`第 ${index} 關 / 共 ${pool.length} 關`;document.getElementById('bar').style.width=(index/pool.length*100)+'%';document.getElementById('question').textContent=current.q;document.getElementById('answer').style.display='none';document.getElementById('answer').innerHTML=`<b>正確答案：</b>${current.ans}<br><b>系統解析：</b>${current.exp}`;const box=document.getElementById('options');box.innerHTML='';if(document.getElementById('mode').value==='open'){box.innerHTML='<div style="color:var(--muted)">小組搶答模式：討論後舉牌，再按「解鎖答案」。</div>';}else{shuffle([...current.options]).forEach(opt=>{const el=document.createElement('button');el.type='button';el.className='option';el.textContent=opt;el.addEventListener('click',()=>choose(el,opt),{once:true});box.appendChild(el);});}window.scrollTo({top:0,behavior:'smooth'});}
+function choose(el,opt){document.querySelectorAll('.option').forEach(o=>o.disabled=true);if(opt===current.ans){el.classList.add('correct');streak++;let gain=10+(streak>=3?5:0);if(boss)gain*=2;personalScore+=gain;setStatus(`TARGET VERIFIED · +${gain} 分`);}else{el.classList.add('wrong');streak=0;hp--;setStatus('SYSTEM ALERT · 生命值 -1');document.querySelectorAll('.option').forEach(o=>{if(o.textContent===current.ans)o.classList.add('correct');});}updateHud();showAnswer();}
+function showAnswer(){if(current)document.getElementById('answer').style.display='block';}
+function renderScores(){const box=document.getElementById('scorebox');box.innerHTML='';teams.forEach((s,i)=>{const d=document.createElement('div');d.className='team';d.innerHTML=`<b>SQUAD ${i+1}</b><div class="score">${s}</div><div class="team-btns"><button type="button" data-i="${i}" data-d="10">+10</button><button type="button" class="dark" data-i="${i}" data-d="5">+5</button><button type="button" class="alt" data-i="${i}" data-d="-5">-5</button><button type="button" class="dark" data-i="${i}" data-d="-10">-10</button></div>`;box.appendChild(d);});box.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>{teams[+b.dataset.i]+=+b.dataset.d;renderScores();}));}
+function resetGame(){teams=[0,0,0,0];pool=[];index=0;current=null;hp=3;streak=0;personalScore=0;updateHud();document.getElementById('question').textContent='點擊「啟動任務」，進入免疫系統防禦網。';document.getElementById('options').innerHTML='';document.getElementById('answer').style.display='none';document.getElementById('progress').textContent='尚未啟動';document.getElementById('catLabel').textContent='全域任務';document.getElementById('bar').style.width='0%';document.getElementById('boss').style.display='none';setStatus('SYSTEM RESET');renderScores();}
+document.getElementById('startBtn').addEventListener('click',startGame);document.getElementById('resetBtn').addEventListener('click',resetGame);document.getElementById('answerBtn').addEventListener('click',showAnswer);document.getElementById('nextBtn').addEventListener('click',nextQuestion);document.getElementById('scoreBtn').addEventListener('click',()=>document.getElementById('scoreCard').classList.toggle('hidden'));setupCategories();updateHud();renderScores();
 </script>
 </body>
 </html>
