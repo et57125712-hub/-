@@ -37,11 +37,11 @@ main{max-width:760px;margin:auto;padding:12px 12px 104px}.card{background:#12021
 <header><h1>免疫守衛戰</h1><p>國考特訓20題・基礎概念與血型題・綜合挑戰</p></header>
 <main>
 <section class="card">
-<div class="setup"><select id="gameMode"><option value="national">國考特訓（20題）</option><option value="concept">概念闖關（含血型題）</option><option value="all">綜合挑戰（全部題目）</option></select><button id="startBtn" type="button">開始戰鬥</button></div>
+<div class="setup"><select id="gameMode"><option value="all" selected>綜合挑戰（全部題目）</option><option value="national">國考特訓（20題）</option><option value="concept">概念闖關（含血型題）</option></select><button id="startBtn" type="button">開始戰鬥</button></div>
 <div id="battle" class="battle"><div id="speedlines" class="speedlines"></div><div class="platform left"></div><div class="platform right"></div><div class="statusbox enemy"><div class="nameRow"><span id="bossName">免疫病毒</span><span>Lv.<span id="bossLv">10</span></span></div><div class="miniHp"><span id="enemyHp"></span></div></div><div class="statusbox heroBox"><div class="nameRow"><span id="heroName">護生守衛</span><span>Lv.<span id="heroLv">1</span></span></div><div class="miniHp"><span id="heroHpBar"></span></div></div><div id="stageBadge" class="stageBadge">STAGE 1 / 5</div><div id="aura" class="aura"></div><div id="hero" class="hero">🧑‍⚕️</div><div id="equip" class="equip">🛡️</div><div id="monster" class="monster">🦠</div><div id="syringe" class="syringe">💉</div><div id="damage" class="damage">-10</div><div id="battleText" class="battleText"></div><div id="bossTalk" class="bossTalk">你們的免疫力，跟考前讀書進度一樣薄弱。</div><div id="bossIntro" class="bossIntro">BOSS BATTLE</div><div id="transformFlash" class="transformFlash"></div><div id="bossFlash" class="bossFlash"></div></div>
 <div class="hud"><span>生命 <b id="hp">7</b></span><span>連勝 <b id="streak">0</b></span><span>分數 <b id="score">0</b></span></div><div id="status" class="status"></div>
 </section>
-<section class="card"><div class="meta"><span id="progress">尚未開始</span><span id="catLabel">國考特訓</span></div><div id="question" class="question">選擇模式後按下「開始戰鬥」。</div><div id="options" class="options"></div><div id="answer" class="answer"></div></section>
+<section class="card"><div class="meta"><span id="progress">尚未開始</span><span id="catLabel">綜合挑戰</span></div><div id="question" class="question">選擇模式後按下「開始戰鬥」。</div><div id="options" class="options"></div><div id="answer" class="answer"></div></section>
 </main>
 <div class="bottom"><div class="bar"><button id="answerBtn" type="button" class="secondary">查看解析</button><button id="nextBtn" type="button">下一題</button></div></div>
 <script>
