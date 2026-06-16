@@ -34,10 +34,10 @@ main{max-width:760px;margin:auto;padding:12px 12px 104px}.card{background:#12021
 </style>
 </head>
 <body>
-<header><h1>免疫守衛戰</h1><p>國考特訓20題・基礎概念與血型題・綜合挑戰</p></header>
+<header><h1>免疫守衛戰</h1><p>國考特訓20題・基礎概念50題・綜合挑戰70題</p></header>
 <main>
 <section class="card">
-<div class="setup"><select id="gameMode"><option value="all" selected>綜合挑戰（全部題目）</option><option value="national">國考特訓（20題）</option><option value="concept">概念闖關（含血型題）</option></select><button id="startBtn" type="button">開始戰鬥</button></div>
+<div class="setup"><select id="gameMode"><option value="all" selected>綜合挑戰（70題）</option><option value="national">國考特訓（20題）</option><option value="concept">概念闖關（50題）</option></select><button id="startBtn" type="button">開始戰鬥</button></div>
 <div id="battle" class="battle"><div id="speedlines" class="speedlines"></div><div class="platform left"></div><div class="platform right"></div><div class="statusbox enemy"><div class="nameRow"><span id="bossName">免疫病毒</span><span>Lv.<span id="bossLv">10</span></span></div><div class="miniHp"><span id="enemyHp"></span></div></div><div class="statusbox heroBox"><div class="nameRow"><span id="heroName">護生守衛</span><span>Lv.<span id="heroLv">1</span></span></div><div class="miniHp"><span id="heroHpBar"></span></div></div><div id="stageBadge" class="stageBadge">STAGE 1 / 5</div><div id="aura" class="aura"></div><div id="hero" class="hero">🧑‍⚕️</div><div id="equip" class="equip">🛡️</div><div id="monster" class="monster">🦠</div><div id="syringe" class="syringe">💉</div><div id="damage" class="damage">-10</div><div id="battleText" class="battleText"></div><div id="bossTalk" class="bossTalk">你們的免疫力，跟考前讀書進度一樣薄弱。</div><div id="bossIntro" class="bossIntro">BOSS BATTLE</div><div id="transformFlash" class="transformFlash"></div><div id="bossFlash" class="bossFlash"></div></div>
 <div class="hud"><span>生命 <b id="hp">7</b></span><span>連勝 <b id="streak">0</b></span><span>分數 <b id="score">0</b></span></div><div id="status" class="status"></div>
 </section>
@@ -69,18 +69,58 @@ const national=[
 {q:'NK細胞較容易攻擊哪一類目標？',options:['MHC class I降低的異常細胞','正常紅血球','正常血小板','正常骨骼肌'],ans:'MHC class I降低的異常細胞',exp:'NK細胞會注意MHC class I表現降低的異常細胞。',src:'依近年護理師國考概念改寫。'},
 {q:'SLE常見的免疫傷害機轉是？',options:['免疫複合物沉積','皮膚屏障破壞','紅血球運氧不足','凝血因子缺乏'],ans:'免疫複合物沉積',exp:'SLE常涉及自體抗體與免疫複合物沉積。',src:'依近年護理師國考概念改寫。'}
 ];
-const cb=[['哪一種細胞能讓再次遇到相同抗原時反應更快？','記憶細胞'],['皮膚與黏膜最像哪種防禦？','第一線屏障'],['大量製造抗體的細胞是？','漿細胞'],['發現MHC I降低就可能攻擊的細胞是？','自然殺手細胞'],['抑制過度免疫反應的細胞是？','調節型T細胞'],['針對特定抗原設計反應代表？','專一性'],['下次反應更快代表？','免疫記憶'],['攻擊自身組織代表？','自體免疫'],['可協助標記發炎破壞病原的系統是？','補體系統'],['紅腫熱痛屬於？','發炎反應'],['展示抗原片段給T細胞稱為？','抗原呈現'],['最適合完成標記與破壞的是？','抗體與補體'],['免疫反應後留下的是？','記憶細胞'],['紅血球負責抗原呈現是否正確？','錯誤'],['所有過敏反應都立即發生是否正確？','錯誤'],['補體就是抗體是否正確？','錯誤'],['嚴重過敏最先評估什麼？','呼吸與循環'],['疫苗重要目標之一是？','建立免疫記憶'],['免疫功能受損最符合？','免疫缺乏'],['新器官被攻擊最符合？','移植排斥'],['降低辨識訊號稱為？','免疫逃脫'],['把敵人擋在外面的構造是？','皮膚與黏膜'],['攝取並展示抗原的是？','抗原呈現細胞'],['直接殺死被感染細胞的是？','毒殺型T細胞'],['免疫細胞間訊號是？','細胞激素'],['避免誤傷自己的細胞是？','Treg'],['快速吞噬屬於哪類免疫？','先天免疫'],['特定反應屬於哪類免疫？','後天免疫'],['最代表體液性免疫的是？','抗體'],['最代表細胞性免疫的是？','T細胞直接作用'],['誤攻自身最符合？','自體免疫'],['釋放訊號召集更多細胞是？','細胞激素作用'],['避免下次措手不及需保留？','記憶細胞'],['防禦部隊亂打最缺少？','專一性辨識'],['降低排斥最直接方向是？','抑制免疫攻擊'],['腫瘤監視失效的核心環節是？','異常細胞辨識與清除'],['誤認正常細胞為敵人是？','自體免疫'],['降低表面標記是？','免疫逃脫'],['大量訊號導致反應過度是？','免疫反應失控'],['下一次反應不再快速是失去？','免疫記憶'],['外來器官持續被攻擊是？','移植排斥'],['辨識攻擊記憶代表？','後天免疫流程'],['抗體最像？','專屬標籤'],['補體最像？','支援部隊'],['細胞激素最像？','戰場通訊'],['免疫耐受最像？','知道誰是自己人'],['初次反應最早常見的抗體是？','IgM'],['可通過胎盤的是？','IgG'],['黏膜最重要的是？','IgA'],['立即型過敏主要是？','IgE']];
-const blood=[
-{q:'A型血紅血球表面主要具有哪一種抗原？',options:['A抗原','B抗原','A與B抗原皆有','皆無'],ans:'A抗原',exp:'A型血紅血球表面具有A抗原，血漿中通常有抗B抗體。',src:'教師自編血型概念題。'},
-{q:'B型血者的血漿中通常含有哪一種抗體？',options:['抗A抗體','抗B抗體','抗A與抗B皆有','皆無'],ans:'抗A抗體',exp:'B型血紅血球表面具有B抗原，血漿中通常有抗A抗體。',src:'教師自編血型概念題。'},
-{q:'O型血紅血球表面在ABO系統中有何特徵？',options:['沒有A與B抗原','只有A抗原','只有B抗原','同時有A與B抗原'],ans:'沒有A與B抗原',exp:'O型紅血球表面沒有A與B抗原。',src:'教師自編血型概念題。'},
-{q:'AB型血者的血漿中通常具有哪一項特徵？',options:['沒有抗A與抗B抗體','只有抗A抗體','只有抗B抗體','同時有抗A與抗B抗體'],ans:'沒有抗A與抗B抗體',exp:'AB型血漿中通常沒有抗A與抗B抗體。',src:'教師自編血型概念題。'},
-{q:'若A型血病人誤輸B型紅血球，主要可能發生什麼？',options:['紅血球凝集與溶血','血小板增加','血糖下降','IgE上升'],ans:'紅血球凝集與溶血',exp:'A型病人的抗B抗體可與B型紅血球上的B抗原反應，造成凝集與溶血。',src:'教師自編血型概念題。'},
-{q:'Rh陰性母親懷有Rh陽性胎兒時，何種抗體與新生兒溶血較相關？',options:['抗D抗體','抗A抗體','抗B抗體','IgA'],ans:'抗D抗體',exp:'母體抗D IgG可通過胎盤並攻擊胎兒紅血球。',src:'教師自編血型概念題。'},
-{q:'ABO血型抗體主要屬於哪一類免疫球蛋白？',options:['IgM','IgE','IgD','IgA'],ans:'IgM',exp:'ABO天然抗體多為IgM，因此通常不易通過胎盤。',src:'教師自編血型概念題。'},
-{q:'進行紅血球輸血時，最重要的免疫考量是？',options:['避免受血者抗體攻擊輸入紅血球抗原','提高白血球數量','增加補體製造','提升IgE濃度'],ans:'避免受血者抗體攻擊輸入紅血球抗原',exp:'紅血球輸血需避免抗原抗體不相容造成凝集與溶血。',src:'教師自編血型概念題。'}
+const concept=[
+{q:'免疫城市要選出「抗原情報三人組」，哪一組最有資格上台報告？',options:['樹突狀細胞、巨噬細胞、B細胞','紅血球、血小板、肥大細胞','T細胞、NK細胞、嗜中性球','嗜酸性球、漿細胞、紅血球'],ans:'樹突狀細胞、巨噬細胞、B細胞',exp:'典型抗原呈現細胞包括樹突狀細胞、巨噬細胞與B細胞。',src:'依期末考核心概念改寫。'},
+{q:'病原想闖進人體，第一個遇到的「門口保全」通常是誰？',options:['皮膚、黏膜與正常菌叢','記憶B細胞','漿細胞','毒殺型T細胞'],ans:'皮膚、黏膜與正常菌叢',exp:'皮膚、黏膜與正常菌叢屬先天免疫第一道防線。',src:'依期末考核心概念改寫。'},
+{q:'同一支疫苗第二次登場，免疫系統像開外掛，最可能出現哪種反應？',options:['反應較快且以高親和力IgG為主','遲滯期更長且抗體更少','只產生IgM','完全不需要記憶細胞'],ans:'反應較快且以高親和力IgG為主',exp:'二次免疫反應更快、更強，且常以高親和力IgG為主。',src:'依期末考核心概念改寫。'},
+{q:'CD4⁺ T細胞在免疫會議中，只認哪一張「通行證」上的抗原胜肽？',options:['MHC class II','MHC class I','IgM','C3'],ans:'MHC class II',exp:'CD4⁺ T細胞主要辨識MHC class II所呈現的抗原胜肽。',src:'依期末考核心概念改寫。'},
+{q:'病毒感染細胞被CD8⁺ T細胞鎖定時，關鍵辨識牌是哪一張？',options:['MHC class I','MHC class II','IgA','CD19'],ans:'MHC class I',exp:'CD8⁺ T細胞主要辨識MHC class I所呈現的內生性抗原。',src:'依期末考核心概念改寫。'},
+{q:'B細胞要轉職成「抗體工廠」，最後會變成哪一種細胞？',options:['漿細胞','NK細胞','樹突狀細胞','嗜中性球'],ans:'漿細胞',exp:'活化B細胞可分化為漿細胞並大量分泌抗體。',src:'依期末考核心概念改寫。'},
+{q:'補體三條路最後都想組裝同一把破門槌，它叫什麼？',options:['膜攻擊複合體MAC','免疫突觸','抗原受體','溶酶體'],ans:'膜攻擊複合體MAC',exp:'補體各途徑最後形成C5b-C9膜攻擊複合體。',src:'依期末考核心概念改寫。'},
+{q:'感染現場第一波衝到前線、最愛吞細菌的是哪位快腿選手？',options:['嗜中性球','漿細胞','記憶B細胞','Treg'],ans:'嗜中性球',exp:'嗜中性球常在急性感染初期快速抵達並吞噬細菌。',src:'依期末考核心概念改寫。'},
+{q:'被病毒入侵的細胞會向鄰居發布「防毒更新」，最常用哪一組訊號？',options:['IFN-α與IFN-β','IL-4與IL-5','IgE與IgD','C3與C5'],ans:'IFN-α與IFN-β',exp:'第一型干擾素可使鄰近細胞進入抗病毒狀態。',src:'依期末考核心概念改寫。'},
+{q:'腫瘤偷偷把MHC class I調低，哪位巡邏員最可能立刻覺得可疑？',options:['NK細胞','紅血球','漿細胞','嗜酸性球'],ans:'NK細胞',exp:'NK細胞容易攻擊MHC class I表現降低的異常細胞。',src:'依期末考核心概念改寫。'},
+{q:'學生打完疫苗，身體自己練出抗體與記憶細胞，這屬於哪一種免疫？',options:['人工主動免疫','天然被動免疫','人工被動免疫','先天免疫'],ans:'人工主動免疫',exp:'疫苗刺激自身產生免疫反應與記憶，屬人工主動免疫。',src:'依期末考核心概念改寫。'},
+{q:'胎兒在胎盤收到媽媽寄來的IgG禮包，屬於哪種免疫？',options:['天然被動免疫','人工主動免疫','天然主動免疫','人工被動免疫'],ans:'天然被動免疫',exp:'母體IgG經胎盤提供胎兒被動免疫。',src:'依期末考核心概念改寫。'},
+{q:'新生兒喝初乳，腸道黏膜最想收到哪一種抗體？',options:['分泌型IgA','IgE','IgM','IgD'],ans:'分泌型IgA',exp:'初乳富含分泌型IgA，可保護腸道黏膜。',src:'依期末考核心概念改寫。'},
+{q:'若抗原要參加「最會引發免疫反應」比賽，哪一位勝算最高？',options:['分子量大且結構複雜的蛋白質','水','無機鹽','結構簡單的小脂質'],ans:'分子量大且結構複雜的蛋白質',exp:'大型、複雜的蛋白質通常抗原性較強。',src:'依期末考核心概念改寫。'},
+{q:'免疫系統的「通緝對象」最接近哪個定義？',options:['能被辨識並引發免疫反應的物質','只存在紅血球上的物質','負責運送氧氣的蛋白質','促進凝血的細胞'],ans:'能被辨識並引發免疫反應的物質',exp:'抗原是可被免疫系統辨識，並可能引發免疫反應的物質。',src:'依期末考核心概念改寫。'},
+{q:'血型檢驗出現一顆顆肉眼可見的結塊，這場面稱為什麼反應？',options:['凝集反應','中和反應','沉澱反應','溶解反應'],ans:'凝集反應',exp:'紅血球抗原與抗體結合可造成可見凝集。',src:'依期末考核心概念改寫。'},
+{q:'只談紅血球輸注時，哪一型最接近「萬用供者」？',options:['O型','A型','B型','AB型'],ans:'O型',exp:'在ABO系統中，O型紅血球缺乏A與B抗原。',src:'依期末考核心概念改寫。'},
+{q:'哪種母胎組合最容易上演Rh溶血危機？',options:['母親Rh陰性、胎兒Rh陽性且母親已致敏','母親Rh陽性、胎兒Rh陰性','母胎皆Rh陽性','母胎皆Rh陰性'],ans:'母親Rh陰性、胎兒Rh陽性且母親已致敏',exp:'已致敏Rh陰性母親可產生抗D IgG攻擊Rh陽性胎兒紅血球。',src:'依期末考核心概念改寫。'},
+{q:'花粉一出場，幾分鐘內就鼻癢、流鼻水甚至氣喘，這是哪一型過敏？',options:['第一型','第二型','第三型','第四型'],ans:'第一型',exp:'花粉過敏常屬IgE媒介的第一型過敏反應。',src:'依期末考核心概念改寫。'},
+{q:'ABO不合造成急性溶血性輸血反應，分類上最接近哪一型？',options:['第二型','第一型','第三型','第四型'],ans:'第二型',exp:'抗體攻擊紅血球表面抗原屬第二型過敏反應。',src:'依期末考核心概念改寫。'},
+{q:'SLE中免疫複合物像垃圾塞滿組織，這屬哪一型過敏反應？',options:['第三型','第一型','第二型','第四型'],ans:'第三型',exp:'免疫複合物沉積造成傷害是第三型過敏反應。',src:'依期末考核心概念改寫。'},
+{q:'戴了某種手套後隔天出現接觸性皮膚炎，最符合哪一型？',options:['第四型','第一型','第二型','第三型'],ans:'第四型',exp:'接觸性皮膚炎主要由致敏T細胞媒介，屬第四型。',src:'依期末考核心概念改寫。'},
+{q:'病人接觸過敏原後迅速呼吸困難、低血壓、全身蕁麻疹，第一支救命藥是？',options:['腎上腺素','口服抗生素','胰島素','抗凝血劑'],ans:'腎上腺素',exp:'全身性過敏反應首選腎上腺素。',src:'依期末考核心概念改寫。'},
+{q:'甲狀腺被自體抗體當成油門一直踩，最符合哪種疾病機轉？',options:['Graves disease中的抗TSH受體抗體刺激','T細胞完全抑制甲狀腺','免疫複合物阻塞血管','抗體破壞TSH本身'],ans:'Graves disease中的抗TSH受體抗體刺激',exp:'Graves disease常由自體抗體刺激TSH受體造成甲狀腺亢進。',src:'依期末考核心概念改寫。'},
+{q:'自體抗體把乙醯膽鹼受體「貼封條」，病人最可能出現哪種疾病？',options:['重症肌無力','SLE','第一型糖尿病','惡性貧血'],ans:'重症肌無力',exp:'重症肌無力與抗乙醯膽鹼受體自體抗體有關。',src:'依期末考核心概念改寫。'},
+{q:'哪一群T細胞像免疫班上的風紀股長，專門壓住過度反應？',options:['Treg','TH1','TH2','CD8⁺ T細胞'],ans:'Treg',exp:'調節型T細胞可抑制過度免疫反應並維持自體耐受。',src:'依期末考核心概念改寫。'},
+{q:'HIV最愛拆掉免疫指揮中心，主要攻擊哪一類細胞？',options:['CD4⁺ T細胞','CD8⁺ T細胞','B細胞','嗜中性球'],ans:'CD4⁺ T細胞',exp:'HIV主要感染並破壞CD4⁺ T細胞。',src:'依期末考核心概念改寫。'},
+{q:'器官移植後發生急性排斥，主力戰將通常是哪一類細胞？',options:['T細胞','紅血球','血小板','肥大細胞'],ans:'T細胞',exp:'急性移植排斥主要由T細胞參與。',src:'依期末考核心概念改寫。'},
+{q:'移植物被認成外來戶口，最關鍵的身分差異是哪一類分子？',options:['MHC','IgA','IL-1','CD19'],ans:'MHC',exp:'MHC差異是移植排斥的重要原因。',src:'依期末考核心概念改寫。'},
+{q:'腫瘤細胞被直接「處決」時，哪一組最可能是主攻手？',options:['CD8⁺ T細胞與NK細胞','紅血球與血小板','漿細胞與B細胞','嗜鹼性球與肥大細胞'],ans:'CD8⁺ T細胞與NK細胞',exp:'毒殺型T細胞與NK細胞可直接殺死腫瘤細胞。',src:'依期末考核心概念改寫。'},
+{q:'腫瘤想躲監視，最可能偷偷做哪件事？',options:['降低腫瘤抗原或MHC表現','大量增加腫瘤抗原','大量製造正常抗體','把MHC class I拉到極高'],ans:'降低腫瘤抗原或MHC表現',exp:'降低抗原或MHC表現可幫助腫瘤逃避免疫監視。',src:'依期末考核心概念改寫。'},
+{q:'肝細胞癌常派哪一個腫瘤標記物來當線索？',options:['AFP','CEA','PSA','CA-125'],ans:'AFP',exp:'AFP可作為肝細胞癌的輔助檢測指標。',src:'依期末考核心概念改寫。'},
+{q:'ELISA像免疫偵探工具，最常用來找什麼？',options:['特定抗原或抗體','細菌運動速度','白血球吞噬速度','紅血球沉降率'],ans:'特定抗原或抗體',exp:'ELISA可用於偵測特定抗原或抗體。',src:'依期末考核心概念改寫。'},
+{q:'淋巴結最像免疫系統的哪種設施？',options:['過濾淋巴液並讓免疫細胞集合的基地','製造膽汁的工廠','分泌胰島素的腺體','調節心跳的節律器'],ans:'過濾淋巴液並讓免疫細胞集合的基地',exp:'淋巴結可過濾淋巴液，並提供免疫細胞反應場所。',src:'依期末考核心概念改寫。'},
+{q:'第一型過敏時，肥大細胞丟出的「癢到不行」主角通常是誰？',options:['組織胺','胰島素','膽汁','血紅素'],ans:'組織胺',exp:'組織胺可引起血管擴張、通透性增加與搔癢。',src:'依期末考核心概念改寫。'},
+{q:'初次體液性免疫反應中，最早大量登場的抗體是？',options:['IgM','IgA','IgE','IgD'],ans:'IgM',exp:'初次免疫反應早期主要產生IgM。',src:'依期末考核心概念改寫。'},
+{q:'一個典型單體抗體伸出幾隻手抓抗原？',options:['2個抗原結合部位','1個抗原結合部位','3個抗原結合部位','4個抗原結合部位'],ans:'2個抗原結合部位',exp:'典型單體抗體有兩個相同的抗原結合部位。',src:'依期末考核心概念改寫。'},
+{q:'抗體為什麼能精準認出目標？關鍵結構在哪裡？',options:['重鏈與輕鏈可變區共同形成的抗原結合部位','Fc固定區單獨決定','重鏈固定區單獨決定','輕鏈固定區單獨決定'],ans:'重鏈與輕鏈可變區共同形成的抗原結合部位',exp:'抗體專一性由重鏈與輕鏈可變區共同形成的結合部位決定。',src:'依期末考核心概念改寫。'},
+{q:'B細胞與T細胞的「畢業學校」分別是哪裡？',options:['骨髓、胸腺','胸腺、骨髓','脾臟、淋巴結','肝臟、脾臟'],ans:'骨髓、胸腺',exp:'B細胞主要在骨髓成熟，T細胞在胸腺成熟。',src:'依期末考核心概念改寫。'},
+{q:'傷口局部出現紅、腫、熱、痛，這是哪一種經典套餐？',options:['發炎反應','過敏性休克','免疫缺乏','腫瘤免疫逃脫'],ans:'發炎反應',exp:'紅、腫、熱、痛是常見局部發炎表現。',src:'依期末考核心概念改寫。'},
+{q:'B細胞啟動體液性免疫的正確流程，哪一個順序最合理？',options:['MHC II呈現→TH活化→B細胞活化→漿細胞分化→分泌抗體','B細胞活化→MHC II呈現→分泌抗體→TH活化→漿細胞分化','TH活化→分泌抗體→MHC II呈現→B細胞活化→漿細胞分化','漿細胞分化→MHC II呈現→B細胞活化→TH活化→分泌抗體'],ans:'MHC II呈現→TH活化→B細胞活化→漿細胞分化→分泌抗體',exp:'體液性免疫需先抗原呈現與TH活化，再促進B細胞活化與漿細胞分化。',src:'依期末考核心概念改寫。'},
+{q:'哪一種細胞激素最像發燒的「恆溫器駭客」，會作用下視丘升高體溫？',options:['IL-1','IL-4','IL-10','IL-13'],ans:'IL-1',exp:'IL-1是典型內生性致熱細胞激素。',src:'依期末考核心概念改寫。'},
+{q:'補體被56°C加熱30分鐘後失活，說明它具有哪種特性？',options:['熱不穩定的血清蛋白','就是抗體','只存在感染者血清','只有一條活化途徑'],ans:'熱不穩定的血清蛋白',exp:'補體是血清中的熱不穩定蛋白質。',src:'依期末考核心概念改寫。'},
+{q:'抗體的本質是哪一類物質？',options:['蛋白質','脂質','核酸','無機鹽'],ans:'蛋白質',exp:'抗體又稱免疫球蛋白，本質為蛋白質。',src:'依期末考核心概念改寫。'},
+{q:'哪一類人通常不適合接種活性減毒疫苗？',options:['嚴重免疫功能低下者','健康青少年','健康成人','一般健康學童'],ans:'嚴重免疫功能低下者',exp:'嚴重免疫功能低下者通常不適合接種活性減毒疫苗。',src:'依期末考核心概念改寫。'},
+{q:'記憶B細胞與記憶T細胞最厲害的地方是什麼？',options:['再次遇到相同抗原時快速產生較強反應','直接形成皮膚屏障','永久抑制所有免疫反應','取代所有先天免疫細胞'],ans:'再次遇到相同抗原時快速產生較強反應',exp:'記憶細胞使再次反應更快且更強。',src:'依期末考核心概念改寫。'},
+{q:'哪一種免疫球蛋白能穿過胎盤，幫胎兒先拿到防護罩？',options:['IgG','IgM','IgA','IgE'],ans:'IgG',exp:'IgG可通過胎盤提供胎兒被動免疫。',src:'依期末考核心概念改寫。'},
+{q:'減敏治療想培養「阻擋型保鑣」，主要希望增加哪一種抗體？',options:['IgG','IgD','IgM','IgE'],ans:'IgG',exp:'減敏治療可促進阻斷型IgG產生，減少過敏原與IgE結合。',src:'依期末考核心概念改寫。'},
+{q:'同一疫苗第二次接種後，抗體快速升高且親和力更好，最大功臣是？',options:['記憶淋巴球迅速活化','紅血球增加','補體完全消失','嗜中性球停止作用'],ans:'記憶淋巴球迅速活化',exp:'記憶淋巴球是二次免疫反應快速且強烈的關鍵。',src:'依期末考核心概念改寫。'},
+{q:'哪一項最能代表專一性免疫反應？',options:['產生抗原特異性抗體','皮膚屏障','發燒反應','非專一性吞噬'],ans:'產生抗原特異性抗體',exp:'抗原特異性抗體產生屬後天性專一性免疫。',src:'依期末考核心概念改寫。'}
 ];
-const concept=cb.map(function(x,i){return{q:x[0],options:[x[1],i%2?'紅血球':'血小板',i%3?'胰島素':'膽汁',i%4?'骨骼肌':'角質'],ans:x[1],exp:'本題以概念活化方式複習免疫機轉。',src:'教師自編概念題。'}}).concat(blood);
 const stages=[
 {name:'免疫病毒',lv:10,hp:130,forms:[['免疫病毒','🦠'],['棘突變異體','🧫'],['暴走病毒獸','👾'],['終焉病原核','☣️']]},
 {name:'變異細菌王',lv:20,hp:170,forms:[['變異細菌王','🧟'],['毒素增幅體','🦂'],['耐藥巨獸','🐉'],['滅菌災厄體','☠️']]},
@@ -108,7 +148,7 @@ function updateBossForm(){const ratio=enemyHp/maxHp;if(ratio<=.1)applyBossForm(4
 function update(){hp=Math.max(0,hp);$('hp').textContent=String(hp);$('streak').textContent=String(streak);$('score').textContent=String(score);$('enemyHp').style.width=Math.max(0,enemyHp/maxHp*100)+'%';$('heroHpBar').style.width=Math.max(0,hp/7*100)+'%';$('heroLv').textContent=String(1+Math.floor(score/100));if(streak>=8)transformHero(4);else if(streak>=5)transformHero(3);else if(streak>=3)transformHero(2);updateBossForm()}
 function loadStage(n){stage=n;lastLowTalkStage=0;const s=stages[n-1];enemyHp=s.hp;maxHp=s.hp;bossForm=1;$('battle').className='battle'+(n>1?' stage'+n:'');$('monster').className='monster';$('monster').textContent=s.forms[0][1];$('bossName').textContent=s.forms[0][0];$('bossLv').textContent=String(s.lv);$('stageBadge').textContent='STAGE '+n+' / 5';$('bossIntro').innerHTML='STAGE '+n+'<br><span style="font-size:1rem">'+s.name+'</span>';$('bossIntro').classList.add('show');setTimeout(function(){$('bossIntro').classList.remove('show')},1200);showText(s.name+' 出現了！');update();setTimeout(function(){bossSay('open')},1400)}
 function animateAttack(ok,dmg){if(ok){$('hero').classList.add('throw');$('monster').classList.add('hit');$('syringe').classList.add('on');$('damage').textContent='-'+dmg;$('damage').classList.add('on');$('speedlines').classList.add('on')}else{$('hero').classList.add('hit');$('speedlines').classList.add('on')}setTimeout(function(){$('hero').classList.remove('throw','hit');$('monster').classList.remove('hit');$('syringe').classList.remove('on');$('damage').classList.remove('on');$('speedlines').classList.remove('on')},650)}
-function startGame(){const mode=$('gameMode').value;pool=mode==='national'?national.slice():mode==='concept'?concept.slice():national.concat(concept);shuffle(pool);index=0;current=null;hp=7;streak=0;score=0;locked=false;resetHero();loadStage(1);$('catLabel').textContent=mode==='national'?'國考特訓':mode==='concept'?'概念闖關（含血型）':'綜合挑戰';$('status').textContent='開始，共 '+pool.length+' 題';nextQuestion()}
+function startGame(){const mode=$('gameMode').value;pool=mode==='national'?national.slice():mode==='concept'?concept.slice():national.concat(concept);shuffle(pool);index=0;current=null;hp=7;streak=0;score=0;locked=false;resetHero();loadStage(1);$('catLabel').textContent=mode==='national'?'國考特訓':mode==='concept'?'概念闖關':'綜合挑戰';$('status').textContent='開始，共 '+pool.length+' 題';nextQuestion()}
 function nextQuestion(){if(!pool.length){$('status').textContent='請先按開始戰鬥';return}if(locked)return;if(hp<=0){$('question').textContent='挑戰失敗';$('options').innerHTML='';return}if(index>=pool.length){$('question').textContent='本輪完成';$('options').innerHTML='';return}current=pool[index++];$('progress').textContent='第 '+index+' 題 / 共 '+pool.length+' 題';$('question').textContent=current.q;$('answer').style.display='none';$('answer').innerHTML='<b>解析：</b>'+current.exp+'<div class="source">'+current.src+'</div>';const box=$('options');box.innerHTML='';shuffle(current.options.slice()).forEach(function(opt){const b=document.createElement('button');b.type='button';b.className='option';b.textContent=opt;b.addEventListener('click',function(){choose(b,opt)});box.appendChild(b)})}
 function showAnswer(){if(current)$('answer').style.display='block'}
 function choose(el,opt){if(locked||!current)return;locked=true;Array.from(document.querySelectorAll('.option')).forEach(function(b){b.disabled=true});if(opt===current.ans){el.classList.add('correct');streak++;const base=streak>=8?20:streak>=5?17:streak>=3?14:streak>=2?12:10;const dmg=Math.max(6,Math.round(base*(1-(stage-1)*.08)));enemyHp=Math.max(0,enemyHp-dmg);score+=base;showText($('heroName').textContent+'使出注射突擊！');animateAttack(true,dmg);update();if(enemyHp<=0){bossSay('defeat');setTimeout(function(){if(stage<5){loadStage(stage+1);locked=false;nextQuestion()}else{$('question').textContent='全部關卡突破！';$('options').innerHTML='';$('progress').textContent='FINAL CLEAR';showText('FINAL CLEAR！')}},1400)}else{locked=false}}else{el.classList.add('wrong');streak=0;resetHero();const bossDmg=Math.min(3,1+Math.floor((stage-1)/2));hp-=bossDmg;showText(stages[stage-1].forms[bossForm-1][0]+' 發動反擊！');bossSay('wrong');animateAttack(false,0);Array.from(document.querySelectorAll('.option')).forEach(function(b){if(b.textContent===current.ans)b.classList.add('correct')});update();locked=false}$('answer').style.display='block';if(window.innerWidth<=520){$('battle').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){$('question').scrollIntoView({behavior:'smooth',block:'center'})},800)}}
