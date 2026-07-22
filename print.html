@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>免疫守衛戰｜紙本列印版</title>
+<style>
+:root{--ink:#132033;--muted:#667085;--line:#d0d7de;--blue:#1f4e79;--bg:#f6f8fb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Microsoft JhengHei",Arial,sans-serif;line-height:1.45}.wrap{max-width:960px;margin:auto;padding:24px}.hero{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 8px 24px rgba(16,24,40,.08)}h1{margin:0;color:var(--blue);font-size:2rem}.sub{color:var(--muted);margin:8px 0 0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}button,a.btn{appearance:none;border:1px solid var(--blue);background:var(--blue);color:#fff;text-decoration:none;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}button.secondary,a.secondary{background:#fff;color:var(--blue)}.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 18px}.meta div{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px}.section-title{margin:28px 0 10px;color:var(--blue);font-size:1.25rem;border-left:6px solid var(--blue);padding-left:10px}.q{display:grid;grid-template-columns:46px 1fr;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;break-inside:avoid}.no{font-weight:900;color:var(--blue);font-size:1.1rem}h3{font-size:1rem;margin:0 0 8px}.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}.opt{border:1px solid #e6edf5;border-radius:8px;padding:6px 8px}.blank{margin-top:8px;color:var(--muted)}#key{display:none}.key-table{width:100%;border-collapse:collapse;background:#fff}.key-table th,.key-table td{border:1px solid var(--line);padding:7px;vertical-align:top}.key-table th{background:#e8f2ff;color:var(--blue)}@media(max-width:640px){.wrap{padding:12px}.meta{grid-template-columns:1fr 1fr}.opts{grid-template-columns:1fr}}@media print{body{background:#fff}.wrap{max-width:none;padding:0}.hero{box-shadow:none;border:none;padding:0;margin:0 0 8mm}.actions{display:none}.meta div{border-radius:0}.q{border-radius:0;box-shadow:none;margin:4mm 0;padding:3mm;grid-template-columns:10mm 1fr;page-break-inside:avoid}.opt{padding:2mm;border-radius:0}h1{font-size:20pt}.sub{font-size:9pt}.section-title{page-break-after:avoid;margin-top:7mm}#key{display:none!important}@page{size:A4;margin:13mm}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero"><h1>免疫守衛戰｜紙本列印版</h1><p class="sub">此頁會自動讀取主遊戲中的題庫，產生A4列印用學生卷。線上遊戲版請回到主頁。</p><div class="actions"><button onclick="window.print()">列印學生練習卷</button><a class="btn secondary" href="./">回線上遊戲版</a><button class="secondary" onclick="toggleKey()">顯示/隱藏教師答案</button></div></section>
+<div class="meta"><div>班級：</div><div>座號：</div><div>姓名：</div><div>得分：</div></div>
+<div id="content">題庫讀取中...</div>
+<section id="key"><h2 class="section-title">教師答案解析</h2><table class="key-table"><thead><tr><th>題號</th><th>答案</th><th>正答文字</th><th>解析</th></tr></thead><tbody id="keyBody"></tbody></table></section>
+</div>
+<script>
+function between(s,a,b){const i=s.indexOf(a); if(i<0) throw new Error('找不到 '+a); const j=s.indexOf(b,i+a.length); if(j<0) throw new Error('找不到 '+b); return s.slice(i+a.length,j).trim();}
+function evalArray(src){return Function('"use strict";return '+src)();}
+function esc(s){return String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+function renderSection(title,arr,startNo){let html='<h2 class="section-title">'+title+'（'+arr.length+'題）</h2>';arr.forEach((q,i)=>{const no=startNo+i;html+='<article class="q"><div class="no">'+String(no).padStart(2,'0')+'</div><div class="body"><h3>'+esc(q.q)+'</h3><div class="opts">'+q.options.map((o,k)=>'<div class="opt">□ '+String.fromCharCode(65+k)+'. '+esc(o)+'</div>').join('')+'</div><div class="blank">答案：＿＿＿＿</div></div></article>';});return html;}
+function renderKey(items){document.getElementById('keyBody').innerHTML=items.map((q,i)=>{const ans=String.fromCharCode(65+q.options.indexOf(q.ans));return '<tr><td>'+(i+1)+'</td><td>'+ans+'</td><td>'+esc(q.ans)+'</td><td>'+esc(q.exp)+'</td></tr>';}).join('');}
+function toggleKey(){const k=document.getElementById('key');k.style.display=k.style.display==='block'?'none':'block';}
+(async function(){try{const text=await (await fetch('./index.html?ts='+Date.now())).text();const nationalSrc=between(text,'const national=',';\nconst concept=');const conceptSrc=between(text,'const concept=',';\nconst stages=');const national=evalArray(nationalSrc);const concept=evalArray(conceptSrc);document.getElementById('content').innerHTML=renderSection('國考特訓',national,1)+renderSection('概念闖關',concept,national.length+1);renderKey(national.concat(concept));}catch(e){document.getElementById('content').innerHTML='<div class="hero"><b>題庫讀取失敗：</b>'+esc(e.message)+'</div>';}})();
+</script>
+</body>
+</html>
