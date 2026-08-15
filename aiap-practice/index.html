@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111827"><meta name="robots" content="noindex,nofollow"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css"><title>AIAP 考前練習</title></head><body>
+<header><div><span class="eyebrow">8/24 教師研習｜200 題題庫</span><h1>AIAP 人工智慧<br><em>應用規劃師練習</em></h1></div><div class="ring"><b id="mastery">0%</b><small>掌握度</small></div></header>
+<main><section id="home">
+ <div class="stats"><div><b id="done">0</b><span>已作答</span></div><div><b id="correct">0%</b><span>正確率</span></div><div><b id="wrong">0</b><span>錯題</span></div></div>
+ <h2>選擇練習模式</h2><div class="modes">
+  <button data-mode="quick" class="primary"><span>⚡</span><div><b>10 題快速練習</b><small>零碎時間快速刷題</small></div></button>
+  <button data-mode="sprint"><span>🔥</span><div><b>考前衝刺 20 題</b><small>優先抽錯題與未作答</small></div></button>
+  <button data-mode="mock"><span>⏱</span><div><b>50 題計時模考</b><small>45 分鐘，交卷後看答案</small></div></button>
+  <button data-mode="wrong"><span>🎯</span><div><b>錯題重練</b><small id="wrongHint">目前沒有錯題</small></div></button>
+  <button data-mode="all"><span>📚</span><div><b>完整 200 題</b><small>依題庫順序逐題攻略</small></div></button>
+ </div>
+ <div class="bank"><label>題庫範圍</label><select id="bank"><option value="0">全部 200 題</option><option value="1">題庫一（1–100）</option><option value="2">題庫二（1–100）</option></select></div>
+ <button id="reset" class="textbtn">清除本機練習紀錄</button>
+</section>
+<section id="quiz" hidden><div class="quizbar"><button id="back">←</button><div><b id="modeTitle"></b><span id="counter"></span></div><time id="timer"></time></div><div class="progress"><i id="bar"></i></div><article><div class="qmeta" id="qmeta"></div><h2 id="question"></h2><div id="choices" class="choices"></div><div id="feedback" hidden></div></article><nav><button id="mark">☆ 不確定</button><button id="next" disabled>下一題 →</button></nav></section>
+<section id="result" hidden><div class="resultcard"><span>本次成績</span><b id="score"></b><h2 id="resultTitle"></h2><p id="resultText"></p><button id="retry">重練本次錯題</button><button id="goHome" class="secondary">回到首頁</button></div></section></main>
+<footer>進度只儲存在這台裝置｜原題庫無解析，系統依附件標示答案判分</footer><script src="app.js"></script></body></html>
