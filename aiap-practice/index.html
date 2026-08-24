@@ -1,13 +1,13 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111827"><meta name="robots" content="noindex,nofollow"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css"><title>AIAP 考前練習</title></head><body>
-<header><div><span class="eyebrow">8/24 教師研習｜200 題題庫</span><h1>AIAP 人工智慧<br><em>應用規劃師練習</em></h1></div><div class="ring"><b id="mastery">0%</b><small>掌握度</small></div></header>
+<header><div><span class="eyebrow">8/24 教師研習｜200 題＋詳解</span><h1>AIAP 人工智慧<br><em>應用規劃師練習</em></h1></div><div class="ring"><b id="mastery">0%</b><small>掌握度</small></div></header>
 <main><section id="home">
  <div class="stats"><div><b id="done">0</b><span>已作答</span></div><div><b id="correct">0%</b><span>正確率</span></div><div><b id="wrong">0</b><span>錯題</span></div></div>
  <h2>選擇練習模式</h2><div class="modes">
-  <button data-mode="quick" class="primary"><span>⚡</span><div><b>10 題快速練習</b><small>零碎時間快速刷題</small></div></button>
+  <button data-mode="quick" class="primary"><span>⚡</span><div><b>10 題快速練習</b><small>作答後立即看詳解</small></div></button>
   <button data-mode="sprint"><span>🔥</span><div><b>考前衝刺 20 題</b><small>優先抽錯題與未作答</small></div></button>
-  <button data-mode="mock"><span>⏱</span><div><b>50 題計時模考</b><small>45 分鐘，交卷後看答案</small></div></button>
+  <button data-mode="mock"><span>⏱</span><div><b>50 題計時模考</b><small>45 分鐘，作答時不顯示解析</small></div></button>
   <button data-mode="wrong"><span>🎯</span><div><b>錯題重練</b><small id="wrongHint">目前沒有錯題</small></div></button>
-  <button data-mode="all"><span>📚</span><div><b>完整 200 題</b><small>依題庫順序逐題攻略</small></div></button>
+  <button data-mode="all"><span>📚</span><div><b>完整 200 題</b><small>依題庫順序逐題攻略＋詳解</small></div></button>
   <button data-mode="continue" id="continueBtn" hidden><span>▶️</span><div><b id="continueTitle">繼續上次進度</b><small>從中斷處接著作答</small></div></button>
  </div>
  <div class="jump"><label for="jumpNo">自由選題開始</label><div><input id="jumpNo" type="number" min="1" max="200" inputmode="numeric" placeholder="輸入 1–200"><button id="jumpBtn">從這題開始 →</button></div><small>依完整題庫順序編號，可直接跳到指定題目</small></div>
@@ -16,4 +16,4 @@
 </section>
 <section id="quiz" hidden><div class="quizbar"><button id="back">←</button><div><b id="modeTitle"></b><span id="counter"></span></div><time id="timer"></time></div><div class="progress"><i id="bar"></i></div><article><div class="qmeta" id="qmeta"></div><h2 id="question"></h2><div id="choices" class="choices"></div><div id="feedback" hidden></div></article><nav><button id="mark">☆ 不確定</button><button id="next" disabled>下一題 →</button></nav></section>
 <section id="result" hidden><div class="resultcard"><span>本次成績</span><b id="score"></b><h2 id="resultTitle"></h2><p id="resultText"></p><button id="retry">重練本次錯題</button><button id="goHome" class="secondary">回到首頁</button></div></section></main>
-<footer>進度只儲存在這台裝置｜原題庫無解析，系統依附件標示答案判分</footer><style>.jump{margin-top:16px;background:white;padding:16px;border-radius:16px}.jump>label{font-weight:700}.jump>div{display:flex;gap:8px;margin:10px 0 6px}.jump input{min-width:0;flex:1;border:1.5px solid #d0d5dd;border-radius:11px;padding:12px;font-size:16px}.jump button{border:0;border-radius:11px;padding:0 14px;background:#172554;color:white;font-weight:700}.jump small{color:var(--muted);font-size:11px}</style><script src="app.js?v=3"></script></body></html>
+<footer>進度只儲存在這台裝置｜詳解依上傳第二版題目及答案解析</footer><style>.jump{margin-top:16px;background:white;padding:16px;border-radius:16px}.jump>label{font-weight:700}.jump>div{display:flex;gap:8px;margin:10px 0 6px}.jump input{min-width:0;flex:1;border:1.5px solid #d0d5dd;border-radius:11px;padding:12px;font-size:16px}.jump button{border:0;border-radius:11px;padding:0 14px;background:#172554;color:white;font-weight:700}.jump small{color:var(--muted);font-size:11px}#feedback{font-weight:400;line-height:1.65;padding:16px}#feedback .feedback-title{font-weight:800;margin-bottom:9px;font-size:15px}#feedback .explanation{color:#344054;font-size:14px}#feedback .ex-label{font-weight:800;color:#172554}</style><script src="app.js?v=4"></script></body></html>
