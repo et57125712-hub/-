@@ -1,6 +1,8 @@
 (() => {
   'use strict';
   const {icons, stages} = window.ImmuneRushData;
+  const baseArt = window.ImmuneRushBase;
+  let mapMode = 'base';
   const KEY = 'immuneRushSave';
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
@@ -128,16 +130,28 @@
   function unlocked(i) { return save.demo || i<save.unlocked; }
   function suggestedStage() { return stages.findIndex((s,i)=>unlocked(i) && (save.scores[s.id]||0)<70); }
   function renderMap() {
-    $('#stageMap').innerHTML=stages.map((s,i)=>{
+    const completed=stages.filter(s=>(save.scores[s.id]||0)>=70).length;
+    $('#baseProgress').textContent=`${save.demo?'展示基地・七區自由進入':`已通過 ${completed}/7 區・已解鎖 ${save.unlocked}/7 區`}`;
+    $('#stageMap').innerHTML=baseArt.routes(save.demo?7:save.unlocked,completed)+stages.map((s,i)=>{
       const score=save.scores[s.id]||0,open=unlocked(i),answered=s.tasks.filter(t=>save.history[t.id]).length;
-      return `<button type="button" class="stage-card ${s.boss?'boss ':''}${open?'':'locked '}${score>=70?'done':''}" data-stage="${i}" style="--stage-order:${i}" aria-disabled="${!open}"><span class="stage-icon" aria-hidden="true">${icons[s.icon]}</span><span class="stage-info"><strong>${i+1}. ${s.title}</strong><span class="stage-sub">${s.sub}</span><span class="stage-detail">${open?`${answered}/5 題已練習・${save.demo?'展示可直達 Boss':score>=70?'已通過，可複習':'本區通過 4/5 題解鎖下一區'}`:`🔒 先完成「${stages[i-1].title}」達 70%`}</span><span class="progress-track"><i style="width:${score}%"></i></span></span><span class="stage-side"><b>${score}%</b><span>${open?'最佳成績':'未解鎖'}</span></span></button>`;
-    }).join('');
+      const next=save.run?.stage===i || (!save.run && suggestedStage()===i);
+      const status=!open?'🔒 待解鎖':score>=70?`✓ 通過 ${score}%`:save.demo?'◉ 展示可進入':save.run?.stage===i?'▶ 接續任務':next?'▶ 從這裡開始':'◉ 可進入';
+      return `<button type="button" class="stage-card ${next?'next-stage ':''} ${s.boss?'boss ':''}${open?'':'locked '}${score>=70?'done':''}" data-stage="${i}" style="--stage-order:${i}" aria-disabled="${!open}" aria-label="${i+1}. ${s.title}，${baseArt.facilities[i]}，${status}。${open?s.sub:`先完成${stages[i-1].title}達70%`}">${baseArt.facility(i)}<span class="stage-icon" aria-hidden="true">${icons[s.icon]}</span><span class="stage-info"><strong>${i+1}. ${s.title}</strong><span class="base-status">${status}</span><span class="stage-sub">${s.sub}</span><span class="stage-detail">${open?`${answered}/5 題已練習・${save.demo?'展示可直達 Boss':score>=70?'已通過，可複習':'本區通過 4/5 題解鎖下一區'}`:`🔒 先完成「${stages[i-1].title}」達 70%`}</span><span class="progress-track"><i style="width:${score}%"></i></span></span><span class="stage-side"><b>${score}%</b><span>${open?'最佳成績':'未解鎖'}</span></span></button>`;
+    }).join('')+baseArt.bossGate();
+    applyMapMode();
     $$('#stageMap [data-stage]').forEach(b=>b.onclick=()=>startStage(Number(b.dataset.stage)));
     const target=suggestedStage(),pending=save.run;
     $('#continueBtn').textContent=pending?'接續行動':save.xp?'再次行動':'開始行動';
     $('#nextGoal').innerHTML=pending?`<strong>接續未完成任務</strong><p>${stages[pending.stage].title}・第 ${pending.index+1}/5 題，已保留作答。</p>`:target>=0?`<strong>下一個目標：${stages[target].title}</strong><p>${save.demo?'點任一區，從選單直接查看代表題型與 Boss。':'完成本區 5 題並達 70%；可隨時返回，之後接續。'}</p>`:'<strong>七區皆已通過</strong><p>前往知識雷達，依最近答錯的知識點再次練習。</p>';
     updateStats();
   }
+  function applyMapMode() {
+    $('#stageMap').classList.toggle('is-base',mapMode==='base');
+    $('#stageMap').classList.toggle('is-list',mapMode==='list');
+    $('#baseModeBtn').setAttribute('aria-pressed',String(mapMode==='base'));
+    $('#listModeBtn').setAttribute('aria-pressed',String(mapMode==='list'));
+  }
+  for(const [id,mode] of [['baseModeBtn','base'],['listModeBtn','list']])$('#'+id).onclick=()=>{mapMode=mode;applyMapMode();};
   function startStage(i, index=0) {
     if(!unlocked(i)){toast(`先完成「${stages[i-1].title}」達 70%（每區至少通過 4/5 題）`);return;}
     if(!save.demo && save.run && save.run.stage!==i && !confirm('目前有未完成任務。改練此區會重新開始該次挑戰；已保存的成績與解析會保留。')) return;

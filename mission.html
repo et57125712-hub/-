@@ -7,7 +7,8 @@
 <meta name="description" content="IMMUNE RUSH 免疫防線大作戰：五專護理免疫學手機互動教具，七大任務、即時解析與課後自主複習。">
 <title>IMMUNE RUSH｜免疫防線大作戰</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./immune-rush.css?v=20261007c">
+<link rel="stylesheet" href="./immune-rush.css?v=20261007d">
+<link rel="stylesheet" href="./immune-rush-base.css?v=20261007d">
 </head>
 <body>
 <a href="#mainContent" class="skip-link">跳至主要內容</a>
@@ -21,8 +22,8 @@
 <section id="homeView" class="view active" aria-labelledby="homeTitle">
   <section class="hero"><span class="kicker">五專護理・免疫學互動教具</span><div class="hero-intro"><h1 id="homeTitle">免疫防線<br><em>大作戰</em></h1><div class="defense-emblem" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="54" stroke="currentColor" opacity=".18"/><g class="scan-orbit"><circle cx="60" cy="60" r="46" stroke="currentColor" stroke-dasharray="54 18 10 18"/><circle cx="60" cy="14" r="4" fill="currentColor"/></g><circle class="shield-wave" cx="60" cy="60" r="34" stroke="currentColor"/><path class="shield-core" d="M60 30 83 39v21c0 15-13 26-23 31-10-5-23-16-23-31V39Z" fill="#10374c" stroke="currentColor" stroke-width="2"/><path d="M60 46v25M48 58h24" stroke="#b8ff68" stroke-width="4" stroke-linecap="round"/><circle cx="17" cy="83" r="3" fill="#b8ff68"/><circle cx="101" cy="91" r="3" fill="#b8ff68"/></svg><span>防線待命</span></div></div><p>用辨識、分類、配對與排序，迎戰臨床情境。<br>課前預習・課堂練習・課後反覆複習</p><div class="hero-actions"><button id="continueBtn" class="btn">開始行動</button><button id="teacherBtn" class="btn ghost">展示模式</button></div><div class="hero-metrics"><div class="metric"><b>7</b><span>任務區域</span></div><div class="metric"><b id="taskCount">35</b><span>互動挑戰</span></div><div class="metric"><b id="heroMastery">0%</b><span>平均最佳成績</span></div></div></section>
   <section id="bossPortal" class="boss-portal" aria-labelledby="bossPortalTitle"><a id="homeBossChallenge" href="./index.html" class="boss-portal-link"><span class="portal-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="m10 8 26 26M38 8 12 34M8 29l11 11M29 40l11-11M12 34l-5 7M36 34l5 7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="m10 8 1 10 7-7Zm28 0-1 10-7-7Z" fill="currentColor"/></svg></span><div class="portal-copy"><span class="portal-label">課後挑戰入口</span><h2 id="bossPortalTitle">BOSS 連戰挑戰</h2><span class="portal-description">免解鎖・五大 Boss・獨立計分</span><span class="portal-cta">進入免疫守衛戰 <span aria-hidden="true">→</span></span></div></a></section>
+  <section class="base-section" aria-labelledby="baseTitle"><div class="base-heading"><div><span class="base-eyebrow">IMMUNE DEFENSE BASE</span><h2 id="baseTitle">免疫防線基地</h2></div><div class="map-switch" role="group" aria-label="任務地圖顯示方式"><button id="baseModeBtn" type="button" aria-pressed="true">基地</button><button id="listModeBtn" type="button" aria-pressed="false">清單</button></div></div><p id="baseHelp" class="helper">點選設施進入任務；每區通過 4/5 題，解鎖下一區。</p><div class="base-legend" aria-label="基地狀態"><span>◉ 可進入</span><span>✓ 已通過</span><span>🔒 待解鎖</span></div><p id="baseProgress" class="base-progress"></p><section id="stageMap" class="map is-base" aria-label="七大任務區" aria-describedby="baseHelp"></section><p class="base-note">教學示意基地・設施位置不代表人體解剖位置</p></section>
   <section id="nextGoal" class="next-goal" aria-label="下一步建議"></section>
-  <div class="section-head"><h2>任務地圖</h2><span>整區成績達 70% 解鎖下一區</span></div><p class="helper">每區 5 題，通過 4 題即可解鎖；可重練，保留最佳成績。</p><section id="stageMap" class="map" aria-label="七大任務區"></section>
   <p class="local-note">進度自動保存在此瀏覽器；同一裝置、同一瀏覽器可接續。清除網站資料或使用私密瀏覽，紀錄可能消失。</p>
 </section>
 <section id="gameView" class="view" aria-label="任務作答">
@@ -41,7 +42,8 @@
 </div>
 <dialog id="reviewDialog" aria-labelledby="reviewTitle"><div class="dialog-head"><h2 id="reviewTitle">解析回顧</h2><button id="closeReviewBtn" class="btn ghost small">關閉</button></div><div id="reviewContent"></div></dialog>
 <noscript><p>請啟用瀏覽器的 JavaScript，才能操作互動任務。</p></noscript>
-<script src="./immune-rush-data.js?v=20261007c" defer></script>
-<script src="./immune-rush-app.js?v=20261007c" defer></script>
+<script src="./immune-rush-data.js?v=20261007d" defer></script>
+<script src="./immune-rush-base.js?v=20261007d" defer></script>
+<script src="./immune-rush-app.js?v=20261007d" defer></script>
 </body>
 </html>
