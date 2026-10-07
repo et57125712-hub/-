@@ -66,7 +66,7 @@
   let demoSave={...freshSave(),demo:true};
   let save=studentSave.demo ? demoSave : studentSave;
   let run=save.run, currentStage=0, taskIndex=0, taskLocked=false, matchSelected=null;
-  let audioContext, toastTimer, animationFrame;
+  let audioContext, toastTimer, animationFrame, renderedTaskId;
   function notice() { $('#storageNotice').hidden=!storageMessage; $('#storageNotice').textContent=storageMessage; }
   function persist() {
     try { localStorage.setItem(KEY,JSON.stringify(studentSave)); }
@@ -75,8 +75,10 @@
   }
   function mastery() { return Math.round(stages.reduce((sum,s)=>sum+(save.scores[s.id]||0),0)/stages.length); }
   function updateStats() {
-    $('#xpTop').textContent=save.xp; $('#comboTop').textContent=save.combo;
-    $('#heartTop').textContent='❤'.repeat(save.hearts)+'♡'.repeat(3-save.hearts);
+    for(const [id,value] of [['xpTop',String(save.xp)],['comboTop',String(save.combo)],['heartTop','❤'.repeat(save.hearts)+'♡'.repeat(3-save.hearts)]]){
+      const el=$('#'+id),changed=el.textContent!==value;el.textContent=value;
+      if(changed)animateUI(el,[{transform:'scale(1)'},{transform:'scale(1.14)'},{transform:'scale(1)'}],360);
+    }
     $('#heartTop').setAttribute('aria-label',`Energy ${save.hearts} / 3；歸零仍可練習`);
     $('#heroMastery').textContent=mastery()+'%';
   }
@@ -128,7 +130,7 @@
   function renderMap() {
     $('#stageMap').innerHTML=stages.map((s,i)=>{
       const score=save.scores[s.id]||0,open=unlocked(i),answered=s.tasks.filter(t=>save.history[t.id]).length;
-      return `<button type="button" class="stage-card ${s.boss?'boss ':''}${open?'':'locked '}${score>=70?'done':''}" data-stage="${i}" aria-disabled="${!open}"><span class="stage-icon" aria-hidden="true">${icons[s.icon]}</span><span class="stage-info"><strong>${i+1}. ${s.title}</strong><span class="stage-sub">${s.sub}</span><span class="stage-detail">${open?`${answered}/5 題已練習・${save.demo?'展示可直達 Boss':score>=70?'已通過，可複習':'本區通過 4/5 題解鎖下一區'}`:`🔒 先完成「${stages[i-1].title}」達 70%`}</span><span class="progress-track"><i style="width:${score}%"></i></span></span><span class="stage-side"><b>${score}%</b><span>${open?'最佳成績':'未解鎖'}</span></span></button>`;
+      return `<button type="button" class="stage-card ${s.boss?'boss ':''}${open?'':'locked '}${score>=70?'done':''}" data-stage="${i}" style="--stage-order:${i}" aria-disabled="${!open}"><span class="stage-icon" aria-hidden="true">${icons[s.icon]}</span><span class="stage-info"><strong>${i+1}. ${s.title}</strong><span class="stage-sub">${s.sub}</span><span class="stage-detail">${open?`${answered}/5 題已練習・${save.demo?'展示可直達 Boss':score>=70?'已通過，可複習':'本區通過 4/5 題解鎖下一區'}`:`🔒 先完成「${stages[i-1].title}」達 70%`}</span><span class="progress-track"><i style="width:${score}%"></i></span></span><span class="stage-side"><b>${score}%</b><span>${open?'最佳成績':'未解鎖'}</span></span></button>`;
     }).join('');
     $$('#stageMap [data-stage]').forEach(b=>b.onclick=()=>startStage(Number(b.dataset.stage)));
     const target=suggestedStage(),pending=save.run;
@@ -144,7 +146,7 @@
       run={version:2,stage:i,index,results:stages[i].tasks.map(()=>null),inputs:{}};
       save.run=run;save.hearts=3;save.combo=0;save.attempts[stages[i].id]=(save.attempts[stages[i].id]||0)+1;
     }
-    currentStage=run.stage;taskIndex=run.index;persist();showView('gameView');renderTask();
+    currentStage=run.stage;taskIndex=run.index;renderedTaskId=null;persist();showView('gameView');renderTask();
   }
   function task() { return stages[currentStage].tasks[taskIndex]; }
   function inputFor(t) { return run.inputs[t.id] || (run.inputs[t.id]={}); }
@@ -169,6 +171,11 @@
     if(t.type==='choice'||t.type==='boss')renderChoice(t);else if(t.type==='rapid')renderRapid(t);else if(t.type==='match')renderMatch(t);else renderSequence(t);
     if(result) showFeedback(t,result,false);
     renderDots();persist();
+    if(renderedTaskId!==t.id){
+      animateUI($('#questionCard'),[{opacity:.55,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],260);
+      if(t.type==='boss')animateUI($('#arena'),[{borderColor:'#f5a6dd'},{borderColor:'#855486'}],650);
+      renderedTaskId=t.id;
+    }
   }
   function renderChoice(t) {
     const input=inputFor(t);if(!input.order)input.order=shuffle(t.options.map((_,i)=>i));
@@ -302,6 +309,11 @@
   }
   function showHint() { const h=$('#hintBox');h.textContent='提示｜'+task().hint;const shown=h.classList.toggle('show');$('#hintBtn').setAttribute('aria-expanded',String(shown)); }
   function shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+  // Presentation only: animation completion never controls scoring or navigation.
+  function animateUI(el,frames,duration) {
+    if(reducedMotion() || !el.animate)return;
+    el.getAnimations().forEach(a=>a.cancel());el.animate(frames,{duration,easing:'ease-out'});
+  }
   function combo(n) { if(reducedMotion())return;const p=$('#comboPop');p.textContent=`COMBO ×${n}`;p.classList.remove('show');void p.offsetWidth;p.classList.add('show'); }
   function burst(n=12) {
     if(reducedMotion())return;

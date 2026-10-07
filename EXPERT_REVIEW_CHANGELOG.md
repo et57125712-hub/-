@@ -115,7 +115,7 @@ TEST_URL=http://127.0.0.1:8765/mission.html node tests/immune-rush.browser.cjs
 
 - `mission.html`：IMMUNE RUSH，正式課堂任務與持續自主學習；維持七區／35 題、70% 解鎖、學生 localStorage 與展示模式。
 - `index.html`：免疫守衛戰，課後／考前的 Boss 連戰。保留三種題庫模式、原 70 題、五個 Boss、每 Boss 四型態及角色進化；沒有套用 IMMUNE RUSH 的任務或進度規則。
-- 完整作答一區後，結果最下方新增次要的「挑戰 BOSS 連戰」入口。首頁與正式題目流程沒有插入連戰。
+- 完整作答一區後，結果最下方新增次要的「挑戰 BOSS 連戰」入口。當輪尚未在首頁設入口；後續首頁入口追加需求見本文件末節。正式題目流程保持獨立。
 - 連戰結算提供「回到 IMMUNE RUSH 複習弱項」，直接開啟知識雷達。連戰錯題留在結算頁，不會冒充正式任務成績或改寫學生紀錄。
 - 連戰維持單輪練習：重新整理會清空本輪；規則中已說明。IMMUNE RUSH 仍提供本機接續。
 
@@ -170,3 +170,15 @@ TEST_URL=http://127.0.0.1:8765/index.html node tests/immune-guardian.browser.cjs
 
 - [Resuscitation Council UK：Anaphylaxis guidance](https://www.resus.org.uk/library/additional-guidance/guidance-anaphylaxis) — 嚴重過敏反應與肌肉注射腎上腺素的首選地位。
 - [Merck Manual：Contact Dermatitis](https://www.merckmanuals.com/professional/dermatologic-disorders/dermatitis/contact-dermatitis) — 過敏性與刺激性接觸性皮膚炎的區別。
+
+
+## 首頁挑戰入口與動態介面（追加修訂）
+
+依追加需求，首頁現在直接提供「BOSS 連戰挑戰」卡片，不需先完成正式任務；原任務完成頁的入口仍保留。卡片明示課後挑戰、免解鎖、獨立計分，連至原 `index.html`，兩套題庫、進度與規則維持獨立。
+
+- 首頁加入醫護防線盾牌與有限次掃描／擴散動畫，調整標題、圖形與數據的空間。
+- 挑戰卡片加入短入場與光帶動畫；任務卡依序入場、進度條展開、結果徽章浮現。
+- XP／Combo／Energy 變動時短暫跳動，新題切換淡入；配對與排序的同題操作不重播整張題卡動畫。
+- 答題回饋與 Boss 情境邊框使用短動畫。沒有加入等待動畫才能作答的限制，也不自動換題。
+- 裝飾動畫於 4.2 秒內停止；系統「減少動態效果」會停用 CSS 與新增 JavaScript 動畫。效果不攔截觸控、不遮住解析。
+- 此次不修改題庫、計分、70% 解鎖規則或免疫守衛戰的玩法。
