@@ -21,15 +21,16 @@
   function planHealth(total){return stages.map((_,i)=>{let health=0;for(let q=Math.floor(i*total/5)+1;q<=Math.floor((i+1)*total/5);q++)health+=damageFor(q,i+1);return health;});}
   function animate(el,cls){if(reducedMotion())return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);}
   function settleFighter(el){const next=el.querySelector('.morph-new');if(next)el.innerHTML=next.innerHTML;el.classList.remove('morphing');}
-  function clearEffects(){clearTimeout(feedbackTimer);$('battle').classList.remove('boss-enter');$('strike').className='strike';$('impact').className='impact';[$('hero'),$('monster')].forEach(settleFighter);document.querySelectorAll('.attack,.hit,.pop,.evolve-pop').forEach(el=>el.classList.remove('attack','hit','pop','evolve-pop'));}
+  function clearEffects(){clearTimeout(feedbackTimer);$('battle').classList.remove('boss-enter');$('damage').className='damage';$('strike').className='strike';$('impact').className='impact';[$('hero'),$('monster')].forEach(settleFighter);document.querySelectorAll('.attack,.counter-attack,.hit,.pop,.evolve-pop').forEach(el=>el.classList.remove('attack','counter-attack','hit','pop','evolve-pop'));}
   function morph(el,markup,changed){
     settleFighter(el);
     if(changed&&!reducedMotion()&&el.innerHTML){el.innerHTML=`<span class="morph-old">${el.innerHTML}</span><span class="morph-new">${markup}</span>`;animate(el,'morphing');}
     else el.innerHTML=markup;
   }
+  function fitAnswer(){const space=Math.max(160,innerHeight-Math.max(0,$('battle').getBoundingClientRect().bottom)-16);$('answerDialog').style.setProperty('--review-space',space+'px');}
   function openAnswer(){
     if(phase!=='feedback')return;clearTimeout(feedbackTimer);reviewed=true;
-    const x=scrollX,y=scrollY;
+    const x=scrollX,y=scrollY;fitAnswer();
     if(!$('answerDialog').open){document.documentElement.classList.add('feedback-open');$('answerDialog').showModal();$('answerScroll').scrollTop=0;}
     $('closeAnswerBtn').focus({preventScroll:true});scrollTo({left:x,top:y,behavior:'instant'});
   }
@@ -38,18 +39,18 @@
   function getHeroState(){let state=heroStates[0];for(const entry of heroStates)if(streak>=entry.min)state=entry;return state;}
   function applyHeroState(){
     const s=getHeroState(),rank=heroStates.indexOf(s),tier=scene.heroTier(rank),changed=paintedHero>=0&&tier>paintedHero;
-    $('heroName').textContent=s.name;$('hero').className='hero '+s.cls;
+    $('heroName').textContent=s.name;$('heroSkill').textContent=s.skill;$('heroIcon').innerHTML=scene.emblem(rank);$('hero').className='hero '+s.cls;
     if(tier!==paintedHero)morph($('hero'),scene.guardian(rank),changed);
-    paintedHero=tier;heroForm=rank;$('equip').textContent='';
+    paintedHero=tier;heroForm=rank;
     return changed;
   }
   function updateBossForm(){
-    if(enemyHp===0){$('bossFormLabel').textContent='✓ 已擊敗';$('phaseTag').textContent='✓ 已擊敗';return false;}
+    if(enemyHp===0){$('bossFormLabel').textContent='✓ 已擊敗';return false;}
     const ratio=enemyHp/maxHp;bossForm=ratio<=.1?4:ratio<=.35?3:ratio<=.7?2:1;
     const form=stages[stage-1].forms[bossForm-1],key=stage+'-'+bossForm,changed=paintedBoss.startsWith(stage+'-')&&paintedBoss!==key;
     $('bossName').textContent=form[0];$('monster').className='monster form'+bossForm;
     if(paintedBoss!==key)morph($('monster'),scene.boss(stage,bossForm),changed);
-    paintedBoss=key;$('bossFormLabel').textContent=formNames[bossForm-1];$('phaseTag').textContent=['Ⅰ 初始','Ⅱ 突變','Ⅲ 狂暴','Ⅳ 終極'][bossForm-1];
+    paintedBoss=key;$('bossFormLabel').textContent=formNames[bossForm-1];$('bossIcon').innerHTML=scene.boss(stage,bossForm);
     return changed;
   }
   function update(){
@@ -79,8 +80,8 @@
   function choose(el,opt){
     if(phase!=='question'||!current)return;clearEffects();phase='feedback';const ok=opt===current.ans;const beforeForm=bossForm;let damage=0,counter=0,changes={hero:false,boss:false};
     document.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.dataset.option===current.ans){b.classList.add('correct');b.innerHTML+='<span class="answer-mark">✓ 正確答案</span>';}else if(b===el){b.classList.add('wrong');b.innerHTML+='<span class="answer-mark">✕ 你的選擇</span>';}});
-    if(ok){streak++;bestCombo=Math.max(streak,bestCombo);score+=baseDamage(streak);damage=damageFor(streak,stage);enemyHp=Math.max(0,enemyHp-damage);if(enemyHp===0)defeated++;changes=update();if(!changes.hero)animate($('hero'),'attack');if(!changes.boss)animate($('monster'),'hit');$('strike').className='strike';animate($('strike'),'fire');$('damage').textContent='−'+damage;animate($('damage'),'pop');bossSay(enemyHp===0?'defeat':bossForm>beforeForm?'transform':streak%5===0?'milestone':enemyHp/maxHp<=.1?'low':'right');}
-    else{streak=0;counter=Math.min(3,1+Math.floor((stage-1)/2));hp=Math.max(0,hp-counter);changes=update();animate($('hero'),'hit');$('strike').className='strike counter';animate($('strike'),'fire');bossSay('wrong');}
+    if(ok){streak++;bestCombo=Math.max(streak,bestCombo);score+=baseDamage(streak);damage=damageFor(streak,stage);enemyHp=Math.max(0,enemyHp-damage);if(enemyHp===0)defeated++;changes=update();if(!changes.hero)animate($('hero'),'attack');if(!changes.boss)animate($('monster'),'hit');$('strike').innerHTML=scene.attack(heroForm);$('strike').className='strike tier'+heroForm;animate($('strike'),'fire');$('damage').textContent='−'+damage;animate($('damage'),'pop');bossSay(enemyHp===0?'defeat':bossForm>beforeForm?'transform':streak%5===0?'milestone':enemyHp/maxHp<=.1?'low':'right');}
+    else{streak=0;counter=Math.min(3,1+Math.floor((stage-1)/2));hp=Math.max(0,hp-counter);changes=update();animate($('hero'),'hit');animate($('monster'),'counter-attack');$('strike').innerHTML=scene.attack(0,true);$('strike').className='strike counter';animate($('strike'),'fire');$('damage').className='damage hero-damage';$('damage').textContent='−'+counter+' 生命';animate($('damage'),'pop');bossSay('wrong');}
     $('impact').className='impact '+(ok?'enemy-impact':'hero-impact');animate($('impact'),'burst');
     if(changes.hero||changes.boss){$('evolutionBanner').textContent=changes.hero&&changes.boss?'雙重覺醒・守衛升級／Boss 變身':changes.boss?`BOSS ${formNames[bossForm-1]}・${stages[stage-1].forms[bossForm-1][0]}`:`守衛換裝・${getHeroState().name}`;animate($('evolutionBanner'),'evolve-pop');}
     history.push({id:current.id,selected:opt,ok});$('roundProgress').value=history.length;
@@ -89,7 +90,7 @@
     $('answerBtn').disabled=false;$('nextBtn').disabled=false;
     const nextLabel=hp===0||stage===5&&enemyHp===0||index>=pool.length?'查看結算':enemyHp===0?`迎戰 BOSS ${stage+1}`:'繼續・下一題';
     $('nextBtn').textContent=nextLabel;$('continueBattleBtn').textContent=nextLabel;
-    clearTimeout(feedbackTimer);if(reducedMotion())openAnswer();else feedbackTimer=setTimeout(openAnswer,changes.hero||changes.boss?1000:580);
+    clearTimeout(feedbackTimer);if(reducedMotion())openAnswer();else feedbackTimer=setTimeout(openAnswer,changes.hero||changes.boss?1050:760);
 
   }
   function nextQuestion(){
@@ -111,14 +112,15 @@
   $('battle').insertAdjacentHTML('afterbegin',scene.backdrop());
   $('lobbyScene').innerHTML=scene.backdrop()+`<div class="platform left"></div><div class="platform right"></div><div class="hero">${scene.guardian()}</div><div class="monster">${scene.boss()}</div>`;
   $('startBtn').onclick=startGame;$('nextBtn').onclick=()=>{if(phase==='feedback'){if(reviewed)nextQuestion();else openAnswer();}};$('answerBtn').onclick=openAnswer;
+  window.addEventListener('resize',()=>{if($('answerDialog').open)fitAnswer();});
   $('continueBattleBtn').onclick=nextQuestion;
   $('closeAnswerBtn').onclick=()=>{closeAnswer();$('answerBtn').focus({preventScroll:true});};
   $('answerDialog').addEventListener('cancel',e=>{e.preventDefault();closeAnswer();$('answerBtn').focus({preventScroll:true});});
   $('endBtn').onclick=()=>{if(confirm('要結束本輪並查看已作答題目的結算嗎？'))finishGame('stopped');};
-  $('impact').innerHTML=Array.from({length:12},(_,i)=>`<i style="--ray:${i}"></i>`).join('');
+  $('impact').innerHTML='<span class="impact-cut"></span>'+Array.from({length:12},(_,i)=>`<i style="--ray:${i}"></i>`).join('');
   $('battle').addEventListener('animationend',e=>{
     if(e.animationName==='bossEnter')$('battle').classList.remove('boss-enter');
     if(e.animationName==='morphReveal')settleFighter(e.target.closest('.hero,.monster'));
-    if(['attack','hit','pop','evolvePop'].includes(e.animationName))e.target.classList.remove('attack','hit','pop','evolve-pop');
+    if(['attack','counterAttack','hit','pop','evolvePop'].includes(e.animationName))e.target.classList.remove('attack','counter-attack','hit','pop','evolve-pop');
   });
 })();

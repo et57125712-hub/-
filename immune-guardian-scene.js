@@ -23,16 +23,36 @@ window.ImmuneGuardianScene = (() => {
     const crown=form===4?`<g class="mutation-crown"><path d="m54 34-8-29 23 14L80 1l13 18 23-14-9 29Z" fill="${eye}" stroke="${light}" stroke-width="2"/><path d="m14 87-8 31 28-5-5 23 29-11m88-38 8 31-28-5 5 23-29-11" fill="none" stroke="${eye}" stroke-width="5"/><path d="m69 83 11-14 11 14-11 15Z" fill="${eye}"/></g>`:'';
     return svg(`<ellipse cx="80" cy="139" rx="${44+form*3}" ry="7" fill="#050615" opacity=".6"/><g class="boss-body form-${form}" data-form="${form}">${wings}${form>=2?mutations[stage-1]:''}${shapes[stage-1]}${armor}<path d="M52 64 74 72 61 80ZM108 64 86 72 99 80Z" fill="${eye}" stroke="#252036" stroke-width="2"/><path d="m66 96 14 6 14-6" stroke="${eye}" stroke-width="3" fill="none"/>${crown}</g>`);
   }
-  const heroTier=rank=>rank===0?0:rank<3?1:rank<6?2:rank<8?3:rank<15?4:5;
+  const heroTier=rank=>Math.max(0,Math.min(5,rank));
+  const emblemPaths=[
+    '<path d="m16 3 12 5v12L16 29 4 20V8Z"/><path d="M16 10v12m-6-6h12"/>',
+    '<path d="m8 8 5 3-5 14-5-3Zm14 0 5 3-5 14-5-3ZM8 5l7 4m7-4 7 4M5 25l-2 5m16-5-2 5"/>',
+    '<path d="m9 5-6 6 5 5v12h16V16l5-5-6-6-7 4Z"/><path d="M12 17h8m-4-4v10"/>',
+    '<path d="M15 25 3 9v12l12 8m2-4L29 9v12l-12 8M8 16l6 7m10-7-6 7"/>',
+    '<path d="m4 9 7 5 5-10 5 10 7-5-3 16H7Z"/><path d="M8 29h16"/>',
+    '<ellipse cx="16" cy="12" rx="13" ry="7"/><path d="M16 19v12m-6-6h12"/>'
+  ];
+  function emblem(rank=0){const tier=heroTier(rank);return `<svg viewBox="0 0 32 32" data-emblem="${tier}" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${emblemPaths[tier]}</g></svg>`;}
+  function attack(rank=0,counter=false){
+    const tier=heroTier(rank),shapes=[
+      '<path d="M17 6 34 11v13L17 34 3 24V11Z"/><path d="M17 13v13m-6-6h12"/>',
+      '<path d="M6 9h24v7H6Zm0 15h24v7H6ZM30 12h10M30 28h10M3 5v15m0 0v15"/>',
+      '<path d="m3 20 15-16 23 16-23 16Z"/><path d="m14 20 7-7 11 7-11 7Z"/>',
+      '<path d="M2 36Q14 5 42 3L27 18Z"/>',
+      '<path d="M1 16h29l12 4-12 4H1m5-13 14 9L6 29"/>',
+      '<ellipse cx="20" cy="20" rx="15" ry="12"/><ellipse cx="20" cy="20" rx="8" ry="17"/><path d="M35 20h9"/>'
+    ];
+    return `<span class="strike-trail"></span><svg class="projectile" viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">${counter?'<path d="m4 20 12-15 5 10 16-8-8 13 8 13-16-8-5 10Z"/>':shapes[tier]}</svg>`;
+  }
   function guardian(rank=0){
     const tier=heroTier(rank),accent=tier>=4?'#e5b3ff':tier>=2?'#ffe1a0':'#92f7ee',armor=tier>=4?'#9584c4':tier>=2?'#dbb776':'#b9e0e4';
     const wings=tier>=3?`<path d="m59 66-49-37 7 32-12 13 38 12-10 26 27-13m42-33 48-37-7 32 12 13-38 12 10 26-28-13" fill="${tier>=4?'#57477c':'#23556a'}" stroke="${accent}" stroke-width="3"/><path d="m19 47 31 27-27-1m118-26-31 27 27-1" fill="none" stroke="${accent}" stroke-width="3"/>`:'';
-    const equipment=tier>=1?`<g class="guardian-weapons"><path d="m35 68-11 61 8 3 17-59M39 67l7-21 7 5-6 22" fill="#337d98" stroke="${accent}" stroke-width="3"/><path d="M22 122 11 138m19-9-3 15" stroke="${accent}" stroke-width="3"/></g>`:'';
+    const equipment=tier>=1?`<g class="guardian-weapons" fill="#337d98" stroke="${accent}" stroke-width="2.5"><path d="m24 69-10 45 8 2 13-44ZM38 70l-7 48 8 1 9-46ZM14 116l-4 14m25-9-2 13M23 65l14 4M37 66l14 3"/><path d="m18 85 10 2m7 2 9 2"/></g>`:'';
     const plates=tier>=2?`<path d="m60 55-14-13-14 19 15 13 17-8m36-11 17-13 14 19-15 13-16-8M66 87l-8 11 8 17 16-16 18 16 7-17-9-11" fill="${armor}" stroke="${accent}" stroke-width="3"/><path d="m65 58 18 9 18-9-5 29H70Z" fill="#233a55" stroke="${accent}" stroke-width="2"/>`:'';
     const crest=tier>=4?`<path d="m62 22-6-21 17 12 11-11 10 11 17-12-8 22Z" fill="${accent}" stroke="#f9e8ff" stroke-width="2"/>`:'';
     const halo=tier===5?`<g fill="none" stroke="${accent}" stroke-width="3"><ellipse cx="83" cy="35" rx="58" ry="20"/><path d="M15 55v22M4 66h22m120-11v22m-11-11h22"/></g>`:'';
-    return svg(`<g data-hero-tier="${tier}"><ellipse cx="81" cy="140" rx="38" ry="7" fill="#020713" opacity=".7"/>${halo}${wings}<path d="M62 59 33 132l51-22 36 24-20-75" fill="${tier>=4?'#513b77':'#16495f'}" stroke="#65b7c7" stroke-width="2"/><path d="m66 96-9 39h19l9-34 9 34h18l-14-42" fill="#587a96" stroke="${accent}" stroke-width="2"/><path d="m59 54-18 29 13 9 12-18 32 3 21 15 10-14-26-27Z" fill="${armor}" stroke="#d8f9ff" stroke-width="2"/><path d="m61 54 4 42 35-1 2-43Z" fill="${armor}" stroke="#8ebec9" stroke-width="2"/>${plates}<path d="M81 66v18m-9-9h18" stroke="${tier>=2?accent:'#269999'}" stroke-width="5"/><path d="M61 22q25-19 45 0v24L91 58 67 48Z" fill="${armor}" stroke="#e4fcff" stroke-width="2"/><path d="M61 29h43v12H65Z" fill="#183748"/><path d="m70 31 26 1" stroke="${accent}" stroke-width="3"/>${crest}${equipment}<path d="m105 65 30 9-5 32-22 15-20-17V74Z" fill="#173e54" stroke="${accent}" stroke-width="4"/><path d="M110 79v25m-10-13h21" stroke="${accent}" stroke-width="5"/></g>`);
+    return svg(`<g data-hero-tier="${tier}"><ellipse cx="81" cy="140" rx="38" ry="7" fill="#020713" opacity=".7"/>${halo}${wings}<path d="M62 59 33 132l51-22 36 24-20-75" fill="${tier>=4?'#513b77':'#16495f'}" stroke="#65b7c7" stroke-width="2"/><path d="m66 96-9 39h19l9-34 9 34h18l-14-42" fill="#587a96" stroke="${accent}" stroke-width="2"/><path d="m59 54-18 29 13 9 12-18 32 3 21 15 10-14-26-27Z" fill="${armor}" stroke="#d8f9ff" stroke-width="2"/><path d="m61 54 4 42 35-1 2-43Z" fill="${armor}" stroke="#8ebec9" stroke-width="2"/>${plates}<path d="M81 66v18m-9-9h18" stroke="${tier>=2?accent:'#269999'}" stroke-width="5"/><path d="M61 22q25-19 45 0v24L91 58 67 48Z" fill="${armor}" stroke="#e4fcff" stroke-width="2"/><path d="M61 29h43v12H65Z" fill="#183748"/><path d="m70 31 26 1" stroke="${accent}" stroke-width="3"/>${crest}${equipment}<path d="m105 65 30 9-5 32-22 15-20-17V74Z" fill="#173e54" stroke="${accent}" stroke-width="4"/><g transform="translate(98 80) scale(.78)" stroke="${accent}" stroke-width="2.5" fill="none">${emblemPaths[tier]}</g></g>`);
   }
   function backdrop(){return `<svg class="scene-backdrop" viewBox="0 0 600 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle class="scene-moon" cx="452" cy="85" r="71" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="452" cy="85" r="57" fill="none" stroke="currentColor" stroke-dasharray="5 11"/><path d="M0 187V121l29-15 24 15v50h29V93l39-21 37 21v87h54v-34l27-15 29 14v41h85v-56l35-27 30 14v58h33V93l27-15 29 15v77h36v-57l36-18 30 16v72h40v57H0Z" fill="#152039" stroke="currentColor" stroke-opacity=".28"/><path d="M0 189h600M0 220h600M300 177 30 240m270-63L160 240m140-63v63m0-63 140 63m-140-63 270 63" fill="none" stroke="currentColor" stroke-opacity=".25"/><g fill="currentColor" opacity=".7"><path d="M93 103h5v26h-5zm15-7h5v26h-5zm317 14h5v24h-5z"/><circle cx="27" cy="57" r="2"/><circle cx="201" cy="38" r="3"/><circle cx="332" cy="70" r="2"/><circle cx="564" cy="50" r="3"/></g></svg>`;}
-  return {boss,guardian,heroTier,backdrop};
+  return {boss,guardian,heroTier,emblem,attack,backdrop};
 })();

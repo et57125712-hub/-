@@ -14,7 +14,7 @@ fs.mkdirSync(out,{recursive:true});
   const prompt=await p.locator('#question').innerText(),q=data.find(q=>q.q===prompt);
   await p.locator('.option').filter({has:p.getByText(q.ans,{exact:true})}).click();
   const y=await p.evaluate(()=>scrollY);
-  if(i===2){assert(await p.locator('#monster.morphing').count());assert(await p.locator('#hero.morphing').count());}
+  if(i===2){assert(await p.locator('#monster.morphing').count());assert(await p.locator('#hero.morphing').count());assert.match(await p.locator('#strike').getAttribute('class'),/tier1/);assert.equal(await p.locator('#strike .projectile').count(),1);}
   if(i===3){
    // Opening the sheet manually skips the effect wait; continuing cancels its old timer.
    await p.locator('#answerBtn').click();await p.locator('#continueBattleBtn').click();await p.waitForTimeout(1150);
@@ -25,7 +25,7 @@ fs.mkdirSync(out,{recursive:true});
   assert(await p.evaluate(()=>document.querySelector('#answerDialog').contains(document.activeElement)));
   const panel=await p.locator('#answerDialog').boundingBox(),battle=await p.locator('#battle').boundingBox();assert(panel.y>=battle.y+battle.height,'battle remains above review sheet');
   forms.add(await p.locator('#monster [data-form]').last().getAttribute('data-form'));outfits.add(await p.locator('#hero [data-hero-tier]').last().getAttribute('data-hero-tier'));
-  if(i===2||i===10)await p.screenshot({path:path.join(out,`${name}-transformed-review-${i}.png`),animations:'disabled'});
+  if(i===2||i===4||i===8||i===12)await p.screenshot({path:path.join(out,`${name}-transformed-review-${i}.png`),animations:'disabled'});
   if(i===2){const score=await p.locator('#score').innerText();await p.keyboard.press('Escape');assert(!(await p.locator('#answerDialog').isVisible()));assert.equal(await p.evaluate(()=>scrollY),y);await p.locator('#answerBtn').click();assert.equal(await p.locator('#score').innerText(),score);}
   await p.locator('#continueBattleBtn').click();
  }

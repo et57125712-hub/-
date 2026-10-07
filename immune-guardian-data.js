@@ -88,35 +88,15 @@ const bossLines=[
 {open:['我專打自己人，因為敵我辨識是選修。','我最大的敵人，就是我自己。'],right:['又答對？你的自體耐受很穩。','你辨識得比我的免疫系統還清楚。'],wrong:['這答案像自體抗體，專門攻擊正確觀念。','恭喜，你剛剛把自己人當敵人。','選錯這題，Treg都看不下去了。'],transform:['我更強了，因為連自己都不放過。','自體抗體全面上線。'],low:['免疫複合物太重，我先喘一下。','我不是虛弱，是發炎太忙。'],milestone:['你越連勝，我越懷疑自己的存在。','再答對，我就連MHC都不信了。'],defeat:['被你打敗，第一次學會什麼叫自我寬容。','原來放過自己，也是一種免疫力。']},
 {open:['我是最終魔王，也是你最後一頁還沒看的講義。','歡迎來到最後一關，錯一題我就笑兩次。'],right:['又答對？你這CD4指揮鏈太完整了。','先別驕傲，真正的Boss是最後十題。','你越答越順，我越像模擬考。'],wrong:['答錯一次，我就多一條細胞激素。','這答案的免疫逃脫，比我還熟練。','這回合我守住了；找出情境線索再挑戰。'],transform:['終極變身！現在開始每個選項都像正確答案。','我要把題幹拉長，看看你還能不能呼吸。'],low:['我只剩一點血，但你也只剩一點專注力。','別看我低血，我嘴還很滿。'],milestone:['連勝到這裡？你已經不是護生，是系統漏洞。','你的連勝比我的血條還難處理。','再這樣下去，我要向出題老師申訴。'],defeat:['FINAL CLEAR？別忘了真正的 Boss 是期末考。','你贏了，我去重修免疫逃脫。']}
 ];
+// Each evolution is one distinct silhouette, equipment emblem and attack style.
+// Combo damage remains defined independently in the app.
 const heroStates=[
-{min:0,name:'護生守衛',icon:'🧑‍⚕️',equip:'',cls:'',skill:'注射突擊'},
-{min:2,name:'雙針實習生',icon:'🧑‍⚕️',equip:'💉💉',cls:'form2',skill:'雙針連射'},
-{min:3,name:'防護裝甲護生',icon:'🥽',equip:'🛡️🥽',cls:'form3',skill:'防護盾衝擊'},
-{min:4,name:'補體光環使者',icon:'🦸‍♂️',equip:'⭕💥',cls:'form4',skill:'補體爆破'},
-{min:5,name:'注射特攻護師',icon:'🥷',equip:'💉⚡',cls:'form5',skill:'高速注射突襲'},
-{min:6,name:'抗體鎖定者',icon:'🦸',equip:'🎯🧬',cls:'form6',skill:'IgG鎖定光束'},
-{min:8,name:'免疫守護大師',icon:'🦸‍♀️',equip:'⚕️⚔️',cls:'form7',skill:'NK斬擊'},
-{min:10,name:'終極免疫神裝',icon:'🧙‍♂️',equip:'✨👑',cls:'form8',skill:'全畫面免疫必殺'},
-{min:12,name:'IgG光束使',icon:'🦸',equip:'🧬✨',cls:'form8',skill:'IgG光束'},
-{min:14,name:'NK終結者',icon:'🥷',equip:'⚔️🌙',cls:'form8',skill:'NK終結斬'},
-{min:16,name:'MAC破城者',icon:'🧙‍♂️',equip:'⭕💥',cls:'form8',skill:'MAC破城爆破'},
-{min:18,name:'記憶細胞覺醒',icon:'🦸‍♂️',equip:'🧠✨',cls:'form8',skill:'二次反應覺醒'},
-{min:20,name:'超級抗原獵人',icon:'🧝‍♂️',equip:'🏹🎯',cls:'form8',skill:'抗原追蹤箭'},
-{min:22,name:'細胞激素風暴型態',icon:'🧙‍♀️',equip:'🌪️⚡',cls:'form8',skill:'細胞激素風暴'},
-{min:24,name:'MHC雙核心戰士',icon:'🦸‍♂️',equip:'ⅠⅡ',cls:'form8',skill:'MHC雙核心衝擊'},
-{min:26,name:'免疫指揮官',icon:'🧑‍✈️',equip:'📡⚕️',cls:'form8',skill:'全軍免疫總攻'},
-{min:28,name:'白金護理戰神',icon:'🦹‍♀️',equip:'💎👑',cls:'form8',skill:'白金守護裁決'},
-{min:30,name:'免疫天選護師',icon:'🪽',equip:'🌟⚕️',cls:'form8',skill:'終極免疫封印'},
-{min:32,name:'抗原星際追獵者',icon:'🧑‍🚀',equip:'🛰️🎯',cls:'form8',skill:'星際抗原鎖定'},
-{min:35,name:'補體銀河操控者',icon:'🧙‍♂️',equip:'🌌⭕',cls:'form8',skill:'銀河補體漩渦'},
-{min:38,name:'T細胞審判官',icon:'🦸‍♂️',equip:'⚖️⚔️',cls:'form8',skill:'細胞審判斬'},
-{min:40,name:'免疫超頻護師',icon:'🤖',equip:'⚡⚕️',cls:'form8',skill:'免疫超頻衝擊'},
-{min:45,name:'多重抗體指揮者',icon:'🧙‍♀️',equip:'IgG IgA',cls:'form8',skill:'五型抗體合奏'},
-{min:50,name:'終極記憶覺醒者',icon:'🦸‍♀️',equip:'🧠🌟',cls:'form8',skill:'永久記憶爆發'},
-{min:55,name:'細胞軍團總司令',icon:'🧑‍✈️',equip:'📡🛡️',cls:'form8',skill:'全細胞總動員'},
-{min:60,name:'免疫時空守護神',icon:'🧙‍♂️',equip:'⏳🧬',cls:'form8',skill:'時空免疫封鎖'},
-{min:65,name:'白金神聖護理王',icon:'👑',equip:'💎⚕️',cls:'form8',skill:'神聖白金裁決'},
-{min:70,name:'超越免疫極限・傳說護師',icon:'🪽',equip:'🌠⚕️',cls:'form8',skill:'宇宙級終極免疫封印'}
+{min:0,name:'護生守衛',cls:'',skill:'防護盾衝擊'},
+{min:2,name:'雙針實習生',cls:'form2',skill:'雙針連射'},
+{min:4,name:'防護裝甲護師',cls:'form3',skill:'裝甲能量衝擊'},
+{min:8,name:'光翼免疫守衛',cls:'form4',skill:'光翼斬擊'},
+{min:12,name:'冠冕免疫指揮官',cls:'form5',skill:'冠冕鎖定光束'},
+{min:26,name:'光環免疫統帥',cls:'form6',skill:'光環連鎖爆破'}
 ];
 
 national.forEach((q,i)=>{q.id='national-'+(i+1);q.category='國考特訓';});
