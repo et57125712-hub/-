@@ -47,6 +47,8 @@ await p.goBack();
 assert(await p.locator('#homeView').isVisible());
 
 await p.waitForTimeout(4500);
+assert(await p.evaluate(()=>document.getAnimations().some(a=>a.playState==='running'&&a.effect.getTiming().iterations===Infinity)));
+await p.locator('[data-rush-motion]').click();
 assert.equal(await p.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length),0);
 await p.locator('#continueBtn').click();
 const data=await p.evaluate(()=>window.ImmuneRushData.stages);
@@ -75,7 +77,7 @@ await p.keyboard.press('Enter');
 await p.waitForURL('**/index.html');
 assert.match(await p.title(),/免疫守衛戰/);
 assert.deepEqual(errors,[]);
-results.push({engine,width,height,firstFourFacilitiesAboveNav:true,sceneAndList:true,sevenFacilities:true,bossGate:true,finiteMotion:true,reducedMotion:true,progressPreserved:true,zoom200:true,result:'PASS'});
+results.push({engine,width,height,firstFourFacilitiesAboveNav:true,sceneAndList:true,sevenFacilities:true,bossGate:true,controllableAmbientMotion:true,reducedMotion:true,progressPreserved:true,zoom200:true,result:'PASS'});
 console.log(engine,width,'PASS');
 await p.close();
 }await b.close()}fs.writeFileSync(path.join(output,'results.json'),JSON.stringify(results,null,2))})().catch(e=>{console.error(e);

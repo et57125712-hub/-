@@ -7,7 +7,7 @@
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reducedMotion = () => !window.ImmuneRushAtmosphere.motionAllowed();
   const taskTypes = {choice:'快速判斷',rapid:'分類',match:'配對',sequence:'流程排序',boss:'臨床 Boss'};
   const allTasks = stages.flatMap(s => s.tasks);
   const freshSave = () => ({version:2,xp:0,combo:0,hearts:3,unlocked:1,scores:{},latest:{},attempts:{},wrong:{},history:{},sound:true,vibrate:true,demo:false,run:null});
@@ -125,6 +125,7 @@
     $$('.nav-btn').forEach(b=>{const on=b.dataset.view===id;b.classList.toggle('active',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
     $('#bottomNav').hidden=id==='gameView';
     if(id==='homeView')renderMap(); if(id==='reportView')renderReport(); if(id==='settingsView')syncSettings();
+    window.ImmuneRushAtmosphere.setView(id);
     window.scrollTo(0,0); $('#mainContent').focus({preventScroll:true});
   }
   function unlocked(i) { return save.demo || i<save.unlocked; }
@@ -136,8 +137,9 @@
       const score=save.scores[s.id]||0,open=unlocked(i),answered=s.tasks.filter(t=>save.history[t.id]).length;
       const next=save.run?.stage===i || (!save.run && suggestedStage()===i);
       const status=!open?'🔒 待解鎖':score>=70?`✓ 通過 ${score}%`:save.demo?'◉ 展示可進入':save.run?.stage===i?'▶ 接續任務':next?'▶ 從這裡開始':'◉ 可進入';
-      return `<button type="button" class="stage-card ${next?'next-stage ':''} ${s.boss?'boss ':''}${open?'':'locked '}${score>=70?'done':''}" data-stage="${i}" style="--stage-order:${i}" aria-disabled="${!open}" aria-label="${i+1}. ${s.title}，${baseArt.facilities[i]}，${status}。${open?s.sub:`先完成${stages[i-1].title}達70%`}">${baseArt.facility(i)}<span class="stage-icon" aria-hidden="true">${icons[s.icon]}</span><span class="stage-info"><strong>${i+1}. ${s.title}</strong><span class="base-status">${status}</span><span class="stage-sub">${s.sub}</span><span class="stage-detail">${open?`${answered}/5 題已練習・${save.demo?'展示可直達 Boss':score>=70?'已通過，可複習':'本區通過 4/5 題解鎖下一區'}`:`🔒 先完成「${stages[i-1].title}」達 70%`}</span><span class="progress-track"><i style="width:${score}%"></i></span></span><span class="stage-side"><b>${score}%</b><span>${open?'最佳成績':'未解鎖'}</span></span></button>`;
+      return `<button type="button" class="stage-card ${next?'next-stage ':''} ${s.boss?'boss ':''}${open?'':'locked '}${score>=70?'done':''}" data-stage="${i}" style="--stage-order:${i}" aria-disabled="${!open}" aria-label="${i+1}. ${s.title}，${baseArt.facilities[i]}，${status}。${open?s.sub:`先完成${stages[i-1].title}達70%`}">${baseArt.facility(i)}<span class="stage-icon" aria-hidden="true">${icons[s.icon]}</span><span class="stage-info"><strong>${i+1}. ${s.title}</strong><span class="base-status">${status}</span><span class="base-pips" aria-hidden="true">${s.tasks.map(t=>`<i class="${save.history[t.id]?(save.history[t.id].ok?'learned':'revisit'):''}"></i>`).join('')}</span><span class="stage-sub">${s.sub}</span><span class="stage-detail">${open?`${answered}/5 題已練習・${save.demo?'展示可直達 Boss':score>=70?'已通過，可複習':'本區通過 4/5 題解鎖下一區'}`:`🔒 先完成「${stages[i-1].title}」達 70%`}</span><span class="progress-track"><i style="width:${score}%"></i></span></span><span class="stage-side"><b>${score}%</b><span>${open?'最佳成績':'未解鎖'}</span></span></button>`;
     }).join('')+baseArt.bossGate();
+    $('#baseHelp').textContent=save.demo?'展示基地・七區自由探索':save.run?`接續：${stages[save.run.stage].title} ${save.run.index+1}/5`:`${suggestedStage()>=0?'下一站：'+stages[suggestedStage()].title:'七區點亮・返回雷達複習'}`;
     applyMapMode();
     $$('#stageMap [data-stage]').forEach(b=>b.onclick=()=>startStage(Number(b.dataset.stage)));
     const target=suggestedStage(),pending=save.run;
@@ -174,6 +176,8 @@
     $('#resultPanel').classList.remove('active');$('#questionCard').hidden=false;
     $('#gameStageTitle').textContent=s.title;$('#gameStageSub').textContent=t.point;
     $('#roundPill').textContent=`${taskIndex+1} / ${s.tasks.length}`;
+    if($('#missionFacility').dataset.stage!==String(currentStage)){$('#missionFacility').innerHTML=baseArt.facility(currentStage);$('#missionFacility').dataset.stage=String(currentStage);}
+    window.ImmuneRushAtmosphere.duck(!!result);
     $('#arenaTitle').textContent=t.type==='boss'?'臨床 Boss・整合判斷':s.title;
     $('#arenaText').textContent=t.type==='boss'?'先找出情境線索，再用免疫機轉做判斷。':s.brief;
     $('#arena').classList.toggle('boss-arena',t.type==='boss');
@@ -265,6 +269,7 @@
     return '';
   }
   function showFeedback(t,result,moveFocus) {
+    window.ImmuneRushAtmosphere.duck(true);
     const fb=$('#feedback');fb.className='feedback show '+(result.ok||result.preview?'':'bad');
     const label=result.preview?'解析預覽・不計分':result.ok?(result.ratio<1?'✓ 本題通過，仍有項目需修正':'✓ 答對，任務成功'):'✕ 答錯，修正概念再出發';
     fb.innerHTML=`<h3>${label}</h3>${result.extra?`<p>${esc(result.extra)}；分類／配對須達 70% 才通過本題。</p>`:''}${result.preview?'':responseHTML(t)}<h4>正確答案</h4>${answerHTML(t)}<h4>為什麼？</h4><p>${t.explain}</p><p class="knowledge">核心知識點｜${t.point}</p>${!result.ok&&!result.preview&&save.hearts===0?'<p>Energy 已歸零，仍可繼續完成練習。</p>':''}`;
@@ -293,7 +298,7 @@
     const s=stages[currentStage],results=run.results,complete=results.every(r=>r&&!r.preview),correct=results.filter(r=>r?.ok&&!r.preview).length;
     const score=Math.round(correct/s.tasks.length*100);
     if(complete){save.scores[s.id]=Math.max(score,save.scores[s.id]||0);save.latest[s.id]=score;if(score>=70&&!save.demo)save.unlocked=Math.max(save.unlocked,Math.min(stages.length,currentStage+2));}
-    save.run=null;persist();$('#questionCard').hidden=true;
+    save.run=null;window.ImmuneRushAtmosphere.setView('result');persist();$('#questionCard').hidden=true;
     const result=$('#resultPanel');result.className='result active';
     result.innerHTML=`<div class="rank-badge" style="--degree:${complete?score*3.6:0}deg"><strong>${complete?(score>=90?'S':score>=80?'A':score>=70?'B':'C'):'展示'}</strong></div><h2>${!complete?'展示瀏覽完成':score>=70?'區域守備成功':'再練習，穩固防線'}</h2><p>${s.title}｜${complete?`本次成績 ${score}%・最佳 ${save.scores[s.id]}%`:'未完整作答，不計入任務成績'}</p><div class="result-grid"><div><b>${correct}/${s.tasks.length}</b><span>本次通過題數</span></div><div><b>${save.xp}</b><span>${save.demo?'展示':'累積'} XP</span></div><div><b>${save.attempts[s.id]}</b><span>挑戰次數</span></div></div><p>${save.demo?'展示資料僅供本次操作，不改變學生紀錄。':score>=70?(currentStage===stages.length-1?'七區皆已解鎖，可從雷達安排複習。':`已解鎖「${stages[currentStage+1].title}」。`):'整區至少通過 4/5 題，即達到 70% 解鎖門檻。'}</p><div class="review">${s.tasks.map((t,i)=>`<details class="review-item"><summary>${!results[i]?'未作答':results[i].preview?'解析預覽':results[i].ok?'✓ 通過':'✕ 待練習'}｜${t.point}</summary><h4>正確答案</h4>${answerHTML(t)}<p>${t.explain}</p></details>`).join('')}</div><div class="action-row"><button class="btn ghost" id="retryStage">再挑戰</button><button class="btn" id="returnMap">返回地圖</button></div><button class="btn ghost full" id="resultRadar">查看雷達與複習建議</button>${complete?'<section class="extension-card"><span class="kicker">課後延伸・自由挑戰</span><h3>準備迎戰五大 BOSS？</h3><p>免疫守衛戰提供綜合複習與考前連戰，獨立計分，不影響本教具的任務進度。</p><a id="bossChallenge" class="btn ghost full" href="./index.html">挑戰 BOSS 連戰</a></section>':''}`;
     $('#retryStage').onclick=()=>startStage(currentStage);$('#returnMap').onclick=()=>showView('homeView');$('#resultRadar').onclick=()=>showView('reportView');
@@ -319,7 +324,7 @@
   }
   function openReview(tasks) {
     $('#reviewContent').innerHTML=tasks.map(t=>`<section class="review-item"><h3>${t.point}</h3><p>${t.prompt}</p><h4>正確答案</h4>${answerHTML(t)}<h4>為什麼？</h4><p>${t.explain}</p></section>`).join('');
-    $('#reviewDialog').showModal();$('#reviewDialog').scrollTop=0;
+    window.ImmuneRushAtmosphere.duck(true);$('#reviewDialog').showModal();$('#reviewDialog').scrollTop=0;
   }
   function showHint() { const h=$('#hintBox');h.textContent='提示｜'+task().hint;const shown=h.classList.toggle('show');$('#hintBtn').setAttribute('aria-expanded',String(shown)); }
   function shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
@@ -353,6 +358,7 @@
     }
   };
   $('#closeReviewBtn').onclick=()=>$('#reviewDialog').close();
+  $('#reviewDialog').addEventListener('close',()=>window.ImmuneRushAtmosphere.duck(false));
   // A second tab can update/reset progress. Adopt it before this tab writes again.
   window.addEventListener('storage',e=>{
     if(e.key!==KEY&&e.key!==null)return;

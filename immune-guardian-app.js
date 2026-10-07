@@ -46,7 +46,8 @@
   }
   function closeAnswer(){if($('answerDialog').open)$('answerDialog').close();document.documentElement.classList.remove('feedback-open');audio.duck(false);}
   function bossSay(type){$('bossTalk').textContent=pick(bossLines[stage-1][type]||bossLines[stage-1].open);}
-  function getHeroState(){let state=heroStates[0];for(const entry of heroStates)if(streak>=entry.min)state=entry;return state;}
+  // Appearance is unlocked for this run; current streak still controls damage.
+  function getHeroState(){let state=heroStates[0];for(const entry of heroStates)if(bestCombo>=entry.min)state=entry;return state;}
   function applyHeroState(){
     const s=getHeroState(),rank=heroStates.indexOf(s),tier=scene.heroTier(rank),changed=paintedHero>=0&&tier>paintedHero;
     $('heroName').textContent=s.name;$('heroSkill').textContent=s.skill;$('heroIcon').innerHTML=scene.emblem(rank);$('hero').className='hero '+s.cls;
