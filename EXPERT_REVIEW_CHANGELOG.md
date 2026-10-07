@@ -1,0 +1,107 @@
+# IMMUNE RUSH：專家諮詢初版修改紀錄
+
+日期：2026-10-07（115 年度）
+定位：第一次專家諮詢用「完整可操作初版」，不是定稿或專家認證版本。
+基準：`main` / `9ea42171e4673c99cd09b6c6807acd9ed5293d91`。
+已完整讀取 `mission.html`、`immune-rush.css`、`immune-rush-data.js`、`immune-rush-app.js`，確認 GitHub main 及相關檔案後修改。原七區、35 題、科技視覺、XP／Combo／Energy、Boss、雷達及 70% 解鎖原則保留；未新增登入、伺服器、雲端資料庫或後台。其他既有教具與頁面未修改。
+
+## 原有問題、本次修改與原因
+
+| 原有問題 | 本次修改 | 修改原因 |
+|---|---|---|
+| 首頁文字較密、數量標示 36+，實際 35 題 | 明示免疫學手機教具與三種使用時機、提前 CTA，題數從資料計算 | 讓首次使用快速知道用途與開始方式 |
+| 部分字體過小、頂列擁擠、禁止縮放 | 調整字級與行高、狀態另列、允許縮放、44–50px 操作目標、safe area、長字換行 | 改善手機閱讀與觸控 |
+| 所有選擇題正確答案固定第一個 | 顯示時隨機排列並保存同題選項順序，答案仍依原索引判定 | 避免只記 A 的位置，重新整理不改答案 |
+| Energy 0 經 `hearts || 3` 被重設 | 明確驗證 0–3，歸零保持 0 且可繼續練習 | 排除錯誤回復與不必要的學習中斷 |
+| 分類 430ms 自動換項、離開後計時器可能仍觸發 | 逐項顯示對錯與正解，由學生點下一個分類 | 留足理解時間，移除延遲回呼污染畫面 |
+| 所謂配對實為連續選擇分類 | 6 題改為項目→功能的配對區，可重新指定後確認 | 保留分類，提供實際配對互動 |
+| 排序最後一項自動提交、無法修正誤觸 | 復原一步、重新排列、確認順序 | 減少與學習無關的操作失誤 |
+| 解析未獨立列出正確答案 | 明確分為對錯、自己的答案、正解、原因、核心知識點、下一步 | 幫助學生修正概念 |
+| Boss 全螢幕動畫遮住頁面；裝飾過強 | 移除遮罩、使用情境卡；縮短並限制粒子在頂部，支援減少動態效果 | 學習優先，減少等待與遮擋 |
+| 展示模式污染學生分數、解鎖與錯題 | 將展示操作放在獨立記憶體狀態，學生紀錄獨立保存；全頁明確標示模式 | 專家可自由體驗，學生規則保持正常 |
+| 展示須一路作答才能看到後面內容 | 直接選七區任一題／Boss、可直接看解析 | 方便第一次諮詢完整檢視 |
+| 無專家諮詢重點頁 | 新增展示模式限定十項重點資訊頁 | 提供檢視架構，不建立問卷或蒐集系統 |
+| 未完成挑戰重新整理就消失 | 保存目前區、題、已作答結果與分類／配對／排序中間狀態 | 支援課後接續與暫離 |
+| 只有最佳成績，錯誤只能累加 | 增加最近成績、逐題最近結果、待修正清單、已練題數 | 區分歷史最佳表現與目前複習需要 |
+| 雷達無法直接回練或回看解析 | 各區加入接續／重練及解析回顧對話框 | 讓診斷直接連結下一個學習行動 |
+| 複合題的錯誤可能重複累加 | 每題每次挑戰最多記 1 次需修正；部分答錯即使通過仍列入待修正 | 讓錯題統計更一致且可解讀 |
+| localStorage 無資料形狀驗證，寫入失敗靜默 | 欄位白名單、數值範圍、舊資料遷移、損壞 JSON 備份嘗試、讀寫失敗提示、多分頁同步 | 避免損壞存檔導致白畫面或誤覆寫 |
+| 每次音效建立新的 AudioContext | 重用 context、結束後斷開節點 | 避免長時間操作累積音訊資源 |
+| 設定開關為 div，重置後 UI 未同步 | 使用 button/role=switch/aria-checked；重置確認且保留音效、震動偏好 | 鍵盤可操作，畫面與狀態一致 |
+| 正誤與進度部分僅靠顏色 | 補上 ✓／✕ 與文字，focus 樣式、提示語意、對話框及導覽狀態 | 基本無障礙與易讀性 |
+
+## 題庫修訂
+
+- **防線啟動**：區分第一道防線的物理、化學與生物屏障；吞噬排序改以「抵達感染處後」為前提，使用辨識附著、攝入、融合、毒殺分解。說明調理可增強吞噬而非必須的獨立固定前置步驟。
+- **免疫部隊**：角色功能改為配對；修整 T/B 細胞成熟與周邊活化的文字。
+- **免疫記憶**：補充 B 肝暴露後處置仍需疫苗史／抗體／感染源評估；疫苗 Boss 結合免疫抑制與減毒病原仍可複製的原理。
+- **抗體鍛造**：補入抗原與免疫原區別；抗原概念與五大 Ig 改為配對，解析說明具體功能。
+- **血型危機**：ABO 改為配對；Rh 題明示已致敏及胎兒 Rh(D) 狀態，移除「只因抗體較小就能通過胎盤」的暗示；輸血 Boss 結合抗原抗體／補體與停止輸血的理由，並保留依院內流程處理的範圍。
+- **補體連鎖**：路徑與效應改為配對；區分 C3a 促進發炎、C5a 強力趨化，避免把所有 b 片段當成調理分子。
+- **MHC 最終戰**：體液性流程明示 T 依賴型蛋白質抗原與教學簡化前提；細胞毒殺排序明示已活化的 CD8 效應細胞。
+
+共 35 題：14 題快速判斷／情境選擇、4 題分類、6 題真正配對、4 題流程排序、7 題 Boss。未刪除原任務區或以其他遊戲取代。
+
+## 保存與計分說明
+
+- 保留 `immuneRushSave` key 與原 XP、成績、挑戰次數、錯題及設定；新增 version 2、latest、history、run。
+- 解鎖門檻維持整區 70%；每區五題，實際須通過四題（80%）。分類／配對題內須達 70% 才通過該題；部分錯誤仍保留解析與待修正紀錄。
+- 已結算題目重新整理後顯示原回饋，不重複發放 XP。完成挑戰才記整區成績，重練不降低最佳成績。
+- 同時只接續一個學生挑戰；改練其他區會先確認，已保存成績與解析不清除。
+- 展示模式的模式旗標會保留，展示成績僅留在記憶體，重新整理清空；不建立虛構的示範成績。
+- 舊版沒有逐題歷史，因此無法還原舊版每題的作答細節；舊最佳成績仍保留。舊版展示紀錄若已混入學生存檔，現有資料無法可靠辨識，不擅自刪除。
+- 本機儲存不等於跨裝置備份；仍需同一網站來源及瀏覽器。多分頁變更會回到地圖並載入最新紀錄。
+
+## 測試與維護
+
+瀏覽器測試位於 `tests/immune-rush.browser.cjs`，僅開發驗證用，不由學生頁面載入。需 Node.js、Playwright 與對應瀏覽器，另外啟動任意靜態 HTTP server。
+
+```sh
+python3 -m http.server 8765
+# 另一終端；Playwright 可由外部測試環境提供，網站本身無套件依賴。
+TEST_URL=http://127.0.0.1:8765/mission.html node tests/immune-rush.browser.cjs
+```
+
+可用 `PLAYWRIGHT_MODULE` 指定現有 Playwright 套件路徑、`CHROME_PATH` 指定 Chrome 執行檔、`TEST_OUTPUT` 指定證據輸出目錄。測試涵蓋七區 35 題、全部題型、正確／錯誤回饋、下一題、完成、XP／Combo／Energy、解鎖、雷達、設定、重置、展示隔離與重新整理。
+
+## 尚待專家確認
+
+1. 七區內容涵蓋度、名稱與順序是否符合實際五專課程。
+2. 吞噬與 T 依賴型體液性流程的教學簡化是否符合指定教材；是否補充例外概念。
+3. 35 題的文字長度、難度、干擾選項與情境推理深度；特別是疫苗、輸血、Rh 與 MHC。
+4. 保留的 70% 規則與複合題計分方式，是否適合形成性評量。
+5. 最佳成績、最近表現、常錯知識點的名稱是否易懂；勿將遊戲成績視為經驗證的精熟度測量工具。
+6. 課堂及課後實際使用時間、無障礙需求，以及手機字級是否適合學生。
+7. 實體 iPhone Safari／Android Chrome 的音效、震動、瀏覽器工具列、safe area；自動化 WebKit 並不等同實機 Safari。
+8. 參考來源為教材與概念核對，臨床情境仍請依臺灣最新教學與院內流程調整。
+
+## 內容核對參考
+
+核對日期：2026-10-07。來源供專家追溯，本作品並未宣稱經來源機構或專家認證。
+
+- [British Society for Immunology：B Cells](https://www.immunology.org/public-information/bitesized-immunology/cells/b-cells) — B 細胞發育與周邊反應。
+- [British Society for Immunology：T-cell development in thymus](https://www.immunology.org/public-information/bitesized-immunology/immune-development/t-cell-development-thymus) — 胸腺成熟與選擇。
+- [Immunobiology：The complement system and innate immunity](https://www.ncbi.nlm.nih.gov/books/NBK27100/) — C3b、C3a、C5a、C5b 與膜攻擊複合體。
+- [CDC：Altered Immunocompetence](https://www.cdc.gov/vaccines/hcp/imz-best-practices/altered-immunocompetence.html) — 免疫功能改變時活疫苗的安全評估。
+- [CDC Pink Book：Hepatitis B](https://www.cdc.gov/pinkbook/hcp/table-of-contents/chapter-10-hepatitis-b.html) — 暴露後免疫球蛋白與疫苗評估。
+- [CDC Pink Book：Principles of Vaccination](https://cdc.gov/pinkbook/hcp/table-of-contents/chapter-1-principles-of-vaccination.html) — 主動／被動免疫與疫苗原理。
+- [Australian Red Cross Lifeblood：Management of suspected reactions](https://www.lifeblood.com.au/health-professionals/clinical-practice/adverse-events/management-of-suspected-reactions) — 停止輸血、評估與維持通路的處理範圍。
+- [Blood Groups and Red Cell Antigens：Hemolytic disease of the newborn](https://www.ncbi.nlm.nih.gov/books/NBK2266/) — Rh 致敏與 IgG 抗 D。
+- [Human placental perfusion research：Transfer of anti-D antibodies](https://pubmed.ncbi.nlm.nih.gov/9012708/) — IgG 抗 D 的胎盤運送。
+
+## 實際驗證結果
+
+| 瀏覽器引擎 | 430×932 | 390×844 | 375×812 |
+|---|---|---|---|
+| Chrome | 通過 | 通過 | 通過 |
+| WebKit（Safari 引擎） | 通過 | 通過 | 通過 |
+
+- 各組均實際完成 35 題學生作答與七區展示 Boss，合計 210 題次學生作答及 42 次 Boss 展示。
+- 首頁、題目、解析、結果、雷達、設定與諮詢頁檢查無橫向溢出；可操作控制項至少 44px。解析對話框位於視窗內，末段內容可捲到固定導覽上方。
+- 兩引擎通過錯誤作答、Energy 0、80% 解鎖、重練保留最佳成績、分類／配對接續、避免重複 XP、展示與學生隔離、重置取消／確認、設定保存、多分頁同步、損壞及拒絕存取的 localStorage。
+- 補測兩引擎的 200% 字體、鍵盤開關及提示、60% 不解鎖、失常分類索引恢復。
+- 已修正測試發現的 WebKit 原生下拉選單觸控高度不足問題。
+- 測試流程未出現未處理 JavaScript 例外或 console error。頁面不載入外部字體、分析或雲端服務。
+- 上述為瀏覽器自動化與截圖檢視；實體 iPhone／Android、VoiceOver 朗讀與實機感官回饋仍需人工確認。
+
+部署使用 repository 既有的 GitHub Pages 管線；發布後的 commit、部署結果與公開頁面驗證另在交付報告列出，避免在提交前聲稱部署成功。

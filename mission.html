@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no" />
-<meta name="theme-color" content="#071629" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071629">
+<meta name="description" content="IMMUNE RUSH 免疫防線大作戰：五專護理免疫學手機互動教具，七大任務、即時解析與課後自主複習。">
 <title>IMMUNE RUSH｜免疫防線大作戰</title>
-<link rel="stylesheet" href="./immune-rush.css" />
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./immune-rush.css?v=20261007">
 </head>
 <body>
-<canvas id="fx"></canvas><div class="bg-grid"></div><div id="comboPop" class="combo-pop">COMBO ×3</div><div id="bossWarning" class="boss-warning">BOSS<br>CLINICAL CRISIS</div><div id="toast" class="toast"></div>
+<a href="#mainContent" class="skip-link">跳至主要內容</a>
+<canvas id="fx" aria-hidden="true"></canvas><div class="bg-grid" aria-hidden="true"></div>
+<div id="comboPop" class="combo-pop" aria-hidden="true"></div><div id="toast" class="toast" role="status"></div>
 <div class="app">
-<header class="topbar"><div class="toprow"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="M6 6c4 2 8 2 12 0M6 18c4-2 8-2 12 0"/></svg></div><div class="brand"><b>IMMUNE RUSH</b><span>第七章免疫｜手機行動闖關</span></div><div class="stats"><div class="stat"><b id="xpTop">0</b><span>XP</span></div><div class="stat"><b id="comboTop">0</b><span>COMBO</span></div><div class="stat"><b id="heartTop">❤❤❤</b><span>ENERGY</span></div></div></div></header>
-
-<main id="homeView" class="view active">
-  <section class="hero"><span class="kicker">⚡ MOBILE LEARNING QUEST</span><h1>免疫防線<br><em>大作戰</em></h1><p>從皮膚屏障一路打到 MHC 與補體連鎖。不是背答案，而是用任務、排序與臨床危機把課程知識點練成反射。</p><div class="hero-metrics"><div class="metric"><b>7</b><span>任務區域</span></div><div class="metric"><b>36+</b><span>互動挑戰</span></div><div class="metric"><b id="heroMastery">0%</b><span>總精熟度</span></div></div><div class="hero-actions"><button id="continueBtn" class="btn">開始行動</button><button id="teacherBtn" class="btn ghost">展示模式</button></div></section>
-  <div class="section-head"><h2>任務地圖</h2><span>完成 70% 解鎖下一區</span></div><section id="stageMap" class="map"></section>
+<header class="topbar"><div class="toprow"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="M6 6c4 2 8 2 12 0M6 18c4-2 8-2 12 0"/></svg></div><div class="brand"><b>IMMUNE RUSH</b><span>免疫學・手機互動闖關</span></div><div class="stats" aria-label="遊戲狀態"><div class="stat"><b id="xpTop">0</b><span>XP</span></div><div class="stat"><b id="comboTop">0</b><span>Combo</span></div><div class="stat"><b id="heartTop">❤❤❤</b><span>Energy</span></div></div></div></header>
+<div id="demoBanner" class="mode-banner" hidden><strong>專家／教師展示模式</strong><span>自由選題・示範紀錄不計入學生進度</span><div><button id="consultBtn" class="text-btn">專家諮詢重點</button><button id="exitDemoBtn" class="text-btn">回學生模式</button></div></div>
+<p id="storageNotice" class="storage-notice" role="status" hidden></p>
+<main id="mainContent" tabindex="-1">
+<section id="homeView" class="view active" aria-labelledby="homeTitle">
+  <section class="hero"><span class="kicker">五專護理・免疫學互動教具</span><h1 id="homeTitle">免疫防線<br><em>大作戰</em></h1><p>用辨識、分類、配對與排序，迎戰臨床情境。<br>課前預習・課堂練習・課後反覆複習</p><div class="hero-actions"><button id="continueBtn" class="btn">開始行動</button><button id="teacherBtn" class="btn ghost">展示模式</button></div><div class="hero-metrics"><div class="metric"><b>7</b><span>任務區域</span></div><div class="metric"><b id="taskCount">35</b><span>互動挑戰</span></div><div class="metric"><b id="heroMastery">0%</b><span>平均最佳成績</span></div></div></section>
+  <section id="nextGoal" class="next-goal" aria-label="下一步建議"></section>
+  <div class="section-head"><h2>任務地圖</h2><span>整區成績達 70% 解鎖下一區</span></div><p class="helper">每區 5 題，通過 4 題即可解鎖；可重練，保留最佳成績。</p><section id="stageMap" class="map" aria-label="七大任務區"></section>
+  <p class="local-note">進度自動保存在此瀏覽器；同一裝置、同一瀏覽器可接續。清除網站資料或使用私密瀏覽，紀錄可能消失。</p>
+</section>
+<section id="gameView" class="view" aria-label="任務作答">
+  <div class="game-head"><button id="backBtn" class="back" aria-label="暫存並返回任務地圖"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div class="game-title"><b id="gameStageTitle">任務</b><span id="gameStageSub">知識點</span></div><div id="roundPill" class="round-pill">1 / 5</div></div>
+  <div id="demoControls" class="demo-controls" hidden><label for="demoTaskSelect">直接查看題型／Boss</label><select id="demoTaskSelect"></select><button id="previewAnswerBtn" class="btn ghost small">查看本題解析</button></div>
+  <section id="arena" class="arena"><span class="arena-label">MISSION BRIEFING</span><h2 id="arenaTitle">啟動免疫防線</h2><p id="arenaText">讀取任務中……</p></section>
+  <div id="gameProgress" class="game-progress" role="img" aria-label="題目進度"></div>
+  <section id="questionCard" class="question-card"><div id="questionArea"></div><div id="feedback" class="feedback" tabindex="-1" role="region" aria-label="作答解析"></div><div id="hintBox" class="hint-box" role="status"></div><div class="action-row"><button id="hintBtn" class="hint-btn" aria-expanded="false" aria-controls="hintBox">提示</button><button id="nextBtn" class="btn" hidden>下一題</button></div></section>
+  <section id="resultPanel" class="result" tabindex="-1" aria-label="任務結果"></section>
+</section>
+<section id="reportView" class="view" aria-labelledby="reportTitle"><div class="section-head"><h2 id="reportTitle">知識雷達</h2><span>找出下一步複習方向</span></div><div id="reportContent"></div></section>
+<section id="settingsView" class="view" aria-labelledby="settingsTitle"><div class="section-head"><h2 id="settingsTitle">遊戲設定</h2><span>免登入・本機保存</span></div><section class="report-card"><div class="settings-row"><div><b>音效</b><p>答對、答錯與連擊提示音</p></div><button id="soundSwitch" class="switch" role="switch" aria-checked="true" aria-label="音效"><i></i></button></div><div class="settings-row"><div><b>震動回饋</b><p>支援的裝置會短震動；iPhone 可能不支援。</p></div><button id="vibrateSwitch" class="switch" role="switch" aria-checked="true" aria-label="震動回饋"><i></i></button></div><div class="settings-row"><div><b>專家／教師展示模式</b><p>自由查看七區與解析，不改變學生解鎖進度。</p></div><button id="demoSwitch" class="switch" role="switch" aria-checked="false" aria-label="專家／教師展示模式"><i></i></button></div></section><section class="report-card"><h3>學習優先，遊戲輔助</h3><p>XP 累積練習獎勵；Combo 是連續答對題數。Energy 每次挑戰從 3 格開始，答錯減 1；歸零仍可完成練習。</p><p>設定與進度只留在此瀏覽器，不會上傳。</p></section><button id="resetBtn" class="btn full danger">清除學生學習紀錄</button><p class="helper">操作前會再次確認；音效與震動設定會保留。</p></section>
+<section id="consultView" class="view" aria-labelledby="consultTitle"><div class="section-head"><h2 id="consultTitle">專家諮詢重點</h2></div><section class="report-card"><span class="kicker">115 年度・第一次專家諮詢</span><h3>IMMUNE RUSH：免疫防線大作戰</h3><p>提供鄒尚勳博士檢視的完整可操作初版，後續將依諮詢建議修訂。</p><p>教學對象：五專護理學生。適用課前預習、課堂練習、形成性評量及課後自主複習。</p><h3>請協助檢視</h3><ol class="consult-list"><li>七大任務區是否符合免疫學課程核心內容</li><li>知識難度是否適合五專護理學生</li><li>判斷、分類、配對、排序及 Boss 題的使用是否恰當</li><li>手機操作是否直覺</li><li>題目文字量是否合適</li><li>即時解析是否有助於修正錯誤概念</li><li>遊戲化是否真正有助於學習</li><li>是否適合課堂使用</li><li>是否適合課後自主練習</li><li>還有哪些地方建議修改</li></ol><button id="consultMapBtn" class="btn full">前往七區自由體驗</button></section></section>
 </main>
-
-<main id="gameView" class="view">
-  <div class="game-head"><button id="backBtn" class="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div class="game-title"><b id="gameStageTitle">任務</b><span id="gameStageSub">知識點</span></div><div id="roundPill" class="round-pill">1 / 5</div></div>
-  <section id="arena" class="arena"><span class="arena-label">MISSION BRIEFING</span><h2 id="arenaTitle">啟動免疫防線</h2><p id="arenaText">讀取任務中……</p><div class="energy-orb"></div></section>
-  <div id="gameProgress" class="game-progress"></div>
-  <section id="questionCard" class="question-card"><div id="questionArea"></div><div id="feedback" class="feedback"></div><div id="hintBox" class="hint-box"></div><div class="action-row"><button id="hintBtn" class="hint-btn">提示</button><button id="nextBtn" class="btn" style="display:none">下一關</button></div></section>
-  <section id="resultPanel" class="result"></section>
-</main>
-
-<main id="reportView" class="view"><div class="section-head"><h2>知識雷達</h2><span>依各任務最佳成績計算</span></div><div id="reportContent"></div></main>
-<main id="settingsView" class="view"><div class="section-head"><h2>遊戲設定</h2><span>手機瀏覽器本機儲存</span></div><section class="report-card"><div class="settings-row"><div><b>音效</b><div style="font-size:.7rem;color:var(--muted)">答對、答錯與連擊提示音</div></div><div id="soundSwitch" class="switch on"><i></i></div></div><div class="settings-row"><div><b>震動回饋</b><div style="font-size:.7rem;color:var(--muted)">支援的手機會產生短震動</div></div><div id="vibrateSwitch" class="switch on"><i></i></div></div><div class="settings-row"><div><b>展示模式</b><div style="font-size:.7rem;color:var(--muted)">解鎖全部任務，適合投影與評審展示</div></div><div id="demoSwitch" class="switch"><i></i></div></div></section><button id="resetBtn" class="btn full" style="background:linear-gradient(90deg,#ff8b92,#ff58bd)">清除學習紀錄</button></main>
-
-<nav id="bottomNav" class="bottom-nav"><button class="nav-btn active" data-view="homeView"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9H3z"/><path d="M9 20v-6h6v6"/></svg>任務</button><button class="nav-btn" data-view="reportView"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>雷達</button><button class="nav-btn" data-view="settingsView"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 15 6l-.3-2.6h-4L10.4 6A8 8 0 0 0 9 7.1l-2.4-1-2 3.4L6.7 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1A8 8 0 0 0 10.4 18l.3 2.6h4L15 18a8 8 0 0 0 1.5-1.1l2.4 1 2-3.4L18.9 13a7 7 0 0 0 .1-1z"/></svg>設定</button></nav>
+<nav id="bottomNav" class="bottom-nav" aria-label="主要導覽"><button class="nav-btn active" data-view="homeView" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9H3z"/><path d="M9 20v-6h6v6"/></svg>任務</button><button class="nav-btn" data-view="reportView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>雷達</button><button class="nav-btn" data-view="settingsView"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/></svg>設定</button></nav>
 </div>
-<script src="./immune-rush-data.js" defer></script>
-<script src="./immune-rush-app.js" defer></script>
+<dialog id="reviewDialog" aria-labelledby="reviewTitle"><div class="dialog-head"><h2 id="reviewTitle">解析回顧</h2><button id="closeReviewBtn" class="btn ghost small">關閉</button></div><div id="reviewContent"></div></dialog>
+<noscript><p>請啟用瀏覽器的 JavaScript，才能操作互動任務。</p></noscript>
+<script src="./immune-rush-data.js?v=20261007" defer></script>
+<script src="./immune-rush-app.js?v=20261007" defer></script>
 </body>
 </html>
