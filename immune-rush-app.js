@@ -165,7 +165,7 @@
     $('#hintBtn').hidden=taskLocked;$('#hintBtn').setAttribute('aria-expanded','false');$('#nextBtn').hidden=!taskLocked;
     $('#demoControls').hidden=!save.demo;
     if(save.demo){$('#demoTaskSelect').innerHTML=s.tasks.map((q,i)=>`<option value="${i}">${i+1}. ${taskTypes[q.type]}｜${q.point}</option>`).join('');$('#demoTaskSelect').value=String(taskIndex);}
-    $('#questionArea').innerHTML=`<div class="q-meta"><span class="q-type">${taskTypes[t.type]}・${t.tag}</span><span class="timer">知識點：${t.point}</span></div>${t.case?`<div class="case"><strong>情境線索</strong><p>${t.case}</p></div>`:''}<h2 class="prompt" tabindex="-1">${t.prompt}</h2>`;
+    $('#questionArea').innerHTML=`<div class="q-meta"><span class="q-type">${taskTypes[t.type]}${t.tag===taskTypes[t.type]?'':'・'+t.tag}</span><span class="timer">知識點：${t.point}</span></div>${t.case?`<div class="case"><strong>情境線索</strong><p>${t.case}</p></div>`:''}<h2 class="prompt" tabindex="-1">${t.prompt}</h2>`;
     if(t.type==='choice'||t.type==='boss')renderChoice(t);else if(t.type==='rapid')renderRapid(t);else if(t.type==='match')renderMatch(t);else renderSequence(t);
     if(result) showFeedback(t,result,false);
     renderDots();persist();
@@ -274,7 +274,7 @@
     if(complete){save.scores[s.id]=Math.max(score,save.scores[s.id]||0);save.latest[s.id]=score;if(score>=70&&!save.demo)save.unlocked=Math.max(save.unlocked,Math.min(stages.length,currentStage+2));}
     save.run=null;persist();$('#questionCard').hidden=true;
     const result=$('#resultPanel');result.className='result active';
-    result.innerHTML=`<div class="rank-badge" style="--degree:${complete?score*3.6:0}deg"><strong>${complete?(score>=90?'S':score>=80?'A':score>=70?'B':'C'):'展示'}</strong></div><h2>${!complete?'展示瀏覽完成':score>=70?'區域守備成功':'再練習，穩固防線'}</h2><p>${s.title}｜${complete?`本次成績 ${score}%・最佳 ${save.scores[s.id]}%`:'未完整作答，不計入任務成績'}</p><div class="result-grid"><div><b>${correct}/${s.tasks.length}</b><span>本次通過題數</span></div><div><b>${save.xp}</b><span>${save.demo?'展示':'累積'} XP</span></div><div><b>${save.attempts[s.id]}</b><span>挑戰次數</span></div></div><p>${save.demo?'展示資料僅供本次操作，不改變學生紀錄。':score>=70?(currentStage===stages.length-1?'七區皆已解鎖，可從雷達安排複習。':`已解鎖「${stages[currentStage+1].title}」。`):'整區至少通過 4/5 題，即達到 70% 解鎖門檻。'}</p><div class="review">${s.tasks.map((t,i)=>`<details class="review-item"><summary>${!results[i]?'未作答':results[i].preview?'解析預覽':results[i].ok?'✓ 通過':'✕ 待練習'}｜${t.point}</summary><h4>正確答案</h4>${answerHTML(t)}<p>${t.explain}</p></details>`).join('')}</div><div class="action-row"><button class="btn ghost" id="retryStage">再挑戰</button><button class="btn" id="returnMap">返回地圖</button></div><button class="btn ghost full" id="resultRadar">查看雷達與複習建議</button>`;
+    result.innerHTML=`<div class="rank-badge" style="--degree:${complete?score*3.6:0}deg"><strong>${complete?(score>=90?'S':score>=80?'A':score>=70?'B':'C'):'展示'}</strong></div><h2>${!complete?'展示瀏覽完成':score>=70?'區域守備成功':'再練習，穩固防線'}</h2><p>${s.title}｜${complete?`本次成績 ${score}%・最佳 ${save.scores[s.id]}%`:'未完整作答，不計入任務成績'}</p><div class="result-grid"><div><b>${correct}/${s.tasks.length}</b><span>本次通過題數</span></div><div><b>${save.xp}</b><span>${save.demo?'展示':'累積'} XP</span></div><div><b>${save.attempts[s.id]}</b><span>挑戰次數</span></div></div><p>${save.demo?'展示資料僅供本次操作，不改變學生紀錄。':score>=70?(currentStage===stages.length-1?'七區皆已解鎖，可從雷達安排複習。':`已解鎖「${stages[currentStage+1].title}」。`):'整區至少通過 4/5 題，即達到 70% 解鎖門檻。'}</p><div class="review">${s.tasks.map((t,i)=>`<details class="review-item"><summary>${!results[i]?'未作答':results[i].preview?'解析預覽':results[i].ok?'✓ 通過':'✕ 待練習'}｜${t.point}</summary><h4>正確答案</h4>${answerHTML(t)}<p>${t.explain}</p></details>`).join('')}</div><div class="action-row"><button class="btn ghost" id="retryStage">再挑戰</button><button class="btn" id="returnMap">返回地圖</button></div><button class="btn ghost full" id="resultRadar">查看雷達與複習建議</button>${complete?'<section class="extension-card"><span class="kicker">課後延伸・自由挑戰</span><h3>準備迎戰五大 BOSS？</h3><p>免疫守衛戰提供綜合複習與考前連戰，獨立計分，不影響本教具的任務進度。</p><a id="bossChallenge" class="btn ghost full" href="./index.html">挑戰 BOSS 連戰</a></section>':''}`;
     $('#retryStage').onclick=()=>startStage(currentStage);$('#returnMap').onclick=()=>showView('homeView');$('#resultRadar').onclick=()=>showView('reportView');
     if(complete&&score>=70){burst(20);tone('level');}focusTop(result);
   }
@@ -334,4 +334,7 @@
     if($('#reviewDialog').open)$('#reviewDialog').close();syncSettings();notice();showView('homeView');toast('另一個分頁已更新紀錄，已同步最新進度。');
   });
   $('#taskCount').textContent=allTasks.length;syncSettings();notice();updateStats();renderMap();
+  // Optional return from the separate Boss game; keep student progress intact.
+  const openLinkedReport=()=>{if(location.hash==='#report')showView('reportView');};
+  window.addEventListener('hashchange',openLinkedReport);openLinkedReport();
 })();
