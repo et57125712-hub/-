@@ -7,10 +7,10 @@
 <meta name="description" content="免疫守衛戰：五位 Boss 連戰、綜合複習與課後延伸挑戰。與 IMMUNE RUSH 學習任務分開運作。">
 <title>免疫守衛戰｜BOSS 連戰挑戰</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./immune-guardian.css?v=20261007f">
-<script src="./immune-guardian-data.js?v=20261007f" defer></script>
-<script src="./immune-guardian-scene.js?v=20261007f" defer></script>
-<script src="./immune-guardian-app.js?v=20261007f" defer></script>
+<link rel="stylesheet" href="./immune-guardian.css?v=20261007g">
+<script src="./immune-guardian-data.js?v=20261007g" defer></script>
+<script src="./immune-guardian-scene.js?v=20261007g" defer></script>
+<script src="./immune-guardian-app.js?v=20261007g" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">跳至挑戰內容</a>
@@ -29,7 +29,7 @@
 <section id="playArea" hidden aria-label="Boss 連戰">
   <section id="combatPanel" class="combat-panel" tabindex="-1" aria-label="戰鬥狀態">
     <div class="combat-heading"><span id="catLabel" class="eyebrow">綜合挑戰</span><button id="endBtn" class="text-button" type="button">結束本輪</button></div>
-    <div class="combat-stage"><div id="battle" class="battle" aria-hidden="true"><div class="battle-ring"></div><div class="platform left"></div><div class="platform right"></div><div id="hero" class="hero"></div><div id="equip" class="equip"></div><div id="monster" class="monster"></div><div id="strike" class="strike"></div><div id="damage" class="damage"></div><div id="evolutionBanner" class="evolutionBanner"></div></div><div class="combat-stats">
+    <div class="combat-stage"><div id="battle" class="battle" aria-hidden="true"><div class="battle-ring"></div><div class="platform left"></div><div class="platform right"></div><div id="hero" class="hero"></div><div id="equip" class="equip"></div><div id="monster" class="monster"></div><div id="strike" class="strike"></div><div id="impact" class="impact"></div><span id="phaseTag" class="phase-tag">Ⅰ 初始</span><div id="damage" class="damage"></div><div id="evolutionBanner" class="evolutionBanner"></div></div><div class="combat-stats">
       <div class="health-panel enemy"><div class="health-title"><span>BOSS <b id="stageBadge">1 / 5</b></span><span id="bossHealthText">0 / 0</span></div><strong id="bossName">免疫病毒</strong><div id="enemyMeter" class="hp-track" role="progressbar" aria-label="Boss 生命值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="enemyHp"></i></div></div>
       <div class="health-panel player"><div class="health-title"><span>玩家生命</span><strong><span id="hp">7</span> / 7</strong></div><strong class="fighter-label">免疫守衛</strong><div id="heroMeter" class="hp-track" role="progressbar" aria-label="玩家生命值" aria-valuemin="0" aria-valuemax="7" aria-valuenow="7"><i id="heroHpBar"></i></div></div>
     </div></div>
@@ -43,12 +43,17 @@
     <progress id="roundProgress" max="70" value="0" aria-label="本輪作答進度"></progress>
     <h2 id="question" tabindex="-1">準備開始</h2>
     <div id="options" class="options"></div>
-    <details class="battle-log"><summary>戰況與 Boss 台詞</summary><p id="bossTalk" class="boss-talk"></p><p><span id="heroName">護生守衛</span>｜Lv.<span id="bossLv">10</span>｜<span id="bossFormLabel">初始型態</span>｜反擊扣 <span id="counterDamage">1</span> 格</p></details><section id="answer" class="answer" tabindex="-1" aria-label="即時解析" hidden></section>
+    <details class="battle-log"><summary>戰況與 Boss 台詞</summary><p id="bossTalk" class="boss-talk"></p><p><span id="heroName">護生守衛</span>｜Lv.<span id="bossLv">10</span>｜<span id="bossFormLabel">初始型態</span>｜反擊扣 <span id="counterDamage">1</span> 格</p></details>
   </section>
 </section>
 <section id="result" class="card result" tabindex="-1" aria-labelledby="resultTitle" hidden></section>
 <noscript><p>請啟用 JavaScript 以操作互動挑戰。</p></noscript>
 </main>
 <footer id="battleActions" class="bottom" hidden><div class="bar"><button id="answerBtn" type="button" class="secondary" disabled>回看解析</button><button id="nextBtn" type="button" class="primary" disabled>請先作答</button></div></footer>
+<dialog id="answerDialog" class="answer-dialog" aria-labelledby="answerDialogTitle">
+  <header class="answer-dialog-head"><h2 id="answerDialogTitle">戰鬥解析</h2><button id="closeAnswerBtn" class="text-button" type="button" autofocus>回看戰場</button></header>
+  <div id="answerScroll" class="answer-scroll"><section id="answer" class="answer" aria-label="即時解析"></section></div>
+  <footer class="answer-dialog-actions"><button id="continueBattleBtn" class="primary" type="button">繼續・下一題</button></footer>
+</dialog>
 </body>
 </html>
