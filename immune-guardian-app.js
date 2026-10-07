@@ -3,14 +3,24 @@
   const {national,concept,stages,bossLines,heroStates}=window.ImmuneGuardianData;
   const $=id=>document.getElementById(id);
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const scene=window.ImmuneGuardianScene;
+  const scene=window.ImmuneGuardianScene,audio=window.ImmuneGuardianAudio;
+  const motionQuery=matchMedia('(prefers-reduced-motion: reduce)');
+  let preferences={music:true,motion:true},audioPlaying=false;
+  try{const saved=JSON.parse(localStorage.getItem('guardianAmbienceSettings'));if(saved&&typeof saved.music==='boolean')preferences.music=saved.music;if(saved&&typeof saved.motion==='boolean')preferences.motion=saved.motion;}catch{}
+  function saveAmbience(){try{localStorage.setItem('guardianAmbienceSettings',JSON.stringify(preferences));}catch{}}
+  function renderAmbience(){
+    const moving=preferences.motion&&!motionQuery.matches;
+    document.documentElement.classList.toggle('motion-paused',!moving||document.hidden);
+    document.querySelectorAll('[data-motion]').forEach(b=>{b.textContent=motionQuery.matches?'動態：減少':moving?'動態：開':'動態：關';b.setAttribute('aria-pressed',String(moving));b.disabled=motionQuery.matches;});
+    document.querySelectorAll('[data-music]').forEach(b=>{b.textContent=!preferences.music?'♫ 音樂：關':phase==='idle'||phase==='result'?'♫ 音樂：開':audioPlaying?'♫ 音樂：開':'♫ 音樂：暫停';b.setAttribute('aria-pressed',String(preferences.music));});
+  }
   let feedbackTimer=0,reviewed=false;
   const formNames=['初始型態','突變型態','狂暴型態','終極型態'];
   let paintedHero=-1,paintedBoss='';
   const modes={all:'綜合挑戰',national:'國考特訓',concept:'概念闖關'};
   let pool=[],index=0,current=null,hp=7,streak=0,score=0,enemyHp=0,stage=1,maxHp=0;
   let phase='idle',heroForm=0,bossForm=1,defeated=0,bestCombo=0,history=[],healthPlan=[];
-  const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reducedMotion=()=>motionQuery.matches;
   function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
   function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
   function focusOn(el){el.focus({preventScroll:true});el.scrollIntoView({block:'start',behavior:'instant'});}
@@ -30,11 +40,11 @@
   function fitAnswer(){const space=Math.max(160,innerHeight-Math.max(0,$('battle').getBoundingClientRect().bottom)-16);$('answerDialog').style.setProperty('--review-space',space+'px');}
   function openAnswer(){
     if(phase!=='feedback')return;clearTimeout(feedbackTimer);reviewed=true;
-    const x=scrollX,y=scrollY;fitAnswer();
+    const x=scrollX,y=scrollY;fitAnswer();audio.duck(true);
     if(!$('answerDialog').open){document.documentElement.classList.add('feedback-open');$('answerDialog').showModal();$('answerScroll').scrollTop=0;}
     $('closeAnswerBtn').focus({preventScroll:true});scrollTo({left:x,top:y,behavior:'instant'});
   }
-  function closeAnswer(){if($('answerDialog').open)$('answerDialog').close();document.documentElement.classList.remove('feedback-open');}
+  function closeAnswer(){if($('answerDialog').open)$('answerDialog').close();document.documentElement.classList.remove('feedback-open');audio.duck(false);}
   function bossSay(type){$('bossTalk').textContent=pick(bossLines[stage-1][type]||bossLines[stage-1].open);}
   function getHeroState(){let state=heroStates[0];for(const entry of heroStates)if(streak>=entry.min)state=entry;return state;}
   function applyHeroState(){
@@ -61,14 +71,14 @@
     $('counterDamage').textContent=Math.min(3,1+Math.floor((stage-1)/2));
     return {hero:applyHeroState(),boss:updateBossForm()};
   }
-  function loadStage(n){stage=n;maxHp=healthPlan[n-1];enemyHp=maxHp;bossForm=1;const s=stages[n-1];$('bossLv').textContent=s.lv;$('stageBadge').textContent=`${n} / 5`;$('battle').className='battle stage'+n;$('stageNotice').hidden=false;$('stageNotice').textContent=`BOSS ${n} / 5 登場｜${s.name}`;bossSay('open');update();animate($('battle'),'boss-enter');}
+  function loadStage(n){stage=n;audio.setStage(n);maxHp=healthPlan[n-1];enemyHp=maxHp;bossForm=1;const s=stages[n-1];$('bossLv').textContent=s.lv;$('stageBadge').textContent=`${n} / 5`;$('battle').className='battle stage'+n;$('stageNotice').hidden=false;$('stageNotice').textContent=`BOSS ${n} / 5 登場｜${s.name}`;bossSay('open');update();animate($('battle'),'boss-enter');}
   function startGame(){
     clearEffects();const mode=$('gameMode').value;
     pool=shuffle((mode==='national'?national:mode==='concept'?concept:national.concat(concept)).slice());healthPlan=planHealth(pool.length);
     index=0;current=null;hp=7;streak=0;score=0;heroForm=0;defeated=0;bestCombo=0;history=[];phase='question';paintedHero=-1;paintedBoss='';
     $('lobby').hidden=true;$('result').hidden=true;$('playArea').hidden=false;$('battleActions').hidden=false;
     $('catLabel').textContent=modes[mode];$('roundProgress').max=pool.length;$('roundProgress').value=0;
-    loadStage(1);renderQuestion();$('status').textContent=`${modes[mode]}開始。答完後可慢慢閱讀解析。`;focusOn($('combatPanel'));
+    loadStage(1);renderQuestion();audio.start(1);$('status').textContent=`${modes[mode]}開始。答完後可慢慢閱讀解析。`;focusOn($('combatPanel'));
   }
   function renderQuestion(){
     current=pool[index++];phase='question';reviewed=false;
@@ -102,13 +112,17 @@
     renderQuestion();$('question').focus({preventScroll:true});$('combatPanel').scrollIntoView({block:'start',behavior:'instant'});
   }
   function finishGame(reason){
-    if(phase==='result'||phase==='idle')return;phase='result';clearEffects();closeAnswer();
+    if(phase==='result'||phase==='idle')return;phase='result';clearEffects();closeAnswer();audio.stop();renderAmbience();
     $('playArea').hidden=true;$('battleActions').hidden=true;const result=$('result');result.hidden=false;
     const correct=history.filter(h=>h.ok).length,wrong=history.filter(h=>!h.ok),bank=national.concat(concept);
     const title={clear:'FINAL CLEAR！五大 Boss 突破',defeat:'生命歸零，整隊再挑戰',complete:'本輪題目完成',stopped:'本輪挑戰已結束'}[reason];
     result.innerHTML=`<span class="eyebrow">${modes[$('gameMode').value]}・挑戰結算</span><h1 id="resultTitle">${title}</h1><p>${history.length}/${pool.length} 題已作答・${correct} 題答對${history.length?`（${Math.round(correct/history.length*100)}%）`:''}</p><div class="result-stats"><div><b>${score}</b><span>本輪分數</span></div><div><b>${bestCombo}</b><span>最高 Combo</span></div><div><b>${defeated}/5</b><span>擊敗 Boss</span></div><div><b>${hp}/7</b><span>剩餘生命</span></div></div><div class="result-actions"><button id="retryBtn" class="primary">再次挑戰本模式</button><button id="changeModeBtn" class="secondary">選擇其他模式</button></div><section class="review-section"><h2>本次需要複習的題目</h2>${wrong.length?wrong.map(h=>{const q=bank.find(t=>t.id===h.id);return `<details class="review-item"><summary>✕ ${esc(q.q)}</summary><p>你的選擇：${esc(h.selected)}</p><h3>正確答案：${esc(q.ans)}</h3><p>${esc(q.exp)}</p></details>`;}).join(''):`<p>${history.length?'已作答題目皆正確。可挑戰更多題目，或回到正式任務複習。':'尚未作答。可重新選擇模式再開始。'}</p>`}</section><section class="return-learning"><span class="eyebrow">回到學習任務</span><h2>帶著本次錯題，複習免疫觀念</h2><p>IMMUNE RUSH 保留自己的任務與雷達進度，與本輪戰績分開。可對照上方錯題，選擇相關單元複習。</p><a class="secondary button-link" id="returnMission" href="./mission.html#report">回到 IMMUNE RUSH 複習弱項</a></section>`;
     $('retryBtn').onclick=startGame;$('changeModeBtn').onclick=()=>{phase='idle';result.hidden=true;$('lobby').hidden=false;focusOn($('gameMode'));};focusOn(result);
   }
+  audio.configure(preferences.music,state=>{audioPlaying=state.playing;renderAmbience();});
+  document.querySelectorAll('[data-music]').forEach(b=>b.onclick=()=>{preferences.music=!preferences.music;saveAmbience();audio.setEnabled(preferences.music);renderAmbience();});
+  document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>{preferences.motion=!preferences.motion;saveAmbience();renderAmbience();});
+  motionQuery.addEventListener('change',renderAmbience);document.addEventListener('visibilitychange',renderAmbience);renderAmbience();
   $('battle').insertAdjacentHTML('afterbegin',scene.backdrop());
   $('lobbyScene').innerHTML=scene.backdrop()+`<div class="platform left"></div><div class="platform right"></div><div class="hero">${scene.guardian()}</div><div class="monster">${scene.boss()}</div>`;
   $('startBtn').onclick=startGame;$('nextBtn').onclick=()=>{if(phase==='feedback'){if(reviewed)nextQuestion();else openAnswer();}};$('answerBtn').onclick=openAnswer;

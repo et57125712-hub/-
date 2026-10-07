@@ -1,0 +1,31 @@
+/* Ambient motion and real Web Audio lifecycle regression; no server required beyond static files. */
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {chromium,webkit}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const url=process.env.TEST_URL||'http://127.0.0.1:8766/immune-rush/index.html',out=process.env.TEST_OUTPUT||'ambience-results';fs.mkdirSync(out,{recursive:true});
+(async()=>{const results=[];for(const engine of ['chromium','webkit']){
+ const b=await(engine==='chromium'?chromium.launch({executablePath:process.env.CHROME_PATH}):webkit.launch());const p=await b.newPage({viewport:{width:430,height:932},isMobile:true,hasTouch:true,reducedMotion:'no-preference'}),errors=[];
+ p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+ await p.addInitScript(()=>{window.audioContexts=[];const Native=window.AudioContext||window.webkitAudioContext;window.AudioContext=class extends Native{constructor(){super();window.audioContexts.push(this);const nativeGain=this.createGain.bind(this);let first=true;this.createGain=()=>{const gain=nativeGain();if(first){first=false;this.testMaster=gain;this.testAnalyser=this.createAnalyser();gain.connect(this.testAnalyser);}return gain;};}};});
+ await p.goto(url);assert.equal(await p.evaluate(()=>audioContexts.length),0,'no autoplay context');
+ await p.locator('#gameMode').selectOption('national');await p.locator('#startBtn').click();await p.waitForFunction(()=>audioContexts[0]?.state==='running');
+ await p.waitForTimeout(450);
+ const sound=await p.evaluate(()=>{const c=audioContexts[0],a=new Float32Array(c.testAnalyser.fftSize);c.testAnalyser.getFloatTimeDomainData(a);return {rms:Math.sqrt(a.reduce((s,x)=>s+x*x,0)/a.length),peak:Math.max(...a.map(Math.abs)),time:c.currentTime};});assert(sound.rms>.00001&&sound.peak<1&&sound.time>0,'actual nonclipping audio signal');
+ assert(await p.evaluate(()=>document.getAnimations().some(a=>a.playState==='running'&&a.effect.getTiming().iterations===Infinity)),'ambient loops run');
+ assert.equal(await p.locator('#monster .boss-eyes').count(),1);assert.match(await p.locator('#monster .boss-eyes').evaluate(e=>getComputedStyle(e).filter),/drop-shadow/);
+ await p.screenshot({path:path.join(out,engine+'-cyber-battle.png')});
+ await p.locator('#combatPanel [data-motion]').click();assert(await p.evaluate(()=>document.documentElement.classList.contains('motion-paused')));assert.equal(await p.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running'&&a.effect.getTiming().iterations===Infinity).length),0);
+ await p.locator('#combatPanel [data-motion]').click();
+ await p.locator('#combatPanel [data-music]').click();await p.waitForFunction(()=>audioContexts[0].state==='suspended');
+ await p.locator('#combatPanel [data-music]').click();await p.waitForFunction(()=>audioContexts[0].state==='running');assert.equal(await p.evaluate(()=>audioContexts.length),1,'toggles reuse one context');
+ const prompt=await p.locator('#question').innerText(),ans=await p.evaluate(q=>window.ImmuneGuardianData.national.find(x=>x.q===q).ans,prompt);await p.locator('.option').filter({has:p.getByText(ans,{exact:true})}).click();await p.locator('#answerDialog').waitFor({state:'visible'});await p.waitForTimeout(600);
+ assert(await p.evaluate(()=>audioContexts[0].testMaster.gain.value<.04),'review ducks music');assert.equal(await p.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running'&&a.effect.getTiming().iterations===Infinity).length),0,'review pauses ambience');
+ await p.locator('#continueBattleBtn').click();await p.waitForTimeout(600);assert(await p.evaluate(()=>audioContexts[0].testMaster.gain.value>.11));
+ await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));});await p.waitForFunction(()=>audioContexts[0].state==='suspended');
+ await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.dispatchEvent(new Event('visibilitychange'));});await p.waitForFunction(()=>audioContexts[0].state==='running');
+ p.once('dialog',d=>d.accept());await p.locator('#endBtn').click();await p.waitForFunction(()=>audioContexts[0].state==='suspended');await p.locator('#retryBtn').click();await p.waitForFunction(()=>audioContexts[0].state==='running');assert.equal(await p.evaluate(()=>audioContexts.length),1);
+ await p.locator('#combatPanel [data-music]').click();await p.locator('#combatPanel [data-motion]').click();await p.reload();assert.equal(await p.locator('#lobby [data-music]').getAttribute('aria-pressed'),'false');assert.equal(await p.locator('#lobby [data-motion]').getAttribute('aria-pressed'),'false');await p.locator('#startBtn').click();assert.equal(await p.evaluate(()=>audioContexts.length),0);
+ await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>document.querySelector('#combatPanel [data-motion]').disabled);assert(await p.locator('#combatPanel [data-motion]').isDisabled());assert.equal(await p.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').length),0);
+ // Browsers that block storage/audio still run the teaching game.
+ const fallback=await b.newPage();fallback.on('pageerror',e=>errors.push(e.message));await fallback.addInitScript(()=>{window.AudioContext=undefined;window.webkitAudioContext=undefined;Storage.prototype.getItem=()=>{throw Error('blocked')};Storage.prototype.setItem=()=>{throw Error('blocked')};});await fallback.goto(url);await fallback.locator('#startBtn').click();await fallback.locator('#combatPanel [data-music]').click();assert.equal(await fallback.locator('.option').count(),4);
+ assert.deepEqual(errors,[]);results.push({engine,signal:sound,autoplayBlocked:true,muteAndPersistence:true,singleContext:true,backgroundSuspend:true,reviewDuckAndPause:true,reducedMotion:true,unavailableFallback:true,result:'PASS'});console.log(engine,'AMBIENCE PASS');await b.close();
+}fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(results,null,2));})().catch(e=>{console.error(e);process.exit(1)});
