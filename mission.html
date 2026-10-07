@@ -7,8 +7,8 @@
 <meta name="description" content="IMMUNE RUSH 免疫防線大作戰：五專護理免疫學手機互動教具，七大任務、即時解析與課後自主複習。">
 <title>IMMUNE RUSH｜免疫防線大作戰</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./immune-rush.css?v=20261007k">
-<link rel="stylesheet" href="./immune-rush-base.css?v=20261007k">
+<link rel="stylesheet" href="./immune-rush.css?v=20261008a">
+<link rel="stylesheet" href="./immune-rush-base.css?v=20261008a">
 </head>
 <body>
 <a href="#mainContent" class="skip-link">跳至主要內容</a>
@@ -31,7 +31,7 @@
 <section id="gameView" class="view" aria-label="任務作答">
   <div class="game-head"><button id="backBtn" class="back" aria-label="暫存並返回任務地圖"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div class="game-title"><b id="gameStageTitle">任務</b><span id="gameStageSub">知識點</span></div><button type="button" class="mission-music" data-rush-music aria-label="基地音樂：關" aria-pressed="false">♫</button><div id="roundPill" class="round-pill">1 / 5</div></div>
   <div id="demoControls" class="demo-controls" hidden><label for="demoTaskSelect">直接查看題型／Boss</label><select id="demoTaskSelect"></select><button id="previewAnswerBtn" class="btn ghost small">查看本題解析</button></div>
-  <section id="arena" class="arena"><div id="missionFacility" class="mission-facility" aria-hidden="true"></div><span class="arena-label">MISSION BRIEFING</span><h2 id="arenaTitle">啟動免疫防線</h2><p id="arenaText">讀取任務中……</p></section>
+  <section id="arena" class="arena"><div id="missionFacility" class="mission-facility" aria-hidden="true"></div><span class="arena-label">任務簡報</span><h2 id="arenaTitle">啟動免疫防線</h2><p id="arenaText">讀取任務中……</p></section>
   <div id="gameProgress" class="game-progress" role="img" aria-label="題目進度"></div>
   <section id="questionCard" class="question-card"><div id="questionArea"></div><div id="feedback" class="feedback" tabindex="-1" role="region" aria-label="作答解析"></div><div id="hintBox" class="hint-box" role="status"></div><div class="action-row"><button id="hintBtn" class="hint-btn" aria-expanded="false" aria-controls="hintBox">提示</button><button id="nextBtn" class="btn" hidden>下一題</button></div></section>
   <section id="resultPanel" class="result" tabindex="-1" aria-label="任務結果"></section>
@@ -40,13 +40,13 @@
 <section id="settingsView" class="view" aria-labelledby="settingsTitle"><div class="section-head"><h2 id="settingsTitle">遊戲設定</h2><span>免登入・本機保存</span></div><section class="report-card"><div class="settings-row"><div><b>基地音樂</b><p>平緩電子配樂，預設關閉；看解析時降低音量。</p></div><button id="musicSwitch" class="switch" role="switch" aria-checked="false" aria-label="基地音樂"><i></i></button></div><div class="settings-row"><div><b>基地動態</b><p>巡航、運作光與引導；配合系統減少動態設定。</p></div><button id="motionSwitch" class="switch" role="switch" aria-checked="true" aria-label="基地動態"><i></i></button></div><div class="settings-row"><div><b>音效</b><p>答對、答錯與連擊提示音</p></div><button id="soundSwitch" class="switch" role="switch" aria-checked="true" aria-label="音效"><i></i></button></div><div class="settings-row"><div><b>震動回饋</b><p>支援的裝置會短震動；iPhone 可能不支援。</p></div><button id="vibrateSwitch" class="switch" role="switch" aria-checked="true" aria-label="震動回饋"><i></i></button></div><div class="settings-row"><div><b>專家／教師展示模式</b><p>自由查看七區與解析，不改變學生解鎖進度。</p></div><button id="demoSwitch" class="switch" role="switch" aria-checked="false" aria-label="專家／教師展示模式"><i></i></button></div></section><section class="report-card"><h3>學習優先，遊戲輔助</h3><p>XP 累積練習獎勵；Combo 是連續答對題數。Energy 每次挑戰從 3 格開始，答錯減 1；歸零仍可完成練習。</p><p>設定與進度只留在此瀏覽器，不會上傳。</p></section><button id="resetBtn" class="btn full danger">清除學生學習紀錄</button><p class="helper">操作前會再次確認；音效與震動設定會保留。</p></section>
 <section id="consultView" class="view" aria-labelledby="consultTitle"><div class="section-head"><h2 id="consultTitle">專家諮詢重點</h2></div><section class="report-card"><span class="kicker">115 年度・第一次專家諮詢</span><h3>IMMUNE RUSH：免疫防線大作戰</h3><p>提供鄒尚勳博士檢視的完整可操作初版，後續將依諮詢建議修訂。</p><p>教學對象：五專護理學生。適用課前預習、課堂練習、形成性評量及課後自主複習。</p><h3>請協助檢視</h3><ol class="consult-list"><li>七大任務區是否符合免疫學課程核心內容</li><li>知識難度是否適合五專護理學生</li><li>判斷、分類、配對、排序及 Boss 題的使用是否恰當</li><li>手機操作是否直覺</li><li>題目文字量是否合適</li><li>即時解析是否有助於修正錯誤概念</li><li>遊戲化是否真正有助於學習</li><li>是否適合課堂使用</li><li>是否適合課後自主練習</li><li>還有哪些地方建議修改</li></ol><button id="consultMapBtn" class="btn full">前往七區自由體驗</button></section></section>
 </main>
-<nav id="bottomNav" class="bottom-nav" aria-label="主要導覽"><button class="nav-btn active" data-view="homeView" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9H3z"/><path d="M9 20v-6h6v6"/></svg>任務</button><button class="nav-btn" data-view="reportView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>雷達</button><button class="nav-btn" data-view="settingsView"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/></svg>設定</button></nav>
+<nav id="bottomNav" class="bottom-nav" aria-label="主要導覽"><button class="nav-btn active" data-view="homeView" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v9H3z"/><path d="M9 20v-6h6v6"/></svg>任務基地</button><button class="nav-btn" data-view="reportView"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>知識雷達</button><button class="nav-btn" data-view="settingsView"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/></svg>設定</button></nav>
 </div>
 <dialog id="reviewDialog" aria-labelledby="reviewTitle"><div class="dialog-head"><h2 id="reviewTitle">解析回顧</h2><button id="closeReviewBtn" class="btn ghost small">關閉</button></div><div id="reviewContent"></div></dialog>
 <noscript><p>請啟用瀏覽器的 JavaScript，才能操作互動任務。</p></noscript>
-<script src="./immune-rush-data.js?v=20261007k" defer></script>
-<script src="./immune-rush-base.js?v=20261007k" defer></script>
-<script src="./immune-rush-atmosphere.js?v=20261007k" defer></script>
-<script src="./immune-rush-app.js?v=20261007k" defer></script>
+<script src="./immune-rush-data.js?v=20261008a" defer></script>
+<script src="./immune-rush-base.js?v=20261008a" defer></script>
+<script src="./immune-rush-atmosphere.js?v=20261008a" defer></script>
+<script src="./immune-rush-app.js?v=20261008a" defer></script>
 </body>
 </html>
