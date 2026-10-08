@@ -26,6 +26,7 @@ window.ImmuneRushBase = (() => {
     return `<span class="facility-art" aria-hidden="true"><svg viewBox="0 0 160 140" focusable="false">${platform}<g class="building">${buildings[i]}</g><path class="facility-scan base-ambient" d="M36 91 81 69 124 91 81 112Z"/><circle class="facility-beacon base-ambient" cx="132" cy="110" r="4"/></svg></span>`;
   }
   // Distinct silhouettes and choreography; decorative defense metaphors, not a simulation.
+  // Scene-level scale also shortens patrol paths, keeping units near buildings.
   // Each scene has its own shared CSS timeline. No timers, hit targets or scoring effects.
   const lifeArt={
     macrophage:`<g class="life-macrophage"><path class="macro-body" d="M-25-5C-30-19-10-25 0-20C14-27 21-14 20-5C29 7 15 21 2 20C-9 27-28 16-22 5Z"/><path class="macro-nucleus" d="M-11-8C2-16 8-5 0 0C-6 4 5 8-2 12C-14 14-20-1-11-8Z"/><g class="macro-vesicles"><circle cx="12" cy="-9" r="3"/><circle cx="13" cy="8" r="2.5"/><circle cx="-14" cy="12" r="2"/></g><g class="macro-arms base-ambient"><path d="M13-13Q42-31 44-8M16 14Q43 31 46 8"/></g></g>`,
@@ -38,33 +39,33 @@ window.ImmuneRushBase = (() => {
   };
   function microLife() {
     return `<g class="micro-life" aria-hidden="true">
-      <g class="micro-skirmish scene-engulf" transform="translate(200 188)" style="--micro-delay:0s">
+      <g class="micro-skirmish scene-engulf" transform="translate(145 188) scale(.48)" style="--micro-delay:0s">
         <g class="micro-invader base-ambient" transform="translate(105 0)">${lifeArt.bacillus}</g>
         <g class="micro-pursuer base-ambient" transform="translate(-115 -4)">${lifeArt.macrophage}</g>
         <g class="micro-capture base-ambient" transform="translate(20 0)"><ellipse class="engulf-vacuole" rx="13" ry="10"/></g>
       </g>
-      <g class="micro-skirmish scene-patrol" transform="translate(200 373)" style="--micro-delay:-3s">
+      <g class="micro-skirmish scene-patrol" transform="translate(267 373) scale(.48)" style="--micro-delay:-3s">
         <g class="patrol-trail base-ambient"><path d="M-60-6h22M-68 2h26M-56 10h17"/></g>
         <g class="micro-invader base-ambient" transform="translate(120 -4)">${lifeArt.cocci}</g>
         <g class="micro-pursuer base-ambient" transform="translate(-130 8)">${lifeArt.neutrophil}</g>
         <g class="micro-capture base-ambient" transform="translate(12 0)"><ellipse class="patrol-envelope" rx="27" ry="23"/></g>
       </g>
-      <g class="micro-skirmish scene-neutralize" transform="translate(200 557)" style="--micro-delay:-5s">
+      <g class="micro-skirmish scene-neutralize" transform="translate(165 557) scale(.48)" style="--micro-delay:-5s">
         <g class="micro-invader base-ambient" transform="translate(12 0)">${lifeArt.virus}</g>
         <g class="micro-pursuer base-ambient" transform="translate(-105 6)">${lifeArt.antibody}</g>
         <g class="antibody-wing base-ambient" transform="translate(110 -8)">${lifeArt.antibody}</g>
         <g class="micro-capture base-ambient" transform="translate(12 0)"><path class="neutralize-orbit" d="M-25-19Q5-37 26-15M-27 14Q0 34 26 16"/></g>
       </g>
-      <g class="micro-drifter" transform="translate(28 65)" style="--micro-delay:-1s"><g class="micro-float base-ambient"><g transform="scale(.65)">${lifeArt.spiral}</g></g></g>
-      <g class="micro-drifter" transform="translate(373 264)" style="--micro-delay:-4s"><g class="micro-float base-ambient"><g transform="scale(.6)">${lifeArt.virus}</g></g></g>
-      <g class="micro-drifter" transform="translate(200 82)" style="--micro-delay:-7s"><g class="micro-float base-ambient"><g transform="scale(.65)">${lifeArt.neutrophil}</g></g></g>
-      <g class="micro-drifter" transform="translate(28 457)" style="--micro-delay:-9s"><g class="micro-float base-ambient"><g transform="scale(.6)">${lifeArt.cocci}</g></g></g>
+      <g class="micro-drifter" transform="translate(28 65)" style="--micro-delay:-1s"><g class="micro-float base-ambient"><g transform="scale(.34)">${lifeArt.spiral}</g></g></g>
+      <g class="micro-drifter" transform="translate(373 264)" style="--micro-delay:-4s"><g class="micro-float base-ambient"><g transform="scale(.32)">${lifeArt.virus}</g></g></g>
+      <g class="micro-drifter" transform="translate(200 82)" style="--micro-delay:-7s"><g class="micro-float base-ambient"><g transform="scale(.34)">${lifeArt.neutrophil}</g></g></g>
+      <g class="micro-drifter" transform="translate(28 457)" style="--micro-delay:-9s"><g class="micro-float base-ambient"><g transform="scale(.32)">${lifeArt.cocci}</g></g></g>
     </g>`;
   }
   function routes(unlocked,completed) {
     const nodes=[[100,130],[300,130],[300,306],[100,306],[100,482],[300,482],[300,658]];
     const line=points=>points.map(p=>p.join(',')).join(' ');
-    return `<svg class="base-roads" viewBox="0 0 400 728" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id="baseGrid" width="48" height="24" patternUnits="userSpaceOnUse"><path d="M0 12 24 0 48 12 24 24Z" fill="none" stroke="#86c7c4" stroke-opacity=".06"/></pattern></defs><path fill="url(#baseGrid)" d="M0 0h400v728H0Z"/><polyline class="road-bed" points="${line(nodes)}"/><polyline class="road-mark" points="${line(nodes)}"/>${unlocked>1?`<polyline class="road-open base-ambient" points="${line(nodes.slice(0,unlocked))}"/>`:''}${completed===7?'<path class="base-complete-line" d="M30 708h340"/>':''}${microLife()}<g class="base-patrol base-ambient" transform="translate(200 190)"><ellipse cx="0" cy="12" rx="14" ry="5" fill="#032333" opacity=".4"/><path d="m-14 0 14-8 14 8-14 8Z" fill="#baf5e5" stroke="#61dcca"/><path d="M0-5v10m-5-5h10" stroke="#176866" stroke-width="2"/><path class="drone-eyes" d="m-5 3 3 1m4 0 3-1" stroke="#e7ffff" stroke-width="2"/></g><g class="base-landscape"><path d="m24 205 24-12 24 12-24 12Z"/><path d="m328 384 24-12 24 12-24 12Z"/><path d="m28 560 24-12 24 12-24 12Z"/></g></svg>`;
+    return `<svg class="base-roads" viewBox="0 0 400 728" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id="baseGrid" width="48" height="24" patternUnits="userSpaceOnUse"><path d="M0 12 24 0 48 12 24 24Z" fill="none" stroke="#86c7c4" stroke-opacity=".06"/></pattern></defs><path fill="url(#baseGrid)" d="M0 0h400v728H0Z"/><polyline class="road-bed" points="${line(nodes)}"/><polyline class="road-mark" points="${line(nodes)}"/>${unlocked>1?`<polyline class="road-open base-ambient" points="${line(nodes.slice(0,unlocked))}"/>`:''}${completed===7?'<path class="base-complete-line" d="M30 708h340"/>':''}${microLife()}<g class="base-patrol base-ambient" transform="translate(200 190)"><g transform="scale(.6)"><ellipse cx="0" cy="12" rx="14" ry="5" fill="#032333" opacity=".4"/><path d="m-14 0 14-8 14 8-14 8Z" fill="#baf5e5" stroke="#61dcca"/><path d="M0-5v10m-5-5h10" stroke="#176866" stroke-width="2"/><path class="drone-eyes" d="m-5 3 3 1m4 0 3-1" stroke="#e7ffff" stroke-width="2"/></g></g><g class="base-landscape"><path d="m24 205 24-12 24 12-24 12Z"/><path d="m328 384 24-12 24 12-24 12Z"/><path d="m28 560 24-12 24 12-24 12Z"/></g></svg>`;
   }
   function bossGate() {
     return `<a id="baseBossGate" class="base-boss-gate" href="./index.html" aria-label="BOSS 連戰，課後挑戰，免解鎖，獨立計分"><span class="facility-art" aria-hidden="true"><svg viewBox="0 0 160 140">${platform}<g class="gate-rings base-ambient"><ellipse cx="80" cy="67" rx="31" ry="48" fill="#261f3d" stroke="#d5acf8" stroke-width="6"/><ellipse cx="80" cy="67" rx="21" ry="36" fill="#181c31" stroke="#82679e" stroke-width="2"/><path d="m66 56 28 27m0-27L66 83" stroke="#ffda83" stroke-width="4" stroke-linecap="round"/></g></svg></span><strong>BOSS 連戰</strong><span>↗ 課後挑戰・免解鎖</span></a>`;
