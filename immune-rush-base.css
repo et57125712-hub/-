@@ -28,3 +28,15 @@
 @media(prefers-reduced-motion:reduce){.base-ambient,.gate-rings{animation:none!important}.facility-scan{opacity:0}}
 
 .base-pips{display:none}.is-base .base-pips{display:flex;justify-content:center;gap:4px;margin-top:4px}.base-pips i{width:12px;height:3px;border-radius:4px;background:#38576a}.base-pips i.learned{background:#9df3d2}.base-pips i.revisit{background:#f6c188}
+
+/* Ambient immunity: restrained cell/microbe patrols behind the facility controls.
+   Only transform/opacity animate; each skirmish shares one 15-second timeline. */
+.micro-life{pointer-events:none}.micro-membrane{fill:#22584f;stroke:#9cebd3;stroke-width:1.5}.micro-nucleus{fill:#7bcec0;stroke:#b8f7e5;stroke-width:.7}.micro-granules{fill:#d2f7c5}.microbe-body rect{fill:#673b50;stroke:#f6a5b9;stroke-width:1.4}.micro-spikes{fill:none;stroke:#ed93af;stroke-width:1.6;stroke-linecap:round}.micro-dna{fill:none;stroke:#ffcfaf;stroke-width:1.5;stroke-linecap:round}.micro-skirmish{opacity:.82}.micro-drifter{opacity:.5}.micro-capture{opacity:0}.micro-capture-ring{fill:#77e5c71a;stroke:#b1f4d8;stroke-width:1.6;stroke-dasharray:4 3}.micro-capture path{fill:none;stroke:#a8eed2;stroke-width:2;stroke-linecap:round}
+.micro-pursuer{animation:immunePursuit 15s ease-in-out infinite both;animation-delay:var(--micro-delay)}.micro-invader{animation:microbeEvasion 15s ease-in-out infinite both;animation-delay:var(--micro-delay)}.micro-capture{animation:immuneSurround 15s ease-in-out infinite both;animation-delay:var(--micro-delay)}.micro-float{animation:microbeDrift 11s ease-in-out infinite;animation-delay:var(--micro-delay)}
+@keyframes immunePursuit{0%{transform:translate(-140px,-6px);opacity:0}10%{opacity:1}28%{transform:translate(-74px,4px)}48%{transform:translate(-5px,0);opacity:1}64%{transform:translate(3px,0);opacity:1}82%{transform:translate(60px,-8px);opacity:0}100%{transform:translate(60px,-8px);opacity:0}}
+@keyframes microbeEvasion{0%{transform:translate(140px,6px) rotate(-12deg);opacity:0}10%{opacity:1}28%{transform:translate(71px,-5px) rotate(14deg)}48%{transform:translate(9px,0) rotate(-8deg);opacity:1}59%{transform:translate(5px,0) scale(.55);opacity:.5}66%,100%{transform:translate(5px,0) scale(.15);opacity:0}}
+@keyframes immuneSurround{0%,44%{transform:translate(5px,0) scale(.6);opacity:0}51%{transform:translate(5px,0) scale(1);opacity:.8}65%{transform:translate(5px,0) scale(1.2);opacity:0}100%{opacity:0}}
+@keyframes microbeDrift{0%,100%{transform:translate(0,-9px) rotate(-15deg)}50%{transform:translate(7px,10px) rotate(18deg)}}
+/* Resting silhouettes stay visible when motion is disabled; no frozen capture flash. */
+.rush-motion-off .micro-capture{opacity:0}.rush-motion-off .micro-skirmish{opacity:.45}
+@media(prefers-reduced-motion:reduce){.micro-capture{opacity:0}.micro-skirmish{opacity:.45}}
