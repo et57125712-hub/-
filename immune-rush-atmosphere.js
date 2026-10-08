@@ -11,6 +11,7 @@ window.ImmuneRushAtmosphere=(()=>{
   function paint(){
     document.documentElement.classList.toggle('rush-motion-off',!allowed());
     document.documentElement.classList.toggle('rush-background',document.hidden);
+    window.ImmuneRushEffects?.cancelIfReduced();
     document.querySelectorAll('[data-rush-music]').forEach(b=>{b.setAttribute('aria-pressed',String(prefs.music));b.setAttribute('aria-label','基地音樂：'+(prefs.music?'開':'關'));b.title=b.getAttribute('aria-label');b.classList.toggle('enabled',prefs.music);});
     document.querySelectorAll('[data-rush-motion]').forEach(b=>{b.setAttribute('aria-pressed',String(allowed()));b.setAttribute('aria-label',query.matches?'基地動態：依系統減少':'基地動態：'+(allowed()?'開':'關'));b.title=b.getAttribute('aria-label');b.disabled=query.matches;b.classList.toggle('enabled',allowed());});
     for(const [id,k] of [['musicSwitch','music'],['motionSwitch','motion']]){const b=document.getElementById(id);if(b){const value=k==='motion'?allowed():prefs[k];b.classList.toggle('on',value);b.setAttribute('aria-checked',String(value));b.disabled=k==='motion'&&query.matches;}}

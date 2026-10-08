@@ -2,6 +2,7 @@
   'use strict';
   const {icons, stages} = window.ImmuneRushData;
   const baseArt = window.ImmuneRushBase;
+  const sceneEffects = window.ImmuneRushEffects;
   let mapMode = 'base';
   const KEY = 'immuneRushSave';
   const $ = s => document.querySelector(s);
@@ -119,6 +120,7 @@
   }
   function focusTop(el) { el.focus({preventScroll:true}); el.scrollIntoView({block:'start',behavior:'instant'}); }
   function showView(id) {
+    sceneEffects.clear();
     clearTimeout(toastTimer);$('#toast').classList.remove('show');
     if(id==='consultView' && !save.demo) id='homeView';
     $$('.view').forEach(v=>v.classList.toggle('active',v.id===id));
@@ -157,12 +159,14 @@
   function startStage(i, index=0) {
     if(!unlocked(i)){toast(`先完成「${stages[i-1].title}」達 70%（每區至少通過 4/5 題）`);return;}
     if(!save.demo && save.run && save.run.stage!==i && !confirm('目前有未完成任務。改練此區會重新開始該次挑戰；已保存的成績與解析會保留。')) return;
+    const origin=sceneEffects.rect(document.querySelector(`.stage-card[data-stage="${i}"] .facility-art`));
     if(save.run?.stage===i && !save.demo) run=save.run;
     else {
       run={version:2,stage:i,index,results:stages[i].tasks.map(()=>null),inputs:{}};
       save.run=run;save.hearts=3;save.combo=0;save.attempts[stages[i].id]=(save.attempts[stages[i].id]||0)+1;
     }
     currentStage=run.stage;taskIndex=run.index;renderedTaskId=null;persist();showView('gameView');renderTask();
+    sceneEffects.travel(i,origin,sceneEffects.rect($('#missionFacility')));
   }
   function task() { return stages[currentStage].tasks[taskIndex]; }
   function inputFor(t) { return run.inputs[t.id] || (run.inputs[t.id]={}); }
@@ -171,6 +175,7 @@
     $('#gameProgress').setAttribute('aria-label',`第 ${taskIndex+1} / 5 題；${run.results.filter(Boolean).length} 題已查看或作答`);
   }
   function renderTask() {
+    sceneEffects.clear();
     const s=stages[currentStage], t=task(), result=run.results[taskIndex];
     taskLocked=!!result;matchSelected=null;
     $('#resultPanel').classList.remove('active');$('#questionCard').hidden=false;$('#arena').hidden=false;$('#gameProgress').hidden=false;
@@ -272,7 +277,7 @@
     window.ImmuneRushAtmosphere.duck(true);
     const fb=$('#feedback');fb.className='feedback show '+(result.ok||result.preview?'':'bad');
     const label=result.preview?'解析預覽・不計分':result.ok?(result.ratio<1?'✓ 本題通過，仍有項目需修正':'✓ 答對，任務成功'):'✕ 答錯，修正概念再出發';
-    fb.innerHTML=`<h3>${label}</h3>${result.extra?`<p>${esc(result.extra)}；分類／配對須達 70% 才通過本題。</p>`:''}${result.preview?'':responseHTML(t)}<h4>正確答案</h4>${answerHTML(t)}<h4>為什麼？</h4><p>${t.explain}</p><p class="knowledge">核心知識點｜${t.point}</p>${!result.ok&&!result.preview&&save.hearts===0?'<p>Energy 已歸零，仍可繼續完成練習。</p>':''}`;
+    fb.innerHTML=`<div class="feedback-heading"><span class="feedback-emblem" aria-hidden="true">${sceneEffects.badge(currentStage,result.preview?'preview':result.ok?'correct':'wrong')}</span><h3>${label}</h3></div>${result.extra?`<p>${esc(result.extra)}；分類／配對須達 70% 才通過本題。</p>`:''}${result.preview?'':responseHTML(t)}<h4>正確答案</h4>${answerHTML(t)}<h4>為什麼？</h4><p>${t.explain}</p><p class="knowledge">核心知識點｜${t.point}</p>${!result.ok&&!result.preview&&save.hearts===0?'<p>Energy 已歸零，仍可繼續完成練習。</p>':''}`;
     $('#hintBtn').hidden=true;$('#nextBtn').hidden=false;
     $('#nextBtn').textContent=taskIndex===stages[currentStage].tasks.length-1?'查看任務結果':'下一題';
     if(moveFocus)focusTop(fb);
@@ -281,7 +286,7 @@
     if(taskLocked)return;
     taskLocked=true;run.results[taskIndex]={ok,extra,ratio,preview};
     if(!preview){
-      if(ok){save.combo++;save.xp=Math.min(Number.MAX_SAFE_INTEGER,save.xp+100+Math.min(save.combo,10)*10);tone('good');vibe(25);burst(12);if(save.combo>=3)combo(save.combo);}
+      if(ok){save.combo++;save.xp=Math.min(Number.MAX_SAFE_INTEGER,save.xp+100+Math.min(save.combo,10)*10);tone('good');vibe(25);if(save.combo>=3)combo(save.combo);}
       else{save.combo=0;save.hearts=Math.max(0,save.hearts-1);tone('bad');vibe(45);}
       // One miss per task attempt; partial mistakes count even when the task passes.
       const missed=ratio<1,h=save.history[t.id]||{tries:0,misses:0};
@@ -289,6 +294,7 @@
       if(missed)save.wrong[t.point]=(save.wrong[t.point]||0)+1;
     }
     persist();renderTask();showFeedback(t,run.results[taskIndex],true);
+    if(ok&&!preview)sceneEffects.celebrate();
   }
   function nextTask() {
     if(!run?.results[taskIndex])return;
@@ -358,7 +364,7 @@
   $('#continueBtn').onclick=()=>startStage(save.run?.stage??(suggestedStage()<0?0:suggestedStage()));
   $('#teacherBtn').onclick=()=>setDemo(!save.demo);$('#exitDemoBtn').onclick=()=>setDemo(false);
   $('#consultBtn').onclick=()=>showView('consultView');$('#consultMapBtn').onclick=()=>showView('homeView');
-  $('#backBtn').onclick=()=>{persist();showView('homeView');};$('#nextBtn').onclick=nextTask;$('#hintBtn').onclick=showHint;
+  $('#backBtn').onclick=()=>{const origin=sceneEffects.rect($('#missionFacility'));persist();showView('homeView');sceneEffects.travel(currentStage,origin,sceneEffects.rect(document.querySelector(`.stage-card[data-stage="${currentStage}"] .facility-art`))||sceneEffects.rect($('.defense-emblem')),true);};$('#nextBtn').onclick=nextTask;$('#hintBtn').onclick=showHint;
   $('#demoTaskSelect').onchange=e=>{if(!save.demo)return;run.index=taskIndex=Number(e.target.value);renderTask();focusTop($('.prompt'));};
   $('#previewAnswerBtn').onclick=()=>{if(!save.demo)return;if(taskLocked)focusTop($('#feedback'));else finishTask(false,task(),'',0,true);};
   for(const [id,key] of [['soundSwitch','sound'],['vibrateSwitch','vibrate']])$('#'+id).onclick=()=>{studentSave[key]=!studentSave[key];persist();syncSettings();};
