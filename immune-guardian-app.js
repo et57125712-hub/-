@@ -5,14 +5,15 @@
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const scene=window.ImmuneGuardianScene,audio=window.ImmuneGuardianAudio;
   const motionQuery=matchMedia('(prefers-reduced-motion: reduce)');
-  let preferences={music:true,motion:true},audioPlaying=false;
-  try{const saved=JSON.parse(localStorage.getItem('guardianAmbienceSettings'));if(saved&&typeof saved.music==='boolean')preferences.music=saved.music;if(saved&&typeof saved.motion==='boolean')preferences.motion=saved.motion;}catch{}
+  let preferences={music:true,motion:true,motionOverride:false},audioPlaying=false;
+  try{const saved=JSON.parse(localStorage.getItem('guardianAmbienceSettings'));if(saved&&typeof saved.music==='boolean')preferences.music=saved.music;if(saved&&typeof saved.motion==='boolean')preferences.motion=saved.motion;if(saved&&saved.motionOverride===true)preferences.motionOverride=true;}catch{}
   function saveAmbience(){try{localStorage.setItem('guardianAmbienceSettings',JSON.stringify(preferences));}catch{}}
   function renderAmbience(){
-    const moving=preferences.motion&&!motionQuery.matches;
+    const moving=preferences.motion&&(!motionQuery.matches||preferences.motionOverride);
+    document.documentElement.classList.toggle('motion-enabled',moving);
     document.documentElement.classList.toggle('motion-paused',!moving||document.hidden);
     if(!moving||document.hidden)$('battle').classList.remove('boss-enter');
-    document.querySelectorAll('[data-motion]').forEach(b=>{const label=motionQuery.matches?'動態：減少':moving?'動態：開':'動態：關';b.textContent=b.closest('.combat-heading')?(moving?'◉':'○'):label;b.setAttribute('aria-label',label);b.title=label;b.setAttribute('aria-pressed',String(moving));b.disabled=motionQuery.matches;});
+    document.querySelectorAll('[data-motion]').forEach(b=>{const label=moving?'動態：開':motionQuery.matches&&!preferences.motionOverride?'動態：減少（可點選開啟）':'動態：關';b.textContent=b.closest('.combat-heading')?(moving?'動態':'靜態'):moving?'動態：開':motionQuery.matches&&!preferences.motionOverride?'動態：減少':'動態：關';b.setAttribute('aria-label',label);b.title=label;b.setAttribute('aria-pressed',String(moving));b.disabled=false;});
     document.querySelectorAll('[data-music]').forEach(b=>{const label=!preferences.music?'♫ 音樂：關':phase==='idle'||phase==='result'?'♫ 音樂：開':audioPlaying?'♫ 音樂：開':'♫ 音樂：暫停';b.textContent=b.closest('.combat-heading')?(preferences.music?'♫':'×♪'):label;b.setAttribute('aria-label',label+'（含攻擊音效）');b.title=label;b.setAttribute('aria-pressed',String(preferences.music));});
   }
   let feedbackTimer=0,reviewed=false;
@@ -21,7 +22,7 @@
   const modes={all:'綜合挑戰',national:'國考特訓',concept:'概念闖關'};
   let pool=[],index=0,current=null,hp=7,streak=0,score=0,enemyHp=0,stage=1,maxHp=0;
   let phase='idle',heroForm=0,bossForm=1,defeated=0,bestCombo=0,correctTotal=0,history=[],healthPlan=[];
-  const reducedMotion=()=>motionQuery.matches||!preferences.motion;
+  const reducedMotion=()=>!preferences.motion||(motionQuery.matches&&!preferences.motionOverride);
   function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
   function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
   function focusOn(el){el.focus({preventScroll:true});el.scrollIntoView({block:'start',behavior:'instant'});}
@@ -125,7 +126,7 @@
   }
   audio.configure(preferences.music,state=>{audioPlaying=state.playing;renderAmbience();});
   document.querySelectorAll('[data-music]').forEach(b=>b.onclick=()=>{preferences.music=!preferences.music;saveAmbience();audio.setEnabled(preferences.music);renderAmbience();});
-  document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>{preferences.motion=!preferences.motion;saveAmbience();renderAmbience();});
+  document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>{const wasMoving=!reducedMotion();preferences.motion=!wasMoving;preferences.motionOverride=!wasMoving&&motionQuery.matches;saveAmbience();renderAmbience();});
   motionQuery.addEventListener('change',renderAmbience);document.addEventListener('visibilitychange',renderAmbience);renderAmbience();
   $('battle').insertAdjacentHTML('afterbegin',scene.backdrop());
   $('lobbyScene').innerHTML=scene.backdrop()+`<div class="platform left"></div><div class="platform right"></div><div class="hero">${scene.guardian()}</div><div class="monster">${scene.boss()}</div>`;

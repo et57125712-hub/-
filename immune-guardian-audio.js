@@ -14,6 +14,15 @@ window.ImmuneGuardianAudio = (() => {
     source.onended=()=>{voices.delete(source);hits.delete(source);source.disconnect();gain.disconnect();};source.start(time);source.stop(time+duration+.02);return source;
   }
   function note(midi,time,duration,level,type='triangle'){const source=context.createOscillator();source.type=type;source.frequency.value=frequency(midi);return voice(source,time,duration,level);}
+  // Resonant, filtered saw bass gives small phone speakers audible midrange.
+  function synth(midi,time,duration,level,cutoff=950){
+    const source=context.createOscillator(),filter=context.createBiquadFilter(),gain=context.createGain();
+    source.type='sawtooth';source.frequency.value=frequency(midi);filter.type='lowpass';filter.Q.value=3;
+    filter.frequency.setValueAtTime(cutoff,time);filter.frequency.exponentialRampToValueAtTime(180,time+duration);
+    gain.gain.setValueAtTime(0,time);gain.gain.linearRampToValueAtTime(level,time+.008);gain.gain.exponentialRampToValueAtTime(.0001,time+duration);
+    source.connect(filter);filter.connect(gain);gain.connect(master);voices.add(source);
+    source.onended=()=>{voices.delete(source);hits.delete(source);source.disconnect();filter.disconnect();gain.disconnect();};source.start(time);source.stop(time+duration+.02);return source;
+  }
   function percussion(time,kick=false,snare=false){
     if(kick){const source=context.createOscillator();source.frequency.setValueAtTime(120,time);source.frequency.exponentialRampToValueAtTime(42,time+.15);voice(source,time,.16,.55);return source;}
     else{const source=context.createBufferSource();source.buffer=noise;const filter=context.createBiquadFilter();filter.type='highpass';filter.frequency.value=snare?1300:7000;
@@ -23,16 +32,18 @@ window.ImmuneGuardianAudio = (() => {
     if(!wanted()||context.state!=='running')return;
     if(next<context.currentTime-.2)next=context.currentTime+.03;
     while(next<context.currentTime+.12){
-      const beat=step%16,chord=Math.floor(step/32)%4,root=[45,41,48,43][chord],third=chord===0?3:4;
-      // Syncopated bass, a clear backbeat and denser hi-hats build urgency without more volume.
-      if([0,3,6,8,10,14].includes(beat))note(root+(beat===14?12:0),next,.11,.2,'triangle');
-      const arp=[0,7,12,third+12,7,12,19,12];
-      if(step%2===0||stage>=3)note(root+24+arp[step%8],next,.085,step%2?.045:.075);
-      if(step%32===0)[0,third,7].forEach(n=>note(root+12+n,next,2.1,.035,'sine'));
-      if([0,6,8].includes(beat)||stage>=4&&beat===10)percussion(next,true);
+      const beat=step%16,bar=Math.floor(step/16),root=[40,40,41,38][Math.floor(bar/2)%4];
+      // Minor / semitone tension, offbeat synth stabs and a driving industrial pulse.
+      if([0,2,3,6,8,10,11,14].includes(beat))synth(root+(beat===14?12:0),next,.115,.16,850+stage*150);
+      if(beat%4===0)note(root-12,next,.14,.15,'sine');
+      const arp=[0,12,7,13,12,7,3,7];
+      if(step%2===0||stage>=3)note(root+24+arp[step%8],next,.07,step%2?.035:.06,'square');
+      if([3,7,11,15].includes(beat))synth(root+12+(beat===15?1:7),next,.085,.075,1500);
+      if(beat===0&&bar%4===3){note(76,next,.16,.035,'square');note(77,next+.19,.16,.03,'square');}
+      if([0,4,8,12].includes(beat)||stage>=4&&beat===14)percussion(next,true);
       if(beat===4||beat===12)percussion(next,false,true);
-      if(step%2===0||stage>=4)percussion(next);
-      step++;next+=60/(132+(stage-1)*4+intensity)/4;
+      if(step%2===0||stage>=2)percussion(next);
+      step++;next+=60/(146+(stage-1)*3+intensity)/4;
     }
   }
   function clearHit(){for(const source of hits){try{source.stop();}catch{}}hits.clear();}
@@ -41,7 +52,7 @@ window.ImmuneGuardianAudio = (() => {
     if(!wanted()||!context||context.state!=='running'||ducked)return;
     clearHit();const t=context.currentTime+.008;
     // Short charge then a bass/noise impact aligns with the on-screen contact at 230ms.
-    const charge=context.createOscillator();charge.type='triangle';charge.frequency.setValueAtTime(correct?220:360,t);charge.frequency.exponentialRampToValueAtTime(correct?880:100,t+.18);hits.add(voice(charge,t,.2,.2));
+    const charge=context.createOscillator();charge.type='sawtooth';charge.frequency.setValueAtTime(correct?220:360,t);charge.frequency.exponentialRampToValueAtTime(correct?880:100,t+.18);hits.add(voice(charge,t,.2,.12));
     hits.add(percussion(t+.23,true));hits.add(percussion(t+.23,false,true));
     hits.add(note(correct?57:33,t+.23,.18,.22,'triangle'));
     if(correct)hits.add(note(76+Math.max(0,Math.min(7,form))*2,t+.25,.1,.13,'sine'));
