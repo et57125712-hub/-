@@ -78,11 +78,6 @@
   }
   function mastery() { return Math.round(stages.reduce((sum,s)=>sum+(save.scores[s.id]||0),0)/stages.length); }
   function updateStats() {
-    for(const [id,value] of [['xpTop',String(save.xp)],['comboTop',String(save.combo)],['heartTop','❤'.repeat(save.hearts)+'♡'.repeat(3-save.hearts)]]){
-      const el=$('#'+id),changed=el.textContent!==value;el.textContent=value;
-      if(changed)animateUI(el,[{transform:'scale(1)'},{transform:'scale(1.14)'},{transform:'scale(1)'}],360);
-    }
-    $('#heartTop').setAttribute('aria-label',`Energy ${save.hearts} / 3；歸零仍可練習`);
     $('#heroMastery').textContent=mastery()+'%';
   }
   function syncSettings() {
@@ -159,14 +154,14 @@
   function startStage(i, index=0) {
     if(!unlocked(i)){toast(`先完成「${stages[i-1].title}」達 70%（每區至少通過 4/5 題）`);return;}
     if(!save.demo && save.run && save.run.stage!==i && !confirm('目前有未完成任務。改練此區會重新開始該次挑戰；已保存的成績與解析會保留。')) return;
-    const origin=sceneEffects.rect(document.querySelector(`.stage-card[data-stage="${i}"] .facility-art`));
+    const origin=sceneEffects.captureMap(i);
     if(save.run?.stage===i && !save.demo) run=save.run;
     else {
       run={version:2,stage:i,index,results:stages[i].tasks.map(()=>null),inputs:{}};
       save.run=run;save.hearts=3;save.combo=0;save.attempts[stages[i].id]=(save.attempts[stages[i].id]||0)+1;
     }
-    currentStage=run.stage;taskIndex=run.index;renderedTaskId=null;persist();showView('gameView');renderTask();
-    sceneEffects.travel(i,origin,sceneEffects.rect($('#missionFacility')));
+    currentStage=run.stage;taskIndex=run.index;renderedTaskId=null;$('#arena').open=false;persist();showView('gameView');renderTask();
+    sceneEffects.travel(i,origin);
   }
   function task() { return stages[currentStage].tasks[taskIndex]; }
   function inputFor(t) { return run.inputs[t.id] || (run.inputs[t.id]={}); }
@@ -179,11 +174,11 @@
     const s=stages[currentStage], t=task(), result=run.results[taskIndex];
     taskLocked=!!result;matchSelected=null;
     $('#resultPanel').classList.remove('active');$('#questionCard').hidden=false;$('#arena').hidden=false;$('#gameProgress').hidden=false;
-    $('#gameStageTitle').textContent=s.title;$('#gameStageSub').textContent=t.point;
+    $('#gameStageTitle').textContent=s.title;
     $('#roundPill').textContent=`${taskIndex+1} / ${s.tasks.length}`;
     if($('#missionFacility').dataset.stage!==String(currentStage)){$('#missionFacility').innerHTML=baseArt.facility(currentStage);$('#missionFacility').dataset.stage=String(currentStage);}
     window.ImmuneRushAtmosphere.duck(!!result);
-    $('#arenaTitle').textContent=t.type==='boss'?'臨床 Boss・整合判斷':s.title;
+    $('#arenaTitle').textContent=t.type==='boss'?'Boss 作答提示':'任務簡報';
     $('#arenaText').textContent=t.type==='boss'?'先找出情境線索，再用免疫機轉做判斷。':s.brief;
     $('#arena').classList.toggle('boss-arena',t.type==='boss');
     $('#feedback').className='feedback';$('#feedback').innerHTML='';$('#hintBox').className='hint-box';$('#hintBox').textContent='';
@@ -364,7 +359,7 @@
   $('#continueBtn').onclick=()=>startStage(save.run?.stage??(suggestedStage()<0?0:suggestedStage()));
   $('#teacherBtn').onclick=()=>setDemo(!save.demo);$('#exitDemoBtn').onclick=()=>setDemo(false);
   $('#consultBtn').onclick=()=>showView('consultView');$('#consultMapBtn').onclick=()=>showView('homeView');
-  $('#backBtn').onclick=()=>{const origin=sceneEffects.rect($('#missionFacility'));persist();showView('homeView');sceneEffects.travel(currentStage,origin,sceneEffects.rect(document.querySelector(`.stage-card[data-stage="${currentStage}"] .facility-art`))||sceneEffects.rect($('.defense-emblem')),true);};$('#nextBtn').onclick=nextTask;$('#hintBtn').onclick=showHint;
+  $('#backBtn').onclick=()=>{persist();showView('homeView');sceneEffects.travel(currentStage,sceneEffects.captureMap(currentStage),true);};$('#nextBtn').onclick=nextTask;$('#hintBtn').onclick=showHint;
   $('#demoTaskSelect').onchange=e=>{if(!save.demo)return;run.index=taskIndex=Number(e.target.value);renderTask();focusTop($('.prompt'));};
   $('#previewAnswerBtn').onclick=()=>{if(!save.demo)return;if(taskLocked)focusTop($('#feedback'));else finishTask(false,task(),'',0,true);};
   for(const [id,key] of [['soundSwitch','sound'],['vibrateSwitch','vibrate']])$('#'+id).onclick=()=>{studentSave[key]=!studentSave[key];persist();syncSettings();};

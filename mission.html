@@ -7,32 +7,32 @@
 <meta name="description" content="IMMUNE RUSH 免疫防線大作戰：五專護理免疫學手機互動教具，七大任務、即時解析與課後自主複習。">
 <title>IMMUNE RUSH｜免疫防線大作戰</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./immune-rush.css?v=20261008f">
-<link rel="stylesheet" href="./immune-rush-base.css?v=20261008f">
-<link rel="stylesheet" href="./immune-rush-effects.css?v=20261008f">
+<link rel="stylesheet" href="./immune-rush.css?v=20261008g">
+<link rel="stylesheet" href="./immune-rush-base.css?v=20261008g">
+<link rel="stylesheet" href="./immune-rush-effects.css?v=20261008g">
 </head>
 <body>
 <a href="#mainContent" class="skip-link">跳至主要內容</a>
 <canvas id="fx" aria-hidden="true"></canvas><div class="bg-grid" aria-hidden="true"></div>
 <div id="comboPop" class="combo-pop" aria-hidden="true"></div><div id="toast" class="toast" role="status"></div>
 <div class="app">
-<header class="topbar"><div class="toprow"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="M6 6c4 2 8 2 12 0M6 18c4-2 8-2 12 0"/></svg></div><div class="brand"><b>IMMUNE RUSH</b><span>免疫學・手機互動闖關</span></div><div class="stats" aria-label="遊戲狀態"><div class="stat"><b id="xpTop">0</b><span>XP</span></div><div class="stat"><b id="comboTop">0</b><span>Combo</span></div><div class="stat"><b id="heartTop">❤❤❤</b><span>Energy</span></div></div></div></header>
+<header class="topbar"><div class="toprow"><div class="logo" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M14 3 24 7v8c0 5-5 9-10 11C9 24 4 20 4 15V7Z"/><path d="M14 9v10M9 14h10"/></svg></div><div class="brand"><b>IMMUNE RUSH</b><span>免疫防線</span></div></div></header>
 <div id="demoBanner" class="mode-banner" hidden><strong>專家／教師展示模式</strong><span>自由選題・示範紀錄不計入學生進度</span><div><button id="consultBtn" class="text-btn">專家諮詢重點</button><button id="exitDemoBtn" class="text-btn">回學生模式</button></div></div>
 <p id="storageNotice" class="storage-notice" role="status" hidden></p>
 <main id="mainContent" tabindex="-1">
 <section id="homeView" class="view active" aria-labelledby="homeTitle">
   <section class="hero"><div class="hero-intro"><h1 id="homeTitle">免疫防線<em>大作戰</em></h1><div class="defense-emblem" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="54" stroke="currentColor" opacity=".18"/><g class="scan-orbit"><circle cx="60" cy="60" r="46" stroke="currentColor" stroke-dasharray="54 18 10 18"/><circle cx="60" cy="14" r="4" fill="currentColor"/></g><circle class="shield-wave" cx="60" cy="60" r="34" stroke="currentColor"/><path class="shield-core" d="M60 30 83 39v21c0 15-13 26-23 31-10-5-23-16-23-31V39Z" fill="#10374c" stroke="currentColor" stroke-width="2"/><path d="M60 46v25M48 58h24" stroke="#b8ff68" stroke-width="4" stroke-linecap="round"/><circle cx="17" cy="83" r="3" fill="#b8ff68"/><circle cx="101" cy="91" r="3" fill="#b8ff68"/></svg></div></div><p>課堂闖關・課後複習，點選基地出發。</p><div class="hero-actions"><button id="continueBtn" class="btn">開始行動</button><button id="teacherBtn" class="btn ghost">展示模式</button></div></section>
 
-  <section class="base-section" aria-labelledby="baseTitle"><div class="base-heading"><div><h2 id="baseTitle">免疫防線基地</h2></div><div class="map-switch" role="group" aria-label="任務地圖顯示方式"><button id="baseModeBtn" type="button" aria-pressed="true">基地</button><button id="listModeBtn" type="button" aria-pressed="false">清單</button></div></div><div class="base-console"><p id="baseHelp" class="helper">下一站：防線啟動</p><div class="base-tools"><button type="button" data-rush-music aria-label="基地音樂：關" aria-pressed="false">♫</button><button type="button" data-rush-motion aria-label="基地動態：開" aria-pressed="true">◉</button></div></div><section id="stageMap" class="map is-base" aria-label="七大任務區" aria-describedby="baseHelp"></section><div class="base-legend" aria-label="基地狀態"><span>◉ 可進入</span><span>✓ 已通過</span><span>🔒 待解鎖</span></div><p id="baseProgress" class="base-progress"></p><p class="helper">每區通過 4/5 題，解鎖下一區。</p><p class="base-note">巨噬細胞伸展包覆・分葉核細胞巡邏・Y 型抗體聚攏；桿菌、球菌串與棘突病毒各有不同動態。背景為防禦意象，非實際比例或完整免疫機轉；設施位置不代表人體解剖位置。</p></section>
+  <section class="base-section" aria-labelledby="baseTitle"><div class="base-heading"><div><h2 id="baseTitle">免疫防線基地</h2></div><div class="map-switch" role="group" aria-label="任務地圖顯示方式"><button id="baseModeBtn" type="button" aria-pressed="true">基地</button><button id="listModeBtn" type="button" aria-pressed="false">清單</button></div></div><div class="base-console"><p id="baseHelp" class="helper">下一站：防線啟動</p><div class="base-tools"><button type="button" data-rush-music aria-label="基地音樂：關" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg></button><button type="button" data-rush-motion aria-label="基地動態：開" aria-pressed="true">◉</button></div></div><section id="stageMap" class="map is-base" aria-label="七大任務區" aria-describedby="baseHelp"></section><div class="base-legend" aria-label="基地狀態"><span>◉ 可進入</span><span>✓ 已通過</span><span>🔒 待解鎖</span></div><p id="baseProgress" class="base-progress"></p><p class="helper">每區通過 4/5 題，解鎖下一區。</p><p class="base-note">巨噬細胞伸展包覆・分葉核細胞巡邏・Y 型抗體聚攏；桿菌、球菌串與棘突病毒各有不同動態。背景為防禦意象，非實際比例或完整免疫機轉；設施位置不代表人體解剖位置。</p></section>
   <section id="bossPortal" class="boss-portal" aria-labelledby="bossPortalTitle"><a id="homeBossChallenge" href="./index.html" class="boss-portal-link"><span class="portal-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="m10 8 26 26M38 8 12 34M8 29l11 11M29 40l11-11M12 34l-5 7M36 34l5 7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="m10 8 1 10 7-7Zm28 0-1 10-7-7Z" fill="currentColor"/></svg></span><div class="portal-copy"><span class="portal-label">課後挑戰入口</span><h2 id="bossPortalTitle">BOSS 連戰挑戰</h2><span class="portal-description">免解鎖・五大 Boss・獨立計分</span><span class="portal-cta">進入免疫守衛戰 <span aria-hidden="true">→</span></span></div></a></section>
   <div class="hero-metrics"><div class="metric"><b>7</b><span>任務區域</span></div><div class="metric"><b id="taskCount">35</b><span>互動挑戰</span></div><div class="metric"><b id="heroMastery">0%</b><span>平均最佳成績</span></div></div>
   <section id="nextGoal" class="next-goal" aria-label="下一步建議"></section>
   <p class="local-note">進度自動保存在此瀏覽器；同一裝置、同一瀏覽器可接續。清除網站資料或使用私密瀏覽，紀錄可能消失。</p>
 </section>
 <section id="gameView" class="view" aria-label="任務作答">
-  <div class="game-head"><button id="backBtn" class="back" aria-label="暫存並返回任務地圖"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div class="game-title"><b id="gameStageTitle">任務</b><span id="gameStageSub">知識點</span></div><button type="button" class="mission-music" data-rush-music aria-label="基地音樂：關" aria-pressed="false">♫</button><div id="roundPill" class="round-pill">1 / 5</div></div>
+  <div class="game-head"><button id="backBtn" class="back" aria-label="暫存並返回任務地圖"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div class="game-title"><b id="gameStageTitle">任務</b></div><button type="button" class="mission-music" data-rush-music aria-label="基地音樂：關" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg></button><div id="roundPill" class="round-pill">1 / 5</div></div>
   <div id="demoControls" class="demo-controls" hidden><label for="demoTaskSelect">直接查看題型／Boss</label><select id="demoTaskSelect"></select><button id="previewAnswerBtn" class="btn ghost small">查看本題解析</button></div>
-  <section id="arena" class="arena"><div id="missionFacility" class="mission-facility" aria-hidden="true"></div><span class="arena-label">任務簡報</span><h2 id="arenaTitle">啟動免疫防線</h2><p id="arenaText">讀取任務中……</p></section>
+  <details id="arena" class="arena"><summary><span id="missionFacility" class="mission-facility" aria-hidden="true"></span><span id="arenaTitle">任務簡報</span><span class="briefing-toggle"><span class="briefing-show">展開</span><span class="briefing-hide">收合</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg></span></summary><p id="arenaText">讀取任務中……</p></details>
   <div id="gameProgress" class="game-progress" role="img" aria-label="題目進度"></div>
   <section id="questionCard" class="question-card"><div id="questionArea"></div><div id="feedback" class="feedback" tabindex="-1" role="region" aria-label="作答解析"></div><div id="hintBox" class="hint-box" role="status"></div><div class="action-row"><button id="hintBtn" class="hint-btn" aria-expanded="false" aria-controls="hintBox">提示</button><button id="nextBtn" class="btn" hidden>下一題</button></div></section>
   <section id="resultPanel" class="result" tabindex="-1" aria-label="任務結果"></section>
@@ -45,10 +45,10 @@
 </div>
 <dialog id="reviewDialog" aria-labelledby="reviewTitle"><div class="dialog-head"><h2 id="reviewTitle">解析回顧</h2><button id="closeReviewBtn" class="btn ghost small">關閉</button></div><div id="reviewContent"></div></dialog>
 <noscript><p>請啟用瀏覽器的 JavaScript，才能操作互動任務。</p></noscript>
-<script src="./immune-rush-data.js?v=20261008f" defer></script>
-<script src="./immune-rush-base.js?v=20261008f" defer></script>
-<script src="./immune-rush-atmosphere.js?v=20261008f" defer></script>
-<script src="./immune-rush-effects.js?v=20261008f" defer></script>
-<script src="./immune-rush-app.js?v=20261008f" defer></script>
+<script src="./immune-rush-data.js?v=20261008g" defer></script>
+<script src="./immune-rush-base.js?v=20261008g" defer></script>
+<script src="./immune-rush-atmosphere.js?v=20261008g" defer></script>
+<script src="./immune-rush-effects.js?v=20261008g" defer></script>
+<script src="./immune-rush-app.js?v=20261008g" defer></script>
 </body>
 </html>

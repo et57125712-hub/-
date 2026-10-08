@@ -37,7 +37,7 @@ async function perfect(browser,name,w,h,mode='all'){
  assert.match(await p.locator('#resultTitle').innerText(),/FINAL CLEAR/);assert.match(await p.locator('#result').innerText(),new RegExp(`${total}/${total} 題已作答`));assert.match(await p.locator('#result').innerText(),/5\/5/);assert.equal(seen.size,total);await layout(p,'result');if(mode==='all'){assert(forms.has('終極型態'));await shot(p,`${name}-${w}-result`,true);}
  // Return goes directly to existing diagnosis, and this game never writes student data.
  assert.equal(await p.evaluate(()=>localStorage.getItem('immuneRushSave')),null);
- await p.locator('#returnMission').click();assert(await p.locator('#reportView').isVisible());assert.equal(await p.locator('#xpTop').innerText(),'0');
+ await p.locator('#returnMission').click();assert(await p.locator('#reportView').isVisible());assert.equal(await p.locator('#heroMastery').innerText(),'0%');
  assert.deepEqual(errors,[]);await ctx.close();evidence.push({engine:name,width:w,height:h,mode,total,allFiveBosses:'PASS',result:'PASS'});console.log(`PASS ${name} ${w} ${mode} ${total} questions`);
 }
 async function edges(browser,name){

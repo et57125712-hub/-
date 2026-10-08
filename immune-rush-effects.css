@@ -1,8 +1,19 @@
-/* Short camera-like moves, isolated from the readable interface. */
-.mission-transit{position:fixed;left:0;top:0;width:160px;height:140px;z-index:60;pointer-events:none;transform-origin:80px 70px;--roof:#bddbe0;--wall-left:#608b9f;--wall-right:#305770;--light:#93edd7;--pad:#294d5d;--pad-side:#102f43}
-.mission-transit .facility-art{display:block;width:160px;height:140px;position:relative;filter:drop-shadow(0 9px 12px #03132066)}
-.transit-orbit{position:absolute;inset:8px 17px;border-radius:50%;border:1px solid #80d9d16b;border-top:3px solid #b8f4de;transform:rotate(-80deg);animation:transitOrbit .74s ease-out both;background:radial-gradient(ellipse,#113844cc,transparent 70%)}
-@keyframes transitOrbit{to{transform:rotate(280deg)}}
+/* A short camera push through the actual campus, with a separate mission HUD. */
+.mission-transit{position:fixed;inset:0;z-index:60;overflow:hidden;pointer-events:none;background:#081c2b;contain:layout paint}
+.mission-transit *{pointer-events:none!important}
+.transit-camera{position:absolute;inset:0;will-change:transform}
+.transit-campus.map{position:absolute!important;margin:0;max-width:none;box-sizing:border-box}
+.transit-campus *,.transit-campus *::before{animation:none!important;transition:none!important}
+.transit-campus .stage-card{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+.transit-campus .stage-card::before{display:none}
+.transit-campus .stage-card:not(.transit-target) .facility-art{opacity:.6}
+.transit-campus .transit-target .facility-art::after{content:'';position:absolute;inset:0;border:1px solid #b7ffe577;border-radius:50%;transform:scaleY(.35) translateY(110%);box-shadow:0 0 12px #b7ffe544}
+.transit-campus .transit-target .facility-art{position:relative;filter:drop-shadow(0 0 8px #a3f5dd44)}
+.mission-transit::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#081c2b33,transparent 25%,transparent 48%,#081c2bf5 82%);border:12px solid #081c2b33}
+.transit-hud{position:absolute;z-index:1;top:62%;left:max(24px,calc((100% - 500px)/2));right:24px;padding:12px 0 12px 16px;border-left:3px solid #a3f3da;color:#eefcf9;text-shadow:0 2px 8px #061521}
+.transit-hud span{display:block;font-size:.8125rem;letter-spacing:.1em;color:#bce4df;margin-bottom:6px}
+.transit-hud strong{font-size:clamp(1.5rem,6vw,2.2rem);letter-spacing:.08em}
+.transit-brief{background:#081c2bde}.transit-brief .transit-hud{top:32%}
 .feedback-heading{display:flex;align-items:center;gap:10px;margin-bottom:8px}.feedback-heading h3{flex:1;min-width:0}.feedback-emblem{display:block;width:46px;height:46px;flex:0 0 46px;color:#a4f4d9}.learning-emblem{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}.fx-orbit{opacity:.25;stroke-width:1;stroke-dasharray:4 5}.fx-detail{stroke-width:2.8}.fx-node{fill:currentColor;stroke-width:1}.emblem-2{color:#c0c5ff}.emblem-3{color:#ffe1a2}.emblem-4{color:#ffbdcd}.emblem-6{color:#dec7ff}.feedback.bad .feedback-emblem{opacity:.6}.feedback.bad .learning-emblem{color:#e5b4c0}
 .is-celebrating .fx-trace{stroke-dasharray:220;stroke-dashoffset:220;animation:emblemDraw .65s ease-out forwards}.is-celebrating .fx-orbit{transform-origin:32px 32px;animation:emblemOrbit .9s ease-out}.is-celebrating .fx-node{transform-box:fill-box;transform-origin:center;animation:emblemNode .6s ease-out both}.is-celebrating .fx-node:nth-of-type(2){animation-delay:.08s}.is-celebrating .fx-node:nth-of-type(3){animation-delay:.16s}.is-celebrating .fx-node:nth-of-type(4){animation-delay:.24s}.is-celebrating .fx-node:nth-of-type(5){animation-delay:.3s}
 @keyframes emblemDraw{to{stroke-dashoffset:0}}@keyframes emblemOrbit{from{transform:rotate(-100deg) scale(.7);opacity:.7}to{transform:rotate(0) scale(1);opacity:.25}}@keyframes emblemNode{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.5);opacity:1}100%{transform:scale(1);opacity:1}}

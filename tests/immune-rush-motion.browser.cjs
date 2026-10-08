@@ -53,7 +53,7 @@ assert.equal(await p.evaluate(()=>document.getAnimations().filter(a=>a.playState
 await p.locator('#continueBtn').click();
 const data=await p.evaluate(()=>window.ImmuneRushData.stages);
 await p.locator(`[data-answer="${data[0].tasks[0].answer}"]`).click();
-assert.equal(await p.locator('#xpTop').textContent(),'110');
+assert.equal(String(await p.evaluate(()=>JSON.parse(localStorage.getItem('immuneRushSave')).xp)),'110');
 assert(await p.locator('#feedback').isVisible());
 await p.locator('#backBtn').click();
 const save=await p.evaluate(()=>localStorage.getItem('immuneRushSave'));
