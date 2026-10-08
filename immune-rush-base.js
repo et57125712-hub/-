@@ -2,28 +2,53 @@
 window.ImmuneRushBase = (() => {
   'use strict';
   const facilities=['防線城門','免疫部隊基地','記憶資料塔','抗體工坊','血型檢驗站','補體反應站','MHC 指揮中心'];
-  // Project a rectangular block onto a fixed isometric view. No WebGL or external assets.
+  // One isometric projection for walls, glazing, parapets and roof equipment.
   const point=(x,y,u,v,z=0)=>`${(x+(u-v)*.86).toFixed(1)},${(y+(u+v)*.46-z).toFixed(1)}`;
-  function block(x,y,w,d,h,roof='roof') {
+  function block(x,y,w,d,h,glazed=false) {
     const p=(u,v,z)=>point(x,y,u,v,z);
-    return `<polygon class="wall-left" points="${p(0,0,0)} ${p(0,d,0)} ${p(0,d,h)} ${p(0,0,h)}"/><polygon class="wall-right" points="${p(0,d,0)} ${p(w,d,0)} ${p(w,d,h)} ${p(0,d,h)}"/><polygon class="wall-right" points="${p(w,0,0)} ${p(w,d,0)} ${p(w,d,h)} ${p(w,0,h)}"/><polygon class="${roof}" points="${p(0,0,h)} ${p(w,0,h)} ${p(w,d,h)} ${p(0,d,h)}"/>`;
+    let out=`<polygon class="wall-left" points="${p(0,d,0)} ${p(w,d,0)} ${p(w,d,h)} ${p(0,d,h)}"/><polygon class="wall-right" points="${p(w,0,0)} ${p(w,d,0)} ${p(w,d,h)} ${p(w,0,h)}"/>`;
+    if(h>14){
+      out+=`<polygon class="facade-glass" points="${p(3,d,h-7)} ${p(w-3,d,h-7)} ${p(w-3,d,7)} ${p(3,d,7)}"/><polygon class="facade-glass shade" points="${p(w,3,h-7)} ${p(w,d-3,h-7)} ${p(w,d-3,7)} ${p(w,3,7)}"/>`;
+      for(let z=glazed?13:h-12;z<h-7;z+=10)out+=`<path class="facade-floor" d="M${p(3,d,z)}L${p(w-3,d,z)} M${p(w,3,z)}L${p(w,d-3,z)}"/>`;
+      for(let u=9;u<w-3;u+=10)out+=`<path class="facade-mullion" d="M${p(u,d,7)}L${p(u,d,h-7)}"/>`;
+      out+=`<path class="glass-reflection" d="M${p(5,d,h-9)}L${p(Math.min(w-5,17),d,9)}"/>`;
+    }
+    out+=`<polygon class="roof" points="${p(0,0,h)} ${p(w,0,h)} ${p(w,d,h)} ${p(0,d,h)}"/><polygon class="roof-inset" points="${p(3,3,h+.4)} ${p(w-3,3,h+.4)} ${p(w-3,d-3,h+.4)} ${p(3,d-3,h+.4)}"/><path class="architectural-edge" d="M${p(0,d,h)}L${p(w,d,h)}L${p(w,0,h)} M${p(w,d,h)}L${p(w,d,0)}"/><path class="plinth-edge" d="M${p(0,d,3)}L${p(w,d,3)}L${p(w,0,3)}"/>`;
+    return out;
   }
-  function tank(x,y,color='tank') {
-    return `<g class="${color}"><path d="M${x-12} ${y-30}v29c0 10 24 10 24 0v-29Z"/><ellipse cx="${x}" cy="${y-30}" rx="12" ry="6"/><ellipse class="tank-band" cx="${x}" cy="${y-14}" rx="12" ry="6"/></g>`;
+  function tank(x,y) {
+    return `<g class="blood-tank"><ellipse class="tank-foot" cx="${x}" cy="${y+3}" rx="15" ry="7"/><path class="tank-glass" d="M${x-12} ${y-35}v32c0 9 24 9 24 0v-32Z"/><path class="tank-fluid" d="M${x-9} ${y-19}v16c0 6 18 6 18 0v-16Z"/><ellipse class="tank-cap" cx="${x}" cy="${y-35}" rx="13" ry="6"/><ellipse class="tank-top" cx="${x}" cy="${y-37}" rx="10" ry="4"/><path class="tank-rail" d="M${x-12} ${y-33}v29m24-29v29M${x-6} ${y-29}v13"/><ellipse class="tank-band" cx="${x}" cy="${y-6}" rx="12" ry="5"/></g>`;
   }
-  const platform='<ellipse class="facility-shadow" cx="80" cy="113" rx="68" ry="18"/><path class="pad-side" d="m9 93 71 35 71-35v10l-71 35-71-35Z"/><path class="pad-top" d="m9 93 71-35 71 35-71 35Z"/><path class="pad-trim" d="m18 94 62 29 62-29"/>';
-  const detail='<path class="window-strip base-ambient" d="m82 95 7-3m5-2 7-3m5-2 7-3"/>';
+  const platform='<ellipse class="facility-shadow" cx="88" cy="119" rx="66" ry="16"/><path class="pad-side" d="m10 94 70 32 70-32v9l-70 33-70-33Z"/><path class="pad-top" d="m10 94 70-33 70 33-70 32Z"/><path class="pad-court" d="m20 92 60-27 60 27-60 27Z"/><path class="paving-lines" d="m40 85 61 28M58 77l62 28M40 102l61-28M58 111l61-28"/><path class="pad-trim" d="m16 99 64 30 64-30"/><path class="pad-step" d="m68 120 12 6 16-8v5l-16 8-12-6Zm0 5 12 6 16-8v4l-16 8-12-6Z"/><path class="landing-light" d="m25 103 7 3m96 0 7-3"/>';
   const buildings=[
-    block(59,71,18,23,48)+block(98,87,18,23,48)+block(61,47,61,9,9)+'<path class="facility-light" d="m58 33 50 23"/><path class="gate-door" d="M62 82V63l21 10v20Z"/>',
-    block(68,79,54,34,29)+block(78,59,22,14,8)+'<path class="medical-mark" d="M81 56v12m-6-6h12"/>'+detail+'<g class="unit-dots"><circle cx="35" cy="94" r="4"/><circle cx="46" cy="100" r="4"/><circle cx="57" cy="106" r="4"/></g>',
-    block(74,84,34,29,54)+[0,1,2].map(i=>`<path class="data-band base-ambient" d="m50 ${57+i*13} 29 14 29-14"/>`).join('')+'<path class="antenna" d="M78 28V13"/><circle class="beacon base-ambient" cx="78" cy="13" r="4"/>',
-    block(62,79,63,34,30)+block(74,48,12,12,23)+block(96,58,10,10,17)+'<path class="medical-mark" d="m63 51 9 10 10-5m-10 5v16"/>'+detail,
-    block(75,86,34,32,18)+tank(53,83,'blood-tank')+tank(107,100,'blood-tank')+'<path class="medical-mark" d="M73 70v12m-6-6h12"/>',
-    block(78,86,38,34,18)+'<ellipse class="reactor-shell" cx="80" cy="68" rx="32" ry="16"/><ellipse class="reactor-core base-ambient" cx="80" cy="66" rx="19" ry="9"/><path class="antenna" d="M51 67V45m57 26V49M80 87v-21"/><g class="beacon base-ambient"><circle cx="51" cy="45" r="4"/><circle cx="108" cy="49" r="4"/><circle cx="80" cy="87" r="4"/></g>',
-    block(51,80,21,26,31)+block(105,95,20,24,32)+block(77,82,32,26,60)+'<path class="command-glass" d="m55 37 25 12 24-12v18L80 68 55 56Z"/><path class="antenna" d="M80 25V6m-7 8h14"/><circle class="beacon base-ambient" cx="80" cy="6" r="3"/>'
+    // Twin security pylons and a deep, glazed canopy.
+    block(53,78,18,22,53,true)+block(104,94,18,22,53,true)+block(53,38,77,15,10)+
+      '<path class="gate-recess" d="m66 64 28 13v24L66 88Z"/><path class="gate-panel" d="m69 68 21 10v17L69 85Z"/><path class="gate-center" d="m79 73 0 17"/><path class="canopy-light window-strip base-ambient" d="m43 38 66 30"/><path class="roof-insignia" d="m77 40 9 4-5 3-9-4Z"/>',
+    // Medical campus: two wings, tall central atrium and a rooftop medical cross.
+    block(55,79,34,26,26)+block(102,93,31,23,27)+block(77,82,30,25,46,true)+block(76,42,31,26,5)+
+      '<path class="roof-medical" d="m77 46 10 5m-1-6-8 8"/><path class="entry-canopy" d="m64 96 15-7 18 8-15 8Z"/><path class="entry-columns" d="M64 96v10m18-1v10"/><path class="window-strip base-ambient" d="m111 86 9-4m-80-2 10 5"/>',
+    // Memory archive: three offset glass volumes and an illuminated data crown.
+    block(71,89,43,32,24,true)+block(73,65,37,28,25,true)+block(75,40,31,24,22,true)+block(75,18,31,24,4)+
+      '<path class="data-band base-ambient" d="m47 69 37 18 27-13m-59-28 32 15 23-11"/><path class="antenna" d="M79 20V7"/><circle class="beacon base-ambient" cx="79" cy="7" r="2.5"/>',
+    // Antibody foundry: saw-tooth glazed roof instead of generic chimneys.
+    block(58,81,65,32,30,true)+
+      '<path class="saw-roof-shadow" d="m39 63 20-24 18 9-18 24Z m21 10 20-24 18 9-18 24Z m21 10 20-24 18 9-18 24Z"/><path class="saw-roof-glass" d="m39 63 20-24v25l-1 8Zm21 10 20-24v25l-1 8Zm21 10 20-24v25l-1 8Z"/><path class="saw-roof-rim" d="m39 63 20-24 18 9m-17 25 20-24 18 9m-17 25 20-24 18 9"/><path class="medical-mark forge-mark" d="m101 86 0 10m0-10-6-7m6 7 6-3"/>',
+    // Blood typing laboratory: paired glass chambers and a central console.
+    block(76,84,32,27,27,true)+tank(49,88)+tank(113,106)+
+      '<path class="lab-pipe" d="M61 77 72 83V72m29 21-8-4V82"/><path class="roof-medical" d="m76 64 10 5m-1-6-8 8"/>',
+    // Complement hub: stepped circular reactor, nested rings and three conduits.
+    block(75,88,39,31,18)+
+      '<path class="reactor-drum" d="M47 58v23c0 21 66 21 66 0V58Z"/><ellipse class="reactor-lower" cx="80" cy="82" rx="33" ry="16"/><ellipse class="reactor-shell" cx="80" cy="58" rx="33" ry="16"/><ellipse class="reactor-rim" cx="80" cy="55" rx="29" ry="13"/><ellipse class="reactor-well" cx="80" cy="55" rx="22" ry="10"/><ellipse class="reactor-core base-ambient" cx="80" cy="53" rx="13" ry="6"/><path class="reactor-struts" d="M48 60v19m17-11v21m31-21v21m16-29v19"/><path class="lab-pipe" d="M49 68 38 73v15m74-17 13 6v15M80 92v17"/><g class="beacon base-ambient"><circle cx="38" cy="88" r="2.5"/><circle cx="125" cy="92" r="2.5"/><circle cx="80" cy="109" r="2.5"/></g>',
+    // Command centre: cantilevered observation deck over a tall glazed core.
+    block(48,82,23,23,25,true)+block(105,98,23,22,26,true)+block(76,84,31,27,61,true)+block(71,40,45,35,14,true)+block(71,25,45,35,4)+
+      '<path class="command-crown" d="m49 34 30 14 28-13"/><path class="antenna" d="M81 28V5m-6 8h12"/><circle class="beacon base-ambient" cx="81" cy="5" r="2"/>'
   ];
+  let artSerial=0;
   function facility(i) {
-    return `<span class="facility-art" aria-hidden="true"><svg viewBox="0 0 160 140" focusable="false">${platform}<g class="building">${buildings[i]}</g><path class="facility-scan base-ambient" d="M36 91 81 69 124 91 81 112Z"/><circle class="facility-beacon base-ambient" cx="132" cy="110" r="4"/></svg></span>`;
+    const id='facility-material-'+(++artSerial);
+    // Per-instance gradient IDs avoid collisions between the map and mission thumbnail.
+    const defs=`<defs><linearGradient id="${id}-roof" x2=".8" y2="1"><stop stop-color="#e3eef1"/><stop offset="1" stop-color="var(--roof,#adcbd9)"/></linearGradient><linearGradient id="${id}-left" x2="1" y2="1"><stop stop-color="var(--wall-left,#547b96)"/><stop offset="1" stop-color="#354f63"/></linearGradient><linearGradient id="${id}-right" x2="0" y2="1"><stop stop-color="var(--wall-right,#305471)"/><stop offset="1" stop-color="#142b40"/></linearGradient><linearGradient id="${id}-glass" x2="1" y2="1"><stop stop-color="#91c8d5"/><stop offset=".42" stop-color="#315f76"/><stop offset="1" stop-color="#163447"/></linearGradient><linearGradient id="${id}-tank"><stop stop-color="#243f58"/><stop offset=".4" stop-color="#96bbc5"/><stop offset=".65" stop-color="#507787"/><stop offset="1" stop-color="#183147"/></linearGradient></defs>`;
+    return `<span class="facility-art" aria-hidden="true"><svg class="premium-facility" viewBox="0 0 160 140" focusable="false" style="--roof-paint:url(#${id}-roof);--left-paint:url(#${id}-left);--right-paint:url(#${id}-right);--glass-paint:url(#${id}-glass);--tank-paint:url(#${id}-tank)">${defs}${platform}<g class="building">${buildings[i]}</g><path class="facility-scan base-ambient" d="M36 91 81 69 124 91 81 112Z"/><circle class="facility-beacon base-ambient" cx="132" cy="110" r="3"/></svg></span>`;
   }
   // Distinct silhouettes and choreography; decorative defense metaphors, not a simulation.
   // Scene-level scale also shortens patrol paths, keeping units near buildings.
