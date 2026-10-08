@@ -14,7 +14,7 @@ fs.mkdirSync(out,{recursive:true});
   const prompt=await p.locator('#question').innerText(),q=data.find(q=>q.q===prompt);
   await p.locator('.option').filter({has:p.getByText(q.ans,{exact:true})}).click();
   const y=await p.evaluate(()=>scrollY);
-  if(i===2){assert(await p.locator('#monster.morphing').count());assert(await p.locator('#hero.morphing').count());assert.match(await p.locator('#strike').getAttribute('class'),/tier1/);assert.equal(await p.locator('#strike .projectile').count(),1);}
+  if(i===2){assert(await p.locator('#monster.morphing').count());assert(await p.locator('#hero.morphing').count());assert.match(await p.locator('#strike').getAttribute('class'),/tier1/);assert.equal(await p.locator('#strike .projectile').count(),2);}
   if(i===3){
    // Opening the sheet manually skips the effect wait; continuing cancels its old timer.
    await p.locator('#answerBtn').click();await p.locator('#continueBattleBtn').click();await p.waitForTimeout(1150);

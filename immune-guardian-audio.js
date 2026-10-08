@@ -36,7 +36,7 @@ window.ImmuneGuardianAudio = (() => {
     }
   }
   function clearHit(){for(const source of hits){try{source.stop();}catch{}}hits.clear();}
-  function hit({correct,combo=0,evolved=false,defeated=false}){
+  function hit({correct,combo=0,form=0,evolved=false,defeated=false}){
     intensity=correct?Math.min(6,Math.floor(combo/3)):0;
     if(!wanted()||!context||context.state!=='running'||ducked)return;
     clearHit();const t=context.currentTime+.008;
@@ -44,7 +44,7 @@ window.ImmuneGuardianAudio = (() => {
     const charge=context.createOscillator();charge.type='triangle';charge.frequency.setValueAtTime(correct?220:360,t);charge.frequency.exponentialRampToValueAtTime(correct?880:100,t+.18);hits.add(voice(charge,t,.2,.2));
     hits.add(percussion(t+.23,true));hits.add(percussion(t+.23,false,true));
     hits.add(note(correct?57:33,t+.23,.18,.22,'triangle'));
-    if(correct)hits.add(note(76+Math.min(8,Math.floor(combo/4)),t+.25,.1,.13,'sine'));
+    if(correct)hits.add(note(76+Math.max(0,Math.min(5,form))*2,t+.25,.1,.13,'sine'));
     if(evolved||defeated)[0,7,12].forEach((n,i)=>hits.add(note((defeated?69:62)+n,t+.32+i*.055,.22,.1,'triangle')));
   }
   function silence(){clearInterval(timer);timer=0;for(const voice of voices){try{voice.stop();}catch{}}voices.clear();hits.clear();}

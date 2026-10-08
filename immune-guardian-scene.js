@@ -42,7 +42,29 @@ window.ImmuneGuardianScene = (() => {
       '<path d="M1 16h29l12 4-12 4H1m5-13 14 9L6 29"/>',
       '<ellipse cx="20" cy="20" rx="15" ry="12"/><ellipse cx="20" cy="20" rx="8" ry="17"/><path d="M35 20h9"/>'
     ];
-    return `<span class="strike-trail"></span><svg class="projectile" viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">${counter?'<path d="m4 20 12-15 5 10 16-8-8 13 8 13-16-8-5 10Z"/>':shapes[tier]}</svg>`;
+    const projectile=(mark,extra='')=>`<svg class="projectile ${extra}" viewBox="0 0 44 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">${mark}</svg>`;
+    if(counter)return `<span class="strike-trail"></span>${projectile('<path d="m4 20 12-15 5 10 16-8-8 13 8 13-16-8-5 10Z"/>','counter-bolt')}`;
+    const needles='<path d="M2 18h26v5H2m26-5 14 2-14 3M8 13v15"/>';
+    const effects=[
+      `<span class="strike-trail"></span>${projectile(shapes[0],'shield-shot')}`,
+      `${projectile(needles,'needle-first')}${projectile(needles,'needle-second')}`,
+      `<span class="strike-trail energy-trail"></span>${projectile(shapes[2],'energy-shot')}`,
+      `${projectile(shapes[3],'wing-slash')}`,
+      `<span class="lock-beam"></span>${projectile('<circle cx="22" cy="20" r="13"/><path d="M22 1v10m0 18v10M3 20h10m18 0h10"/>','lock-reticle')}`,
+      `${projectile(shapes[5],'halo-first')}${projectile(shapes[5],'halo-second')}${projectile(shapes[5],'halo-third')}`
+    ];
+    return `<span class="attack-pattern" data-attack-tier="${tier}">${effects[tier]}</span>`;
+  }
+  function impact(rank=0,counter=false){
+    const tier=heroTier(rank),marks=[
+      '<circle cx="32" cy="32" r="20"/><path d="M32 20v24m-12-12h24"/>',
+      '<path d="m14 9 14 46m8-46 14 46"/>',
+      '<path d="m32 4 28 28-28 28L4 32Z"/><path d="m32 18 14 14-14 14-14-14Z"/>',
+      '<path d="M8 55Q10 10 57 7L27 29Z"/>',
+      '<circle cx="32" cy="32" r="23"/><circle cx="32" cy="32" r="10"/><path d="M32 0v20m0 24v20M0 32h20m24 0h20"/>',
+      '<circle cx="32" cy="32" r="28"/><circle cx="32" cy="32" r="19"/><circle cx="32" cy="32" r="9"/>'
+    ];
+    return `<svg class="impact-sigil" data-impact-tier="${counter?'counter':tier}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5">${counter?'<path d="m12 10 40 44m0-44L12 54"/>':marks[tier]}</svg>`+Array.from({length:counter?8:6+tier*2},(_,i)=>`<i style="--ray:${i};--rays:${counter?8:6+tier*2}"></i>`).join('');
   }
   function guardian(rank=0){
     const tier=heroTier(rank),accent=tier>=4?'#e5b3ff':tier>=2?'#ffe1a0':'#92f7ee',armor=tier>=4?'#9584c4':tier>=2?'#dbb776':'#b9e0e4';
@@ -54,5 +76,5 @@ window.ImmuneGuardianScene = (() => {
     return svg(`<g class="guardian-body ambient" data-hero-tier="${tier}"><ellipse cx="81" cy="140" rx="38" ry="7" fill="#020713" opacity=".7"/>${halo}${wings}<path d="M62 59 33 132l51-22 36 24-20-75" fill="${tier>=4?'#513b77':'#16495f'}" stroke="#65b7c7" stroke-width="2"/><path d="m66 96-9 39h19l9-34 9 34h18l-14-42" fill="#587a96" stroke="${accent}" stroke-width="2"/><path d="m59 54-18 29 13 9 12-18 32 3 21 15 10-14-26-27Z" fill="${armor}" stroke="#d8f9ff" stroke-width="2"/><path d="m61 54 4 42 35-1 2-43Z" fill="${armor}" stroke="#8ebec9" stroke-width="2"/>${plates}<path d="M81 66v18m-9-9h18" stroke="${tier>=2?accent:'#269999'}" stroke-width="5"/><path d="M61 22q25-19 45 0v24L91 58 67 48Z" fill="${armor}" stroke="#e4fcff" stroke-width="2"/><path d="M61 29h43v12H65Z" fill="#183748"/><path class="guardian-eyes ambient" style="color:${accent}" d="m70 31 26 1" stroke="${accent}" stroke-width="3"/>${crest}${equipment}<path d="m105 65 30 9-5 32-22 15-20-17V74Z" fill="#173e54" stroke="${accent}" stroke-width="4"/><g transform="translate(98 80) scale(.78)" stroke="${accent}" stroke-width="2.5" fill="none">${emblemPaths[tier]}</g></g>`);
   }
   function backdrop(){return `<svg class="scene-backdrop" viewBox="0 0 600 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle class="scene-moon ambient" cx="452" cy="85" r="71" fill="none" stroke="currentColor" stroke-width="2"/><circle class="scene-orbit ambient" cx="452" cy="85" r="57" fill="none" stroke="currentColor" stroke-dasharray="5 11"/><path d="M0 187V121l29-15 24 15v50h29V93l39-21 37 21v87h54v-34l27-15 29 14v41h85v-56l35-27 30 14v58h33V93l27-15 29 15v77h36v-57l36-18 30 16v72h40v57H0Z" fill="#152039" stroke="currentColor" stroke-opacity=".28"/><path d="M0 189h600M0 220h600M300 177 30 240m270-63L160 240m140-63v63m0-63 140 63m-140-63 270 63" fill="none" stroke="currentColor" stroke-opacity=".25"/><g class="city-lights ambient" fill="currentColor" opacity=".7"><path d="M93 103h5v26h-5zm15-7h5v26h-5zm317 14h5v24h-5z"/><circle cx="27" cy="57" r="2"/><circle cx="201" cy="38" r="3"/><circle cx="332" cy="70" r="2"/><circle cx="564" cy="50" r="3"/></g><g class="data-rain ambient" stroke="#65eeef" stroke-width="1.5" opacity=".45"><path d="M38 10v14m91 19v20m92-53v15m78 49v18m80-50v14m132-44v18m48 49v23"/></g><path class="grid-flow ambient" d="M0 201h600M0 232h600" stroke="#87e6fa" opacity=".28"/><path class="sky-sweep ambient" d="M0 178h600" stroke="#b97aed" stroke-width="2" opacity=".4"/></svg>`;}
-  return {boss,guardian,heroTier,emblem,attack,backdrop};
+  return {boss,guardian,heroTier,emblem,attack,impact,backdrop};
 })();

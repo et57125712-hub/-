@@ -19,7 +19,7 @@
   let paintedHero=-1,paintedBoss='';
   const modes={all:'綜合挑戰',national:'國考特訓',concept:'概念闖關'};
   let pool=[],index=0,current=null,hp=7,streak=0,score=0,enemyHp=0,stage=1,maxHp=0;
-  let phase='idle',heroForm=0,bossForm=1,defeated=0,bestCombo=0,history=[],healthPlan=[];
+  let phase='idle',heroForm=0,bossForm=1,defeated=0,bestCombo=0,correctTotal=0,history=[],healthPlan=[];
   const reducedMotion=()=>motionQuery.matches;
   function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
   function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
@@ -46,11 +46,12 @@
   }
   function closeAnswer(){if($('answerDialog').open)$('answerDialog').close();document.documentElement.classList.remove('feedback-open');audio.duck(false);}
   function bossSay(type){$('bossTalk').textContent=pick(bossLines[stage-1][type]||bossLines[stage-1].open);}
-  // Appearance is unlocked for this run; current streak still controls damage.
-  function getHeroState(){let state=heroStates[0];for(const entry of heroStates)if(bestCombo>=entry.min)state=entry;return state;}
+  // Every correct answer advances appearance; streak controls damage only.
+  function getHeroState(){let state=heroStates[0];for(const entry of heroStates)if(correctTotal>=entry.min)state=entry;return state;}
   function applyHeroState(){
     const s=getHeroState(),rank=heroStates.indexOf(s),tier=scene.heroTier(rank),changed=paintedHero>=0&&tier>paintedHero;
-    $('heroName').textContent=s.name;$('heroSkill').textContent=s.skill;$('heroIcon').innerHTML=scene.emblem(rank);$('hero').className='hero '+s.cls;
+    $('heroName').textContent=s.name;const next=heroStates[rank+1];$('evolutionProgress').textContent=next?`答對 ${correctTotal}｜差 ${next.min-correctTotal} 題進化`:`答對 ${correctTotal}｜最終型態`;
+    $('heroSkill').textContent=s.skill;$('heroIcon').innerHTML=scene.emblem(rank);$('hero').className='hero '+s.cls;
     if(tier!==paintedHero)morph($('hero'),scene.guardian(rank),changed);
     paintedHero=tier;heroForm=rank;
     return changed;
@@ -76,7 +77,7 @@
   function startGame(){
     clearEffects();const mode=$('gameMode').value;
     pool=shuffle((mode==='national'?national:mode==='concept'?concept:national.concat(concept)).slice());healthPlan=planHealth(pool.length);
-    index=0;current=null;hp=7;streak=0;score=0;heroForm=0;defeated=0;bestCombo=0;history=[];phase='question';paintedHero=-1;paintedBoss='';
+    index=0;current=null;hp=7;streak=0;score=0;heroForm=0;defeated=0;bestCombo=0;correctTotal=0;history=[];phase='question';paintedHero=-1;paintedBoss='';
     document.body.classList.add('playing');$('combatPanel').classList.remove('show-details');$('combatDetailBtn').setAttribute('aria-expanded','false');$('lobby').hidden=true;$('result').hidden=true;$('playArea').hidden=false;$('battleActions').hidden=false;
     $('catLabel').textContent=modes[mode];$('roundProgress').max=pool.length;$('roundProgress').value=0;
     loadStage(1);renderQuestion();audio.start(1);$('status').textContent=`${modes[mode]}開始。答完後可慢慢閱讀解析。`;focusOn($('combatPanel'));
@@ -91,15 +92,15 @@
   function choose(el,opt){
     if(phase!=='question'||!current)return;clearEffects();phase='feedback';const ok=opt===current.ans;const beforeForm=bossForm;let damage=0,counter=0,changes={hero:false,boss:false};
     document.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.dataset.option===current.ans){b.classList.add('correct');b.innerHTML+='<span class="answer-mark">✓ 正確答案</span>';}else if(b===el){b.classList.add('wrong');b.innerHTML+='<span class="answer-mark">✕ 你的選擇</span>';}});
-    if(ok){streak++;bestCombo=Math.max(streak,bestCombo);score+=baseDamage(streak);damage=damageFor(streak,stage);enemyHp=Math.max(0,enemyHp-damage);if(enemyHp===0)defeated++;changes=update();if(!changes.hero)animate($('hero'),'attack');if(!changes.boss)animate($('monster'),'hit');$('strike').innerHTML=scene.attack(heroForm);$('strike').className='strike tier'+heroForm;animate($('strike'),'fire');$('damage').textContent='−'+damage;animate($('damage'),'pop');bossSay(enemyHp===0?'defeat':bossForm>beforeForm?'transform':streak%5===0?'milestone':enemyHp/maxHp<=.1?'low':'right');}
+    if(ok){correctTotal++;streak++;bestCombo=Math.max(streak,bestCombo);score+=baseDamage(streak);damage=damageFor(streak,stage);enemyHp=Math.max(0,enemyHp-damage);if(enemyHp===0)defeated++;changes=update();if(!changes.hero)animate($('hero'),'attack');if(!changes.boss)animate($('monster'),'hit');$('strike').innerHTML=scene.attack(heroForm);$('strike').className='strike tier'+heroForm;animate($('strike'),'fire');$('damage').textContent='−'+damage;animate($('damage'),'pop');bossSay(enemyHp===0?'defeat':bossForm>beforeForm?'transform':streak%5===0?'milestone':enemyHp/maxHp<=.1?'low':'right');}
     else{streak=0;counter=Math.min(3,1+Math.floor((stage-1)/2));hp=Math.max(0,hp-counter);changes=update();animate($('hero'),'hit');animate($('monster'),'counter-attack');$('strike').innerHTML=scene.attack(0,true);$('strike').className='strike counter';animate($('strike'),'fire');$('damage').className='damage hero-damage';$('damage').textContent='−'+counter+' 生命';animate($('damage'),'pop');bossSay('wrong');}
-    $('impact').className='impact '+(ok?'enemy-impact':'hero-impact');animate($('impact'),'burst');
-    if(changes.hero||changes.boss){$('evolutionBanner').textContent=changes.hero&&changes.boss?'雙重覺醒・守衛升級／Boss 變身':changes.boss?`BOSS ${formNames[bossForm-1]}・${stages[stage-1].forms[bossForm-1][0]}`:`守衛換裝・${getHeroState().name}`;animate($('evolutionBanner'),'evolve-pop');}
+    $('impact').innerHTML=scene.impact(heroForm,!ok);$('impact').className='impact '+(ok?'enemy-impact tier'+heroForm:'hero-impact');animate($('impact'),'burst');
+    if(changes.hero||changes.boss){$('evolutionBanner').textContent=changes.hero&&changes.boss?'雙重覺醒・守衛升級／Boss 變身':changes.boss?`BOSS ${formNames[bossForm-1]}・${stages[stage-1].forms[bossForm-1][0]}`:`累積答對 ${correctTotal} 題・${getHeroState().name}`;animate($('evolutionBanner'),'evolve-pop');}
     history.push({id:current.id,selected:opt,ok});$('roundProgress').value=history.length;
     $('status').textContent=ok?(enemyHp===0?`✓ ${stages[stage-1].name} 已擊敗。閱讀解析後繼續。`:`✓ 答對・Boss −${damage} HP・Combo ${streak}`):`✕ 答錯・生命 −${counter}・Combo 歸零`;
     const answer=$('answer');answer.className='answer '+(ok?'correct':'wrong');answer.innerHTML=`<h3>${ok?'✓ 答對，連招命中！':'✕ 答錯，先修正觀念'}</h3><p class="your-answer">你的選擇：${esc(opt)}</p><h4>正確答案</h4><p>${esc(current.ans)}</p><h4>為什麼？</h4><p>${esc(current.exp)}</p><details class="source"><summary>題目來源</summary><p>${esc(current.src)}</p></details>${hp===0?'<p class="outcome-note">生命已歸零；看完本題解析後，可查看結算與錯題。</p>':enemyHp===0?`<p class="outcome-note">✓ 已擊敗 ${defeated}/5 位 Boss；${stage===5?'看完解析即可查看通關戰績。':'下一步迎戰下一位 Boss。'}</p>`:''}`;
     $('battleActions').hidden=false;document.body.classList.add('has-feedback');$('answerBtn').disabled=false;$('nextBtn').disabled=false;
-    audio.hit({correct:ok,combo:streak,evolved:changes.hero||changes.boss,defeated:ok&&enemyHp===0});
+    audio.hit({correct:ok,combo:streak,form:heroForm,evolved:changes.hero||changes.boss,defeated:ok&&enemyHp===0});
     const nextLabel=hp===0||stage===5&&enemyHp===0||index>=pool.length?'查看結算':enemyHp===0?`迎戰 BOSS ${stage+1}`:'繼續・下一題';
     $('nextBtn').textContent=nextLabel;$('continueBattleBtn').textContent=nextLabel;
     clearTimeout(feedbackTimer);if(reducedMotion())openAnswer();else feedbackTimer=setTimeout(openAnswer,changes.hero||changes.boss?900:520);
@@ -134,7 +135,7 @@
   $('closeAnswerBtn').onclick=()=>{closeAnswer();$('answerBtn').focus({preventScroll:true});};
   $('answerDialog').addEventListener('cancel',e=>{e.preventDefault();closeAnswer();$('answerBtn').focus({preventScroll:true});});
   $('endBtn').onclick=()=>{if(confirm('要結束本輪並查看已作答題目的結算嗎？'))finishGame('stopped');};
-  $('impact').innerHTML='<span class="impact-cut"></span>'+Array.from({length:12},(_,i)=>`<i style="--ray:${i}"></i>`).join('');
+  $('impact').innerHTML=scene.impact(0);
   $('battle').addEventListener('animationend',e=>{
     if(e.animationName==='bossEnter')$('battle').classList.remove('boss-enter');
     if(e.animationName==='morphReveal')settleFighter(e.target.closest('.hero,.monster'));
