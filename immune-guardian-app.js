@@ -11,16 +11,17 @@
   function renderAmbience(){
     const moving=preferences.motion&&!motionQuery.matches;
     document.documentElement.classList.toggle('motion-paused',!moving||document.hidden);
+    if(!moving||document.hidden)$('battle').classList.remove('boss-enter');
     document.querySelectorAll('[data-motion]').forEach(b=>{const label=motionQuery.matches?'動態：減少':moving?'動態：開':'動態：關';b.textContent=b.closest('.combat-heading')?(moving?'◉':'○'):label;b.setAttribute('aria-label',label);b.title=label;b.setAttribute('aria-pressed',String(moving));b.disabled=motionQuery.matches;});
     document.querySelectorAll('[data-music]').forEach(b=>{const label=!preferences.music?'♫ 音樂：關':phase==='idle'||phase==='result'?'♫ 音樂：開':audioPlaying?'♫ 音樂：開':'♫ 音樂：暫停';b.textContent=b.closest('.combat-heading')?(preferences.music?'♫':'×♪'):label;b.setAttribute('aria-label',label+'（含攻擊音效）');b.title=label;b.setAttribute('aria-pressed',String(preferences.music));});
   }
   let feedbackTimer=0,reviewed=false;
-  const formNames=['初始型態','突變型態','狂暴型態','終極型態'];
+  const formNames=['初始型態','警戒型態','突變型態','狂暴型態','覺醒型態','終極型態'];
   let paintedHero=-1,paintedBoss='';
   const modes={all:'綜合挑戰',national:'國考特訓',concept:'概念闖關'};
   let pool=[],index=0,current=null,hp=7,streak=0,score=0,enemyHp=0,stage=1,maxHp=0;
   let phase='idle',heroForm=0,bossForm=1,defeated=0,bestCombo=0,correctTotal=0,history=[],healthPlan=[];
-  const reducedMotion=()=>motionQuery.matches;
+  const reducedMotion=()=>motionQuery.matches||!preferences.motion;
   function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
   function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
   function focusOn(el){el.focus({preventScroll:true});el.scrollIntoView({block:'start',behavior:'instant'});}
@@ -58,7 +59,7 @@
   }
   function updateBossForm(){
     if(enemyHp===0){$('bossFormLabel').textContent='✓ 已擊敗';return false;}
-    const ratio=enemyHp/maxHp;bossForm=ratio<=.1?4:ratio<=.35?3:ratio<=.7?2:1;
+    const ratio=enemyHp/maxHp;bossForm=ratio<=.1?6:ratio<=.25?5:ratio<=.45?4:ratio<=.65?3:ratio<=.85?2:1;
     const form=stages[stage-1].forms[bossForm-1],key=stage+'-'+bossForm,changed=paintedBoss.startsWith(stage+'-')&&paintedBoss!==key;
     $('bossName').textContent=form[0];$('monster').className='monster form'+bossForm;
     if(paintedBoss!==key)morph($('monster'),scene.boss(stage,bossForm),changed);
@@ -73,14 +74,14 @@
     $('counterDamage').textContent=Math.min(3,1+Math.floor((stage-1)/2));
     return {hero:applyHeroState(),boss:updateBossForm()};
   }
-  function loadStage(n){stage=n;audio.setStage(n);maxHp=healthPlan[n-1];enemyHp=maxHp;bossForm=1;const s=stages[n-1];$('bossLv').textContent=s.lv;$('stageBadge').textContent=`${n} / 5`;$('battle').className='battle stage'+n;$('stageNotice').hidden=false;$('stageNotice').textContent=`BOSS ${n} / 5 登場｜${s.name}`;bossSay('open');update();animate($('battle'),'boss-enter');}
+  function loadStage(n){stage=n;audio.setStage(n);maxHp=healthPlan[n-1];enemyHp=maxHp;bossForm=1;const s=stages[n-1];$('bossLv').textContent=s.lv;$('stageBadge').textContent=`${n} / 5`;$('battle').className='battle stage'+n;$('stageNotice').hidden=false;$('stageNotice').textContent=`BOSS ${n} / 5 登場｜${s.name}`;bossSay('open');update();$('arrivalNumber').textContent=`BOSS ${String(n).padStart(2,'0')} / 05`;$('arrivalName').textContent=s.name;animate($('battle'),'boss-enter');if(n>1)audio.arrive();}
   function startGame(){
     clearEffects();const mode=$('gameMode').value;
     pool=shuffle((mode==='national'?national:mode==='concept'?concept:national.concat(concept)).slice());healthPlan=planHealth(pool.length);
     index=0;current=null;hp=7;streak=0;score=0;heroForm=0;defeated=0;bestCombo=0;correctTotal=0;history=[];phase='question';paintedHero=-1;paintedBoss='';
     document.body.classList.add('playing');$('combatPanel').classList.remove('show-details');$('combatDetailBtn').setAttribute('aria-expanded','false');$('lobby').hidden=true;$('result').hidden=true;$('playArea').hidden=false;$('battleActions').hidden=false;
     $('catLabel').textContent=modes[mode];$('roundProgress').max=pool.length;$('roundProgress').value=0;
-    loadStage(1);renderQuestion();audio.start(1);$('status').textContent=`${modes[mode]}開始。答完後可慢慢閱讀解析。`;focusOn($('combatPanel'));
+    loadStage(1);renderQuestion();audio.start(1).then(()=>{if(phase==='question'&&stage===1&&index===1)audio.arrive();});$('status').textContent=`${modes[mode]}開始。答完後可慢慢閱讀解析。`;focusOn($('combatPanel'));
   }
   function renderQuestion(){
     current=pool[index++];phase='question';reviewed=false;$('battleActions').hidden=true;document.body.classList.remove('has-feedback');

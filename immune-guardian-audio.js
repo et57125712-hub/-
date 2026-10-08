@@ -44,8 +44,15 @@ window.ImmuneGuardianAudio = (() => {
     const charge=context.createOscillator();charge.type='triangle';charge.frequency.setValueAtTime(correct?220:360,t);charge.frequency.exponentialRampToValueAtTime(correct?880:100,t+.18);hits.add(voice(charge,t,.2,.2));
     hits.add(percussion(t+.23,true));hits.add(percussion(t+.23,false,true));
     hits.add(note(correct?57:33,t+.23,.18,.22,'triangle'));
-    if(correct)hits.add(note(76+Math.max(0,Math.min(5,form))*2,t+.25,.1,.13,'sine'));
+    if(correct)hits.add(note(76+Math.max(0,Math.min(7,form))*2,t+.25,.1,.13,'sine'));
     if(evolved||defeated)[0,7,12].forEach((n,i)=>hits.add(note((defeated?69:62)+n,t+.32+i*.055,.22,.1,'triangle')));
+  }
+  function arrive(){
+    if(!wanted()||!context||context.state!=='running'||ducked)return;
+    clearHit();const t=context.currentTime+.01;
+    const rise=context.createOscillator();rise.type='triangle';rise.frequency.setValueAtTime(65,t);rise.frequency.exponentialRampToValueAtTime(260+stage*35,t+.35);hits.add(voice(rise,t,.4,.2));
+    hits.add(percussion(t+.38,true));
+    [0,7,12].forEach((n,i)=>hits.add(note(42+stage+n,t+.38+i*.06,.24,.12,'triangle')));
   }
   function silence(){clearInterval(timer);timer=0;for(const voice of voices){try{voice.stop();}catch{}}voices.clear();hits.clear();}
   async function sync(){
@@ -67,7 +74,7 @@ window.ImmuneGuardianAudio = (() => {
     stop(){active=false;return sync();},
     setStage(value){stage=Math.max(1,Math.min(5,value));},
     setEnabled(value){enabled=value;return sync();},
-    hit,
+    hit,arrive,
     duck(value){ducked=value;if(value)clearHit();if(master)master.gain.setTargetAtTime(volume(),context.currentTime,.12);}
   };
 })();

@@ -18,7 +18,7 @@ const out=process.env.TEST_OUTPUT||'cumulative-results';fs.mkdirSync(out,{recurs
    await answer(false);assert.equal(await p.locator('#streak').innerText(),'0');assert.equal(await p.locator('#heroName').innerText(),state.name);assert.match(await p.locator('#evolutionProgress').innerText(),new RegExp(`答對 ${total}｜`));assert.equal(await p.locator('[data-impact-tier]').getAttribute('data-impact-tier'),'counter');assert(Number(await p.locator('#hp').innerText())>0);await next();
   }
  }
- assert.equal(forms.length,5);assert.equal(new Set(attacks).size,5);assert.equal(await p.locator('#streak').innerText(),'1');assert.equal(await p.locator('#heroName').innerText(),'光環免疫統帥');
+ assert.equal(forms.length,6);assert.equal(new Set(attacks).size,6);assert.equal(await p.locator('#streak').innerText(),'1');assert.equal(await p.locator('#heroName').innerText(),'光環免疫統帥');
  await p.locator('#closeAnswerBtn').click();p.once('dialog',d=>d.accept());await p.locator('#endBtn').click();assert.match(await p.locator('#result').innerText(),/26 題答對/);await p.locator('#retryBtn').click();assert.match(await p.locator('#evolutionProgress').innerText(),/答對 0｜/);assert.equal(await p.locator('#heroName').innerText(),'護生守衛');
  assert.deepEqual(errors,[]);results.push({engine,correct:26,interruptions:5,finalCombo:1,forms,exactlyOnce:true,retryResets:true,result:'PASS'});console.log(engine,'CUMULATIVE PASS');await b.close();
 }fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(results,null,2));})().catch(e=>{console.error(e);process.exit(1)});

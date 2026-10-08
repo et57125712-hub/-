@@ -7,11 +7,11 @@
 <meta name="description" content="免疫守衛戰：五位 Boss 連戰、綜合複習與課後延伸挑戰。與 IMMUNE RUSH 學習任務分開運作。">
 <title>免疫守衛戰｜BOSS 連戰挑戰</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./immune-guardian.css?v=20261008i">
-<script src="./immune-guardian-data.js?v=20261008i" defer></script>
-<script src="./immune-guardian-scene.js?v=20261008i" defer></script>
-<script src="./immune-guardian-audio.js?v=20261008i" defer></script>
-<script src="./immune-guardian-app.js?v=20261008i" defer></script>
+<link rel="stylesheet" href="./immune-guardian.css?v=20261008j">
+<script src="./immune-guardian-data.js?v=20261008j" defer></script>
+<script src="./immune-guardian-scene.js?v=20261008j" defer></script>
+<script src="./immune-guardian-audio.js?v=20261008j" defer></script>
+<script src="./immune-guardian-app.js?v=20261008j" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">跳至挑戰內容</a>
@@ -26,7 +26,7 @@
   <select id="gameMode"><option value="all" selected>綜合挑戰（70 題）</option><option value="national">國考特訓（20 題）</option><option value="concept">概念闖關（50 題）</option></select>
   <div class="ambience-tools"><button type="button" data-music aria-pressed="true">♫ 音樂：開</button><button type="button" data-motion aria-pressed="true">動態：開</button></div><p class="ambience-hint">開始挑戰後播放節奏配樂與攻擊音效，可隨時一起關閉。</p>
   <button id="startBtn" type="button" class="primary">開始 BOSS 連戰</button>
-  <details class="rules"><summary>挑戰規則與學習方式</summary><ul><li>7 格生命；答錯扣血並中斷 Combo，後段 Boss 反擊較強。</li><li>本輪累積答對 2、4、8、12、26 題會進化並更換攻擊特效；答錯不扣累積題數、不退化，重新挑戰才歸零。</li><li>答對累積分數與連招；各模式血量已配合題數，全對可擊敗五位 Boss。</li><li>每題只計分一次。閱讀解析後，再按下一題。</li><li>生命歸零或題目用完後結算，可查看本輪錯題再挑戰。</li></ul><p>本輪紀錄只保留到重新整理。正式課堂任務與學習進度，請使用 IMMUNE RUSH。</p></details>
+  <details class="rules"><summary>挑戰規則與學習方式</summary><ul><li>7 格生命；答錯扣血並中斷 Combo，後段 Boss 反擊較強。</li><li>本輪累積答對 2、4、8、12、18、26、40 題會進化並更換攻擊特效；答錯不扣累積題數、不退化，重新挑戰才歸零。</li><li>答對累積分數與連招；各模式血量已配合題數，全對可擊敗五位 Boss。</li><li>每題只計分一次。閱讀解析後，再按下一題。</li><li>生命歸零或題目用完後結算，可查看本輪錯題再挑戰。</li></ul><p>本輪紀錄只保留到重新整理。正式課堂任務與學習進度，請使用 IMMUNE RUSH。</p></details>
 </section>
 <section id="playArea" hidden aria-label="Boss 連戰">
   <section id="combatPanel" class="combat-panel" tabindex="-1" aria-label="戰鬥狀態">
@@ -38,7 +38,7 @@
       </div>
       <div class="boss-dialogue"><p id="bossTalk" class="boss-talk" aria-label="Boss 台詞"></p></div>
       <div class="fighters" aria-hidden="true">
-        <div class="battle-ring"></div><div class="platform left"></div><div class="platform right"></div>
+        <div id="bossArrival" class="boss-arrival" aria-hidden="true"><div class="arrival-gate"></div><div class="arrival-rift"></div><div class="arrival-name"><span id="arrivalNumber"></span><strong id="arrivalName"></strong></div></div><div class="battle-ring"></div><div class="platform left"></div><div class="platform right"></div>
         <div id="hero" class="hero"></div><div id="monster" class="monster"></div>
         <div id="strike" class="strike"></div><div id="impact" class="impact"></div><div id="damage" class="damage"></div>
         <div id="evolutionBanner" class="evolutionBanner"></div>
