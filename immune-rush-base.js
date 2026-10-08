@@ -25,14 +25,41 @@ window.ImmuneRushBase = (() => {
   function facility(i) {
     return `<span class="facility-art" aria-hidden="true"><svg viewBox="0 0 160 140" focusable="false">${platform}<g class="building">${buildings[i]}</g><path class="facility-scan base-ambient" d="M36 91 81 69 124 91 81 112Z"/><circle class="facility-beacon base-ambient" cx="132" cy="110" r="4"/></svg></span>`;
   }
-  // Decorative defense vignette: approach, surround, fade. Not a cell-mechanism simulation.
-  // Shared SVG/CSS timelines have no timers, hit targets, audio or scoring side effects.
-  const immuneCell='<path class="micro-membrane" d="M-17-3C-19-12-8-18 0-15C10-19 19-10 16-2C21 7 10 17 2 15C-7 20-19 10-15 3Z"/><path class="micro-nucleus" d="M-7-5C-2-11 2-4 1 0C8-5 12 3 6 7C1 11-2 4-3 2C-10 6-13 0-7-5Z"/><g class="micro-granules"><circle cx="8" cy="-8" r="1.5"/><circle cx="-10" cy="6" r="1.4"/><circle cx="0" cy="11" r="1.2"/></g>';
-  const microbe='<g class="microbe-body"><path class="micro-spikes" d="M-10-8l-4-4M0-9v-5M10-6l5-4M13 3l5 1M5 8l2 5M-6 8l-3 5M-14 0h-5"/><rect x="-13" y="-7" width="26" height="14" rx="7"/><path class="micro-dna" d="M-7 1c3-8 9 6 13-2"/></g>';
+  // Distinct silhouettes and choreography; decorative defense metaphors, not a simulation.
+  // Each scene has its own shared CSS timeline. No timers, hit targets or scoring effects.
+  const lifeArt={
+    macrophage:`<g class="life-macrophage"><path class="macro-body" d="M-25-5C-30-19-10-25 0-20C14-27 21-14 20-5C29 7 15 21 2 20C-9 27-28 16-22 5Z"/><path class="macro-nucleus" d="M-11-8C2-16 8-5 0 0C-6 4 5 8-2 12C-14 14-20-1-11-8Z"/><g class="macro-vesicles"><circle cx="12" cy="-9" r="3"/><circle cx="13" cy="8" r="2.5"/><circle cx="-14" cy="12" r="2"/></g><g class="macro-arms base-ambient"><path d="M13-13Q42-31 44-8M16 14Q43 31 46 8"/></g></g>`,
+    neutrophil:`<g class="life-neutrophil"><path class="neutro-body" d="M-18-8Q-12-24 3-19Q23-19 22-2Q27 16 9 20Q-10 26-20 10Q-26 0-18-8Z"/><path class="neutro-link" d="M-9-5 6-8 9 8"/><g class="neutro-nuclei"><ellipse cx="-9" cy="-4" rx="6" ry="8"/><ellipse cx="5" cy="-9" rx="7" ry="5"/><ellipse cx="9" cy="7" rx="6" ry="7"/></g><g class="neutro-granules"><circle cx="-13" cy="9" r="1.5"/><circle cx="-3" cy="13" r="1.5"/><circle cx="15" cy="-3" r="1.5"/><circle cx="-3" cy="-16" r="1.5"/></g></g>`,
+    bacillus:`<g class="life-bacillus"><path class="bacillus-tail base-ambient" d="M-16 0C-24-13-28 14-36 1S-48-2-50 7"/><rect x="-17" y="-8" width="34" height="16" rx="8"/><path class="bacillus-dna" d="M-10 1Q-6-7-2 0T8 0"/><path class="bacillus-pili" d="M-9-8v-5M4-8l2-5M-7 8l-2 5M7 8l2 5"/></g>`,
+    cocci:`<g class="life-cocci">${[[-12,-6],[0,0],[12,6]].map(([x,y])=>`<g transform="translate(${x} ${y})"><circle r="8"/><path d="M-3-4Q2-6 4-1"/></g>`).join('')}</g>`,
+    virus:`<g class="life-virus base-ambient">${Array.from({length:8},(_,i)=>`<g transform="rotate(${i*45})"><path class="virus-spike" d="M0-12V-21M-3-21H3"/></g>`).join('')}<path class="virus-shell" d="m0-14 12 7v14L0 14-12 7V-7Z"/><path class="virus-core" d="m-5-5 10 10m0-10L-5 5"/><circle class="virus-center" r="3"/></g>`,
+    antibody:`<g class="life-antibody"><path class="antibody-outline" d="M0 17V0L-13-13M0 0l13-13"/><path class="antibody-core" d="M0 17V0L-13-13M0 0l13-13"/><path class="antibody-tips" d="m-17-10 7-7m20 0 7 7"/></g>`,
+    spiral:`<g class="life-spiral base-ambient"><path d="M-23 4C-21-14-11-14-9 0S2 15 4 0 16-14 18 1 25 6 27-2"/><path class="spiral-core" d="M-23 4C-21-14-11-14-9 0S2 15 4 0 16-14 18 1 25 6 27-2"/></g>`
+  };
   function microLife() {
-    const skirmishes=[[200,188,0],[200,373,-5],[200,557,-10]].map(([x,y,delay])=>`<g class="micro-skirmish" transform="translate(${x} ${y})" style="--micro-delay:${delay}s"><g class="micro-pursuer base-ambient" transform="translate(-140 -6)">${immuneCell}</g><g class="micro-invader base-ambient" transform="translate(140 6)">${microbe}</g><g class="micro-capture base-ambient" transform="translate(5 0)"><ellipse class="micro-capture-ring" rx="26" ry="21"/><path d="M-13-8Q5-28 21-4M-17 8Q1 28 22 6"/></g></g>`).join('');
-    const drifters=[[20,68,0],[376,264,-3],[200,86,-6],[24,456,-9]].map(([x,y,delay],i)=>`<g transform="translate(${x} ${y})" class="micro-drifter" style="--micro-delay:${delay}s"><g class="micro-float base-ambient"><g transform="scale(${i%2?.55:.65})">${i===2?immuneCell:microbe}</g></g></g>`).join('');
-    return `<g class="micro-life" aria-hidden="true">${drifters}${skirmishes}</g>`;
+    return `<g class="micro-life" aria-hidden="true">
+      <g class="micro-skirmish scene-engulf" transform="translate(200 188)" style="--micro-delay:0s">
+        <g class="micro-invader base-ambient" transform="translate(105 0)">${lifeArt.bacillus}</g>
+        <g class="micro-pursuer base-ambient" transform="translate(-115 -4)">${lifeArt.macrophage}</g>
+        <g class="micro-capture base-ambient" transform="translate(20 0)"><ellipse class="engulf-vacuole" rx="13" ry="10"/></g>
+      </g>
+      <g class="micro-skirmish scene-patrol" transform="translate(200 373)" style="--micro-delay:-3s">
+        <g class="patrol-trail base-ambient"><path d="M-60-6h22M-68 2h26M-56 10h17"/></g>
+        <g class="micro-invader base-ambient" transform="translate(120 -4)">${lifeArt.cocci}</g>
+        <g class="micro-pursuer base-ambient" transform="translate(-130 8)">${lifeArt.neutrophil}</g>
+        <g class="micro-capture base-ambient" transform="translate(12 0)"><ellipse class="patrol-envelope" rx="27" ry="23"/></g>
+      </g>
+      <g class="micro-skirmish scene-neutralize" transform="translate(200 557)" style="--micro-delay:-5s">
+        <g class="micro-invader base-ambient" transform="translate(12 0)">${lifeArt.virus}</g>
+        <g class="micro-pursuer base-ambient" transform="translate(-105 6)">${lifeArt.antibody}</g>
+        <g class="antibody-wing base-ambient" transform="translate(110 -8)">${lifeArt.antibody}</g>
+        <g class="micro-capture base-ambient" transform="translate(12 0)"><path class="neutralize-orbit" d="M-25-19Q5-37 26-15M-27 14Q0 34 26 16"/></g>
+      </g>
+      <g class="micro-drifter" transform="translate(28 65)" style="--micro-delay:-1s"><g class="micro-float base-ambient"><g transform="scale(.65)">${lifeArt.spiral}</g></g></g>
+      <g class="micro-drifter" transform="translate(373 264)" style="--micro-delay:-4s"><g class="micro-float base-ambient"><g transform="scale(.6)">${lifeArt.virus}</g></g></g>
+      <g class="micro-drifter" transform="translate(200 82)" style="--micro-delay:-7s"><g class="micro-float base-ambient"><g transform="scale(.65)">${lifeArt.neutrophil}</g></g></g>
+      <g class="micro-drifter" transform="translate(28 457)" style="--micro-delay:-9s"><g class="micro-float base-ambient"><g transform="scale(.6)">${lifeArt.cocci}</g></g></g>
+    </g>`;
   }
   function routes(unlocked,completed) {
     const nodes=[[100,130],[300,130],[300,306],[100,306],[100,482],[300,482],[300,658]];

@@ -29,14 +29,36 @@
 
 .base-pips{display:none}.is-base .base-pips{display:flex;justify-content:center;gap:4px;margin-top:4px}.base-pips i{width:12px;height:3px;border-radius:4px;background:#38576a}.base-pips i.learned{background:#9df3d2}.base-pips i.revisit{background:#f6c188}
 
-/* Ambient immunity: restrained cell/microbe patrols behind the facility controls.
-   Only transform/opacity animate; each skirmish shares one 15-second timeline. */
-.micro-life{pointer-events:none}.micro-membrane{fill:#22584f;stroke:#9cebd3;stroke-width:1.5}.micro-nucleus{fill:#7bcec0;stroke:#b8f7e5;stroke-width:.7}.micro-granules{fill:#d2f7c5}.microbe-body rect{fill:#673b50;stroke:#f6a5b9;stroke-width:1.4}.micro-spikes{fill:none;stroke:#ed93af;stroke-width:1.6;stroke-linecap:round}.micro-dna{fill:none;stroke:#ffcfaf;stroke-width:1.5;stroke-linecap:round}.micro-skirmish{opacity:.82}.micro-drifter{opacity:.5}.micro-capture{opacity:0}.micro-capture-ring{fill:#77e5c71a;stroke:#b1f4d8;stroke-width:1.6;stroke-dasharray:4 3}.micro-capture path{fill:none;stroke:#a8eed2;stroke-width:2;stroke-linecap:round}
-.micro-pursuer{animation:immunePursuit 15s ease-in-out infinite both;animation-delay:var(--micro-delay)}.micro-invader{animation:microbeEvasion 15s ease-in-out infinite both;animation-delay:var(--micro-delay)}.micro-capture{animation:immuneSurround 15s ease-in-out infinite both;animation-delay:var(--micro-delay)}.micro-float{animation:microbeDrift 11s ease-in-out infinite;animation-delay:var(--micro-delay)}
-@keyframes immunePursuit{0%{transform:translate(-140px,-6px);opacity:0}10%{opacity:1}28%{transform:translate(-74px,4px)}48%{transform:translate(-5px,0);opacity:1}64%{transform:translate(3px,0);opacity:1}82%{transform:translate(60px,-8px);opacity:0}100%{transform:translate(60px,-8px);opacity:0}}
-@keyframes microbeEvasion{0%{transform:translate(140px,6px) rotate(-12deg);opacity:0}10%{opacity:1}28%{transform:translate(71px,-5px) rotate(14deg)}48%{transform:translate(9px,0) rotate(-8deg);opacity:1}59%{transform:translate(5px,0) scale(.55);opacity:.5}66%,100%{transform:translate(5px,0) scale(.15);opacity:0}}
-@keyframes immuneSurround{0%,44%{transform:translate(5px,0) scale(.6);opacity:0}51%{transform:translate(5px,0) scale(1);opacity:.8}65%{transform:translate(5px,0) scale(1.2);opacity:0}100%{opacity:0}}
+/* Seven distinct silhouettes, three separate defense vignettes. Background only. */
+.micro-life{pointer-events:none}.micro-skirmish{opacity:.96}.micro-drifter{opacity:.72}.micro-capture{opacity:0}
+.macro-body{fill:#28735b;stroke:#baf5ba;stroke-width:2}.macro-nucleus{fill:#173e58;stroke:#82d9bb;stroke-width:1}.macro-vesicles{fill:#c6f0a1}.macro-arms{transform-origin:15px 0;animation:pseudopodReach 16s ease-in-out infinite both;animation-delay:var(--micro-delay)}.macro-arms path{fill:none;stroke:#baf5ba;stroke-width:5;stroke-linecap:round}
+.neutro-body{fill:#b5e4eb;stroke:#ecffff;stroke-width:1.8}.neutro-link{fill:none;stroke:#7460ad;stroke-width:3}.neutro-nuclei{fill:#6965b2;stroke:#3e427d;stroke-width:1}.neutro-granules{fill:#6097bb}
+.life-bacillus rect{fill:#ac5f63;stroke:#ffd8a2;stroke-width:1.8}.bacillus-dna{fill:none;stroke:#ffeac8;stroke-width:1.6}.bacillus-tail,.bacillus-pili{fill:none;stroke:#ffc697;stroke-width:1.8;stroke-linecap:round}.bacillus-tail{transform-origin:-17px 0;animation:flagellumWave 1.4s ease-in-out infinite}
+.life-cocci circle{fill:#bf6984;stroke:#ffc4d8;stroke-width:1.7}.life-cocci path{fill:none;stroke:#ffe0eb;stroke-width:1.5}
+.virus-spike{fill:none;stroke:#d5a3ff;stroke-width:2;stroke-linecap:round}.virus-shell{fill:#764799;stroke:#eccdff;stroke-width:1.8}.virus-core{stroke:#ffd7f3;stroke-width:1.5}.virus-center{fill:#ffc1ed}.life-virus{animation:virionSpin 19s linear infinite;transform-origin:0 0}
+.antibody-outline{fill:none;stroke:#b98236;stroke-width:8;stroke-linejoin:round;stroke-linecap:round}.antibody-core{fill:none;stroke:#ffe4a1;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}.antibody-tips{fill:none;stroke:#fff3d0;stroke-width:3;stroke-linecap:round}
+.life-spiral>path{fill:none;stroke:#8dcccc;stroke-width:8;stroke-linecap:round}.life-spiral>.spiral-core{stroke:#d6f7de;stroke-width:3}.life-spiral{animation:spiralSquirm 3.8s ease-in-out infinite;transform-origin:0 0}
+.engulf-vacuole{fill:#a8f2bf33;stroke:#c7f7b1;stroke-width:1.5}.patrol-envelope{fill:#b5e4eb22;stroke:#ddfaff;stroke-width:2;stroke-dasharray:3 4}.neutralize-orbit{fill:none;stroke:#ffe4a1;stroke-width:2;stroke-linecap:round}.patrol-trail{fill:none;stroke:#c2eaf0;stroke-width:2;stroke-linecap:round;opacity:0}
+.scene-engulf .micro-pursuer{animation:macroCrawl 16s ease-in-out infinite both}.scene-engulf .micro-invader{animation:bacillusEscape 16s ease-in-out infinite both}.scene-engulf .micro-capture{animation:engulfPocket 16s ease-in-out infinite both}
+.scene-patrol .micro-pursuer{animation:neutroDash 12s ease-in-out infinite both}.scene-patrol .micro-invader{animation:cocciTumble 12s ease-in-out infinite both}.scene-patrol .micro-capture{animation:patrolCatch 12s ease-in-out infinite both}.patrol-trail{animation:patrolStreak 12s ease-in-out infinite both}
+.scene-neutralize .micro-pursuer{animation:antibodyDockLeft 18s ease-in-out infinite both}.scene-neutralize .micro-invader{animation:virusDrift 18s ease-in-out infinite both}.antibody-wing{animation:antibodyDockRight 18s ease-in-out infinite both}.scene-neutralize .micro-capture{animation:neutralizeHold 18s ease-in-out infinite both}.scene-neutralize .life-virus{animation:virionSlow 18s ease-in-out infinite both}
+.micro-skirmish .micro-pursuer,.micro-skirmish .micro-invader,.micro-capture,.antibody-wing,.patrol-trail,.scene-neutralize .life-virus{animation-delay:var(--micro-delay)}
+.micro-float{animation:microbeDrift 11s ease-in-out infinite;animation-delay:var(--micro-delay)}
+@keyframes macroCrawl{0%{transform:translate(-115px,-4px) scale(1.05,.95);opacity:0}8%{opacity:1}28%{transform:translate(-65px,4px) scale(.95,1.04)}48%,63%{transform:translate(-17px,0);opacity:1}86%,100%{transform:translate(68px,-6px);opacity:0}}
+@keyframes bacillusEscape{0%{transform:translate(105px,0) rotate(8deg);opacity:0}8%{opacity:1}26%{transform:translate(56px,-9px) rotate(-17deg)}45%,51%{transform:translate(20px,0) rotate(0);opacity:1}63%,100%{transform:translate(5px,0) scale(.2);opacity:0}}
+@keyframes pseudopodReach{0%,32%{transform:scale(.25,1)}49%,56%{transform:scale(1,1)}66%,100%{transform:scale(.25,.6)}}
+@keyframes engulfPocket{0%,46%{opacity:0}53%,57%{opacity:.9;transform:translate(20px,0)}68%,100%{opacity:0;transform:translate(5px,0) scale(.3)}}
+@keyframes neutroDash{0%{transform:translate(-130px,8px);opacity:0}8%{opacity:1}27%{transform:translate(-88px,8px) rotate(-8deg)}42%,58%{transform:translate(0,0) rotate(6deg);opacity:1}78%,100%{transform:translate(80px,-12px);opacity:0}}
+@keyframes cocciTumble{0%{transform:translate(120px,-4px) rotate(0);opacity:0}8%{opacity:1}40%{transform:translate(15px,0) rotate(130deg);opacity:1}60%,100%{transform:translate(6px,0) rotate(180deg) scale(.2);opacity:0}}
+@keyframes patrolCatch{0%,38%{opacity:0;transform:translate(12px,0) scale(.7)}46%{opacity:.9;transform:translate(12px,0) scale(1)}62%,100%{opacity:0;transform:translate(12px,0) scale(.6)}}
+@keyframes patrolStreak{0%,22%{opacity:0;transform:translate(-55px,0)}34%{opacity:.7}44%{opacity:0;transform:translate(20px,0)}100%{opacity:0}}
+@keyframes antibodyDockLeft{0%{transform:translate(-105px,6px) rotate(0);opacity:0}10%{opacity:1}46%,72%{transform:translate(-16px,4px) rotate(100deg);opacity:1}96%,100%{transform:translate(14px,-18px) rotate(100deg);opacity:0}}
+@keyframes antibodyDockRight{0%{transform:translate(110px,-8px) rotate(0);opacity:0}10%{opacity:1}46%,72%{transform:translate(42px,-5px) rotate(-80deg);opacity:1}96%,100%{transform:translate(72px,-27px) rotate(-80deg);opacity:0}}
+@keyframes virusDrift{0%{transform:translate(36px,-12px);opacity:0}10%{opacity:1}46%,72%{transform:translate(12px,0);opacity:1}96%,100%{transform:translate(42px,-22px);opacity:0}}
+@keyframes virionSlow{0%{transform:rotate(-160deg)}46%,100%{transform:rotate(0)}}
+@keyframes neutralizeHold{0%,44%{opacity:0}50%,70%{opacity:.7;transform:translate(12px,0)}96%,100%{opacity:0;transform:translate(42px,-22px)}}
+@keyframes flagellumWave{50%{transform:scaleY(-.8)}}@keyframes virionSpin{to{transform:rotate(360deg)}}@keyframes spiralSquirm{50%{transform:scale(1.08,.7) rotate(8deg)}}
 @keyframes microbeDrift{0%,100%{transform:translate(0,-9px) rotate(-15deg)}50%{transform:translate(7px,10px) rotate(18deg)}}
-/* Resting silhouettes stay visible when motion is disabled; no frozen capture flash. */
-.rush-motion-off .micro-capture{opacity:0}.rush-motion-off .micro-skirmish{opacity:.45}
-@media(prefers-reduced-motion:reduce){.micro-capture{opacity:0}.micro-skirmish{opacity:.45}}
+/* Motion preference rules also cover all nested flagella, arms and virus spins. */
+.rush-motion-off .micro-capture,.rush-motion-off .patrol-trail{opacity:0}.rush-motion-off .micro-skirmish{opacity:.65}
+@media(prefers-reduced-motion:reduce){.micro-capture,.patrol-trail{opacity:0}.micro-skirmish{opacity:.65}}

@@ -7,12 +7,17 @@ const out=process.env.TEST_OUTPUT||'micro-life-results';fs.mkdirSync(out,{recurs
  await p.goto(process.env.TEST_URL||'http://127.0.0.1:8766/immune-rush/mission.html');
  assert.equal(await p.locator('.micro-skirmish').count(),3);assert.equal(await p.locator('.micro-drifter').count(),4);assert.equal(await p.locator('.micro-life').getAttribute('aria-hidden'),'true');
  assert.equal(await p.locator('.micro-life').evaluate(e=>getComputedStyle(e).pointerEvents),'none');
+ for(const kind of ['macrophage','neutrophil','bacillus','cocci','virus','antibody','spiral'])assert((await p.locator('.life-'+kind).count())>0,kind+' silhouette');
+ const rhythms=await p.locator('.micro-pursuer').evaluateAll(es=>es.map(e=>getComputedStyle(e).animationDuration));assert.equal(new Set(rhythms).size,3,'three different scene rhythms');
+
  const before=await p.locator('.micro-pursuer').first().evaluate(e=>getComputedStyle(e).transform);await p.waitForTimeout(400);assert.notEqual(await p.locator('.micro-pursuer').first().evaluate(e=>getComputedStyle(e).transform),before);
  // Compare approach and capture on the same shared CSS timeline, without waiting a full loop.
  for(const [phase,time] of [['patrol',3500],['capture',7900]]){
   await p.evaluate(t=>document.getAnimations().forEach(a=>{a.pause();a.currentTime=t;}),time);
   if(phase==='capture')assert(Number(await p.locator('.micro-capture').first().evaluate(e=>getComputedStyle(e).opacity))>.1);
   await p.screenshot({path:path.join(out,`${engine}-${phase}.png`)});
+  if(phase==='capture')await p.locator('#stageMap').screenshot({path:path.join(out,`${engine}-all-scenes.png`),style:'.topbar,#bottomNav{visibility:hidden!important}'});
+
  }
  await p.evaluate(()=>document.getAnimations().forEach(a=>a.play()));
  const saved=await p.evaluate(()=>localStorage.getItem('immuneRushSave'));
@@ -21,5 +26,5 @@ const out=process.env.TEST_OUTPUT||'micro-life-results';fs.mkdirSync(out,{recurs
  await p.locator('#listModeBtn').click();assert(!(await p.locator('.micro-life').isVisible()));await p.locator('#baseModeBtn').click();
  await p.locator('[data-stage="0"]').click();assert(!(await p.locator('.micro-life').isVisible()));await p.locator('[data-answer="0"]').click();assert.match(await p.locator('#feedback').innerText(),/答對/);assert(!(await p.locator('.micro-life').isVisible()));await p.locator('#backBtn').click();
  await p.emulateMedia({reducedMotion:'reduce'});assert.equal(await p.locator('.micro-life').evaluate(e=>e.getAnimations({subtree:true}).filter(a=>a.playState==='running').length),0);
- assert.deepEqual(errors,[]);results.push({engine,movingPatrol:true,capture:true,noPointerInterception:true,offAndReducedMotion:true,hiddenDuringQuestions:true,progressUnchanged:true,result:'PASS'});console.log(engine,'MICRO LIFE PASS');await b.close();
+ assert.deepEqual(errors,[]);results.push({engine,distinctSilhouettes:7,sceneRhythms:3,movingPatrol:true,capture:true,noPointerInterception:true,offAndReducedMotion:true,hiddenDuringQuestions:true,progressUnchanged:true,result:'PASS'});console.log(engine,'MICRO LIFE PASS');await b.close();
 }fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(results,null,2));})().catch(e=>{console.error(e);process.exit(1)});
