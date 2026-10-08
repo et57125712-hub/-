@@ -11,8 +11,8 @@
   function renderAmbience(){
     const moving=preferences.motion&&!motionQuery.matches;
     document.documentElement.classList.toggle('motion-paused',!moving||document.hidden);
-    document.querySelectorAll('[data-motion]').forEach(b=>{b.textContent=motionQuery.matches?'動態：減少':moving?'動態：開':'動態：關';b.setAttribute('aria-pressed',String(moving));b.disabled=motionQuery.matches;});
-    document.querySelectorAll('[data-music]').forEach(b=>{b.textContent=!preferences.music?'♫ 音樂：關':phase==='idle'||phase==='result'?'♫ 音樂：開':audioPlaying?'♫ 音樂：開':'♫ 音樂：暫停';b.setAttribute('aria-pressed',String(preferences.music));});
+    document.querySelectorAll('[data-motion]').forEach(b=>{const label=motionQuery.matches?'動態：減少':moving?'動態：開':'動態：關';b.textContent=b.closest('.combat-heading')?(moving?'◉':'○'):label;b.setAttribute('aria-label',label);b.title=label;b.setAttribute('aria-pressed',String(moving));b.disabled=motionQuery.matches;});
+    document.querySelectorAll('[data-music]').forEach(b=>{const label=!preferences.music?'♫ 音樂：關':phase==='idle'||phase==='result'?'♫ 音樂：開':audioPlaying?'♫ 音樂：開':'♫ 音樂：暫停';b.textContent=b.closest('.combat-heading')?(preferences.music?'♫':'×♪'):label;b.setAttribute('aria-label',label+'（含攻擊音效）');b.title=label;b.setAttribute('aria-pressed',String(preferences.music));});
   }
   let feedbackTimer=0,reviewed=false;
   const formNames=['初始型態','突變型態','狂暴型態','終極型態'];
@@ -77,12 +77,12 @@
     clearEffects();const mode=$('gameMode').value;
     pool=shuffle((mode==='national'?national:mode==='concept'?concept:national.concat(concept)).slice());healthPlan=planHealth(pool.length);
     index=0;current=null;hp=7;streak=0;score=0;heroForm=0;defeated=0;bestCombo=0;history=[];phase='question';paintedHero=-1;paintedBoss='';
-    $('lobby').hidden=true;$('result').hidden=true;$('playArea').hidden=false;$('battleActions').hidden=false;
+    document.body.classList.add('playing');$('combatPanel').classList.remove('show-details');$('combatDetailBtn').setAttribute('aria-expanded','false');$('lobby').hidden=true;$('result').hidden=true;$('playArea').hidden=false;$('battleActions').hidden=false;
     $('catLabel').textContent=modes[mode];$('roundProgress').max=pool.length;$('roundProgress').value=0;
     loadStage(1);renderQuestion();audio.start(1);$('status').textContent=`${modes[mode]}開始。答完後可慢慢閱讀解析。`;focusOn($('combatPanel'));
   }
   function renderQuestion(){
-    current=pool[index++];phase='question';reviewed=false;
+    current=pool[index++];phase='question';reviewed=false;$('battleActions').hidden=true;document.body.classList.remove('has-feedback');
     $('progress').textContent=`第 ${index} / ${pool.length} 題`;$('questionCategory').textContent=current.category;$('question').textContent=current.q;
     closeAnswer();$('answer').innerHTML='';$('answerBtn').disabled=true;$('nextBtn').disabled=true;$('nextBtn').textContent='請先作答';
     const box=$('options');box.innerHTML='';box.classList.toggle('long-options',current.options.some(opt=>opt.length>22));
@@ -98,10 +98,11 @@
     history.push({id:current.id,selected:opt,ok});$('roundProgress').value=history.length;
     $('status').textContent=ok?(enemyHp===0?`✓ ${stages[stage-1].name} 已擊敗。閱讀解析後繼續。`:`✓ 答對・Boss −${damage} HP・Combo ${streak}`):`✕ 答錯・生命 −${counter}・Combo 歸零`;
     const answer=$('answer');answer.className='answer '+(ok?'correct':'wrong');answer.innerHTML=`<h3>${ok?'✓ 答對，連招命中！':'✕ 答錯，先修正觀念'}</h3><p class="your-answer">你的選擇：${esc(opt)}</p><h4>正確答案</h4><p>${esc(current.ans)}</p><h4>為什麼？</h4><p>${esc(current.exp)}</p><details class="source"><summary>題目來源</summary><p>${esc(current.src)}</p></details>${hp===0?'<p class="outcome-note">生命已歸零；看完本題解析後，可查看結算與錯題。</p>':enemyHp===0?`<p class="outcome-note">✓ 已擊敗 ${defeated}/5 位 Boss；${stage===5?'看完解析即可查看通關戰績。':'下一步迎戰下一位 Boss。'}</p>`:''}`;
-    $('answerBtn').disabled=false;$('nextBtn').disabled=false;
+    $('battleActions').hidden=false;document.body.classList.add('has-feedback');$('answerBtn').disabled=false;$('nextBtn').disabled=false;
+    audio.hit({correct:ok,combo:streak,evolved:changes.hero||changes.boss,defeated:ok&&enemyHp===0});
     const nextLabel=hp===0||stage===5&&enemyHp===0||index>=pool.length?'查看結算':enemyHp===0?`迎戰 BOSS ${stage+1}`:'繼續・下一題';
     $('nextBtn').textContent=nextLabel;$('continueBattleBtn').textContent=nextLabel;
-    clearTimeout(feedbackTimer);if(reducedMotion())openAnswer();else feedbackTimer=setTimeout(openAnswer,changes.hero||changes.boss?1050:760);
+    clearTimeout(feedbackTimer);if(reducedMotion())openAnswer();else feedbackTimer=setTimeout(openAnswer,changes.hero||changes.boss?900:520);
 
   }
   function nextQuestion(){
@@ -113,7 +114,7 @@
     renderQuestion();$('question').focus({preventScroll:true});$('combatPanel').scrollIntoView({block:'start',behavior:'instant'});
   }
   function finishGame(reason){
-    if(phase==='result'||phase==='idle')return;phase='result';clearEffects();closeAnswer();audio.stop();renderAmbience();
+    if(phase==='result'||phase==='idle')return;phase='result';document.body.classList.remove('playing','has-feedback');clearEffects();closeAnswer();audio.stop();renderAmbience();
     $('playArea').hidden=true;$('battleActions').hidden=true;const result=$('result');result.hidden=false;
     const correct=history.filter(h=>h.ok).length,wrong=history.filter(h=>!h.ok),bank=national.concat(concept);
     const title={clear:'FINAL CLEAR！五大 Boss 突破',defeat:'生命歸零，整隊再挑戰',complete:'本輪題目完成',stopped:'本輪挑戰已結束'}[reason];
@@ -126,6 +127,7 @@
   motionQuery.addEventListener('change',renderAmbience);document.addEventListener('visibilitychange',renderAmbience);renderAmbience();
   $('battle').insertAdjacentHTML('afterbegin',scene.backdrop());
   $('lobbyScene').innerHTML=scene.backdrop()+`<div class="platform left"></div><div class="platform right"></div><div class="hero">${scene.guardian()}</div><div class="monster">${scene.boss()}</div>`;
+  $('combatDetailBtn').onclick=()=>{const expanded=$('combatPanel').classList.toggle('show-details');$('combatDetailBtn').setAttribute('aria-expanded',String(expanded));};
   $('startBtn').onclick=startGame;$('nextBtn').onclick=()=>{if(phase==='feedback'){if(reviewed)nextQuestion();else openAnswer();}};$('answerBtn').onclick=openAnswer;
   window.addEventListener('resize',()=>{if($('answerDialog').open)fitAnswer();});
   $('continueBattleBtn').onclick=nextQuestion;

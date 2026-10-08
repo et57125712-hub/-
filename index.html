@@ -7,11 +7,11 @@
 <meta name="description" content="免疫守衛戰：五位 Boss 連戰、綜合複習與課後延伸挑戰。與 IMMUNE RUSH 學習任務分開運作。">
 <title>免疫守衛戰｜BOSS 連戰挑戰</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./immune-guardian.css?v=20261007i">
-<script src="./immune-guardian-data.js?v=20261007i" defer></script>
-<script src="./immune-guardian-scene.js?v=20261007i" defer></script>
-<script src="./immune-guardian-audio.js?v=20261007i" defer></script>
-<script src="./immune-guardian-app.js?v=20261007j" defer></script>
+<link rel="stylesheet" href="./immune-guardian.css?v=20261008h">
+<script src="./immune-guardian-data.js?v=20261008h" defer></script>
+<script src="./immune-guardian-scene.js?v=20261008h" defer></script>
+<script src="./immune-guardian-audio.js?v=20261008h" defer></script>
+<script src="./immune-guardian-app.js?v=20261008h" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#mainContent">跳至挑戰內容</a>
@@ -24,13 +24,13 @@
   <div id="lobbyScene" class="battle lobby-scene" aria-hidden="true"></div>
   <label for="gameMode">選擇本輪挑戰</label>
   <select id="gameMode"><option value="all" selected>綜合挑戰（70 題）</option><option value="national">國考特訓（20 題）</option><option value="concept">概念闖關（50 題）</option></select>
-  <div class="ambience-tools"><button type="button" data-music aria-pressed="true">♫ 音樂：開</button><button type="button" data-motion aria-pressed="true">動態：開</button></div><p class="ambience-hint">開始挑戰後播放原創電子音樂，可隨時關閉。</p>
+  <div class="ambience-tools"><button type="button" data-music aria-pressed="true">♫ 音樂：開</button><button type="button" data-motion aria-pressed="true">動態：開</button></div><p class="ambience-hint">開始挑戰後播放節奏配樂與攻擊音效，可隨時一起關閉。</p>
   <button id="startBtn" type="button" class="primary">開始 BOSS 連戰</button>
   <details class="rules"><summary>挑戰規則與學習方式</summary><ul><li>7 格生命；答錯扣血並中斷 Combo，已解鎖的進化型態保留到本輪結束；後段 Boss 反擊較強。</li><li>答對累積分數與連招；各模式血量已配合題數，全對可擊敗五位 Boss。</li><li>每題只計分一次。閱讀解析後，再按下一題。</li><li>生命歸零或題目用完後結算，可查看本輪錯題再挑戰。</li></ul><p>本輪紀錄只保留到重新整理。正式課堂任務與學習進度，請使用 IMMUNE RUSH。</p></details>
 </section>
 <section id="playArea" hidden aria-label="Boss 連戰">
   <section id="combatPanel" class="combat-panel" tabindex="-1" aria-label="戰鬥狀態">
-    <div class="combat-heading"><span id="catLabel" class="eyebrow">綜合挑戰</span><button type="button" data-music aria-pressed="true">♫ 音樂：開</button><button type="button" data-motion aria-pressed="true">動態：開</button><button id="endBtn" class="text-button" type="button">結束本輪</button></div>
+    <div class="combat-heading"><span id="catLabel" class="eyebrow">綜合挑戰</span><button type="button" data-music aria-pressed="true">♫ 音樂：開</button><button type="button" data-motion aria-pressed="true">動態：開</button><button id="combatDetailBtn" class="combat-detail-toggle" type="button" aria-expanded="false" aria-controls="battle">戰況</button><button id="endBtn" class="text-button" type="button">結束本輪</button></div>
     <div class="combat-stage"><div id="battle" class="battle">
       <div class="combat-stats">
         <div class="health-panel player"><div class="health-title"><span>守衛生命</span><strong><span id="hp">7</span> / 7</strong></div><div id="heroMeter" class="hp-track" role="progressbar" aria-label="玩家生命值" aria-valuemin="0" aria-valuemax="7" aria-valuenow="7"><i id="heroHpBar"></i></div></div>
