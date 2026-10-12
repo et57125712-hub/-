@@ -260,6 +260,10 @@
     if(t.type==='sequence') return `<ol>${t.answer.map(x=>`<li>${x}</li>`).join('')}</ol>`;
     return `<ul>${t.items.map(([label,answer])=>`<li>${label} → ${answer}</li>`).join('')}</ul>`;
   }
+  // Keep the clinical context with the question in every review route.
+  function reviewQuestionHTML(t) {
+    return `${t.case?`<div class="case"><strong>情境線索</strong><p>${esc(t.case)}</p></div>`:''}<h4>題目</h4><p>${esc(t.prompt)}</p>`;
+  }
   function responseHTML(t) {
     const input=inputFor(t);
     if(t.options && input.choice!==undefined)return `<p class="your-answer">你的選擇：${t.options[input.choice]}</p>`;
@@ -301,7 +305,7 @@
     if(complete){save.scores[s.id]=Math.max(score,save.scores[s.id]||0);save.latest[s.id]=score;if(score>=70&&!save.demo)save.unlocked=Math.max(save.unlocked,Math.min(stages.length,currentStage+2));}
     save.run=null;window.ImmuneRushAtmosphere.setView('result');persist();$('#questionCard').hidden=true;$('#arena').hidden=true;$('#gameProgress').hidden=true;
     const result=$('#resultPanel');result.className='result active';
-    result.innerHTML=`<div class="rank-badge" style="--degree:${complete?score*3.6:0}deg"><strong>${complete?(score>=90?'S':score>=80?'A':score>=70?'B':'C'):'展示'}</strong></div><h2>${!complete?'展示瀏覽完成':score>=70?'區域守備成功':'再練習，穩固防線'}</h2><p>${s.title}｜${complete?`本次成績 ${score}%・最佳 ${save.scores[s.id]}%`:'未完整作答，不計入任務成績'}</p><div class="result-grid"><div><b>${correct}/${s.tasks.length}</b><span>本次通過題數</span></div><div><b>${save.xp}</b><span>${save.demo?'展示':'累積'} XP</span></div><div><b>${save.attempts[s.id]}</b><span>挑戰次數</span></div></div><p>${save.demo?'展示資料僅供本次操作，不改變學生紀錄。':score>=70?(currentStage===stages.length-1?'七區皆已解鎖，可從雷達安排複習。':`已解鎖「${stages[currentStage+1].title}」。`):'整區至少通過 4/5 題，即達到 70% 解鎖門檻。'}</p>${complete&&score>=70&&currentStage<stages.length-1?`<div class="result-next"><button id="nextStageBtn" class="btn">前往下一區：${stages[currentStage+1].title} →</button><p>成績已保存，也可以留在這裡回顧解析。</p></div>`:''}<div class="review">${s.tasks.map((t,i)=>`<details class="review-item"><summary>${!results[i]?'未作答':results[i].preview?'解析預覽':results[i].ok?'✓ 通過':'✕ 待練習'}｜${t.point}</summary><h4>正確答案</h4>${answerHTML(t)}<p>${t.explain}</p></details>`).join('')}</div><div class="action-row"><button class="btn ghost" id="retryStage">再挑戰</button><button class="btn" id="returnMap">返回地圖</button></div><button class="btn ghost full" id="resultRadar">查看雷達與複習建議</button>${complete?'<section class="extension-card"><span class="kicker">課後延伸・自由挑戰</span><h3>準備迎戰五大 BOSS？</h3><p>免疫守衛戰提供綜合複習與考前連戰，獨立計分，不影響本教具的任務進度。</p><a id="bossChallenge" class="btn ghost full" href="./index.html">挑戰 BOSS 連戰</a></section>':''}`;
+    result.innerHTML=`<div class="rank-badge" style="--degree:${complete?score*3.6:0}deg"><strong>${complete?(score>=90?'S':score>=80?'A':score>=70?'B':'C'):'展示'}</strong></div><h2>${!complete?'展示瀏覽完成':score>=70?'區域守備成功':'再練習，穩固防線'}</h2><p>${s.title}｜${complete?`本次成績 ${score}%・最佳 ${save.scores[s.id]}%`:'未完整作答，不計入任務成績'}</p><div class="result-grid"><div><b>${correct}/${s.tasks.length}</b><span>本次通過題數</span></div><div><b>${save.xp}</b><span>${save.demo?'展示':'累積'} XP</span></div><div><b>${save.attempts[s.id]}</b><span>挑戰次數</span></div></div><p>${save.demo?'展示資料僅供本次操作，不改變學生紀錄。':score>=70?(currentStage===stages.length-1?'七區皆已解鎖，可從雷達安排複習。':`已解鎖「${stages[currentStage+1].title}」。`):'整區至少通過 4/5 題，即達到 70% 解鎖門檻。'}</p>${complete&&score>=70&&currentStage<stages.length-1?`<div class="result-next"><button id="nextStageBtn" class="btn">前往下一區：${stages[currentStage+1].title} →</button><p>成績已保存，也可以留在這裡回顧解析。</p></div>`:''}<div class="review">${s.tasks.map((t,i)=>`<details class="review-item"><summary>${!results[i]?'未作答':results[i].preview?'解析預覽':results[i].ok?'✓ 通過':'✕ 待練習'}｜${t.point}</summary>${reviewQuestionHTML(t)}<h4>正確答案</h4>${answerHTML(t)}<p>${t.explain}</p></details>`).join('')}</div><div class="action-row"><button class="btn ghost" id="retryStage">再挑戰</button><button class="btn" id="returnMap">返回地圖</button></div><button class="btn ghost full" id="resultRadar">查看雷達與複習建議</button>${complete?'<section class="extension-card"><span class="kicker">課後延伸・自由挑戰</span><h3>準備迎戰五大 BOSS？</h3><p>免疫守衛戰提供綜合複習與考前連戰，獨立計分，不影響本教具的任務進度。</p><a id="bossChallenge" class="btn ghost full" href="./index.html">挑戰 BOSS 連戰</a></section>':''}`;
     if($('#nextStageBtn'))$('#nextStageBtn').onclick=()=>startStage(currentStage+1);
     $('#retryStage').onclick=()=>startStage(currentStage);$('#returnMap').onclick=()=>showView('homeView');$('#resultRadar').onclick=()=>showView('reportView');
     if(complete&&score>=70){burst(20);tone('level');}focusTop(result);
@@ -336,7 +340,7 @@
     $$('#reportContent [data-review-stage]').forEach(b=>b.onclick=()=>openReview(stages[Number(b.dataset.reviewStage)].tasks.filter(t=>save.demo||save.history[t.id])));
   }
   function openReview(tasks) {
-    $('#reviewContent').innerHTML=tasks.map(t=>`<section class="review-item"><h3>${t.point}</h3><p>${t.prompt}</p><h4>正確答案</h4>${answerHTML(t)}<h4>為什麼？</h4><p>${t.explain}</p></section>`).join('');
+    $('#reviewContent').innerHTML=tasks.map(t=>`<section class="review-item"><h3>${t.point}</h3>${reviewQuestionHTML(t)}<h4>正確答案</h4>${answerHTML(t)}<h4>為什麼？</h4><p>${t.explain}</p></section>`).join('');
     window.ImmuneRushAtmosphere.duck(true);$('#reviewDialog').showModal();$('#reviewDialog').scrollTop=0;
   }
   function showHint() { const h=$('#hintBox');h.textContent='提示｜'+task().hint;const shown=h.classList.toggle('show');$('#hintBtn').setAttribute('aria-expanded',String(shown)); }

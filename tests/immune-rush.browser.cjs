@@ -60,11 +60,13 @@ async function matrix(browser,name,width,height){
    await p.locator('#nextBtn').click();
   }
   assert.match(await p.locator('#resultPanel').innerText(),/100%/);const state=await readSave(p);assert.equal(state.scores[data[si].id],100);assert.equal(state.unlocked,Math.min(7,si+2));
-  await checkLayout(p,`${name}-${width} result`);await p.locator('#returnMap').click();
+  await checkLayout(p,`${name}-${width} result`);
+  const last=data[si].tasks[4],review=p.locator('#resultPanel .review-item').last();await review.locator('summary').click();assert((await review.innerText()).includes(last.prompt));if(last.case)assert((await review.innerText()).includes(last.case));await checkLayout(p,`${name}-${width} result expanded review`);
+  await p.locator('#returnMap').click();
  }
  await p.reload();assert.equal((await readSave(p)).unlocked,7);
  await p.locator('[data-view="reportView"]').click();await checkLayout(p,`${name}-${width} radar`);await snapshot(p,`${name}-${width}-radar`);
- await p.locator('[data-review-stage="4"]').click();assert(await p.locator('#reviewDialog').isVisible());
+ await p.locator('[data-review-stage="4"]').click();assert(await p.locator('#reviewDialog').isVisible());assert((await p.locator('#reviewContent').innerText()).includes(data[4].tasks[4].case));assert((await p.locator('#reviewContent').innerText()).includes(data[4].tasks[4].prompt));
  const dialog=await p.locator('#reviewDialog').boundingBox();assert(dialog.width<=width&&dialog.height<=height&&dialog.x>=0&&dialog.y>=0);await p.locator('#closeReviewBtn').click();
  await p.locator('[data-view="settingsView"]').click();await checkLayout(p,`${name}-${width} settings`);
  await p.locator('#soundSwitch').click();assert.equal(await p.locator('#soundSwitch').getAttribute('aria-checked'),'false');await p.reload();await p.locator('[data-view="settingsView"]').click();assert.equal(await p.locator('#soundSwitch').getAttribute('aria-checked'),'false');
