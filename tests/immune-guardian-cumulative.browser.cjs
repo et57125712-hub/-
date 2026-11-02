@@ -3,7 +3,7 @@ const {chromium,webkit}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const out=process.env.TEST_OUTPUT||'cumulative-results';fs.mkdirSync(out,{recursive:true});
 (async()=>{const results=[];for(const engine of ['chromium','webkit']){
  const b=await(engine==='chromium'?chromium.launch({executablePath:process.env.CHROME_PATH}):webkit.launch());const p=await b.newPage({viewport:{width:375,height:650},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(process.env.TEST_URL||'http://127.0.0.1:8766/immune-rush/index.html');await p.locator('#lobby [data-music]').click();await p.locator('#startBtn').click();const data=await p.evaluate(()=>window.ImmuneGuardianData),bank=data.national.concat(data.concept);
+ await p.goto(process.env.TEST_URL||'http://127.0.0.1:8766/immune-rush/index.html');await p.locator('#lobby [data-music]').click();await p.locator('#gameMode').selectOption('all');await p.locator('#startBtn').click();const data=await p.evaluate(()=>window.ImmuneGuardianData),bank=data.national.concat(data.concept);
  async function answer(ok){const text=await p.locator('#question').innerText(),q=bank.find(q=>q.q===text);await p.locator('.option').filter({has:p.getByText(ok?q.ans:q.options.find(o=>o!==q.ans),{exact:true})}).click();}
  const next=()=>p.locator('#continueBattleBtn').click(),forms=[],attacks=[];
  for(let total=1;total<=26;total++){

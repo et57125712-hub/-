@@ -3,7 +3,7 @@ const {chromium,webkit}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.TEST_URL||'http://127.0.0.1:8766/immune-rush/index.html',out=process.env.TEST_OUTPUT||'retention-results';fs.mkdirSync(out,{recursive:true});
 (async()=>{const results=[];for(const engine of ['chromium','webkit']){
  const browser=await(engine==='chromium'?chromium.launch({executablePath:process.env.CHROME_PATH}):webkit.launch());const p=await browser.newPage({viewport:{width:375,height:812},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(url);await p.locator('#lobby [data-music]').click();await p.locator('#startBtn').click();const bank=await p.evaluate(()=>window.ImmuneGuardianData.national.concat(window.ImmuneGuardianData.concept));
+ await p.goto(url);await p.locator('#lobby [data-music]').click();await p.locator('#gameMode').selectOption('all');await p.locator('#startBtn').click();const bank=await p.evaluate(()=>window.ImmuneGuardianData.national.concat(window.ImmuneGuardianData.concept));
  const look=()=>p.evaluate(()=>({name:document.querySelector('#heroName').textContent,skill:document.querySelector('#heroSkill').textContent,tier:document.querySelector('#hero [data-hero-tier]').getAttribute('data-hero-tier'),icon:document.querySelector('#heroIcon').innerHTML}));
  async function answer(ok){const prompt=await p.locator('#question').innerText(),q=bank.find(x=>x.q===prompt),choice=ok?q.ans:q.options.find(x=>x!==q.ans);await p.locator('.option').filter({has:p.getByText(choice,{exact:true})}).click();}
  const next=()=>p.locator('#continueBattleBtn').click();
